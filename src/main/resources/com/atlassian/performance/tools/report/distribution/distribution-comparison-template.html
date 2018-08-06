@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JPT distribution comparison</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+    <style>
+        span.jpt-flag {
+            padding: 3px;
+            background: teal;
+            font-family: monospace;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<span class="jpt-flag">JPT commit: '<%= commit =%>'</span>
+<canvas id="histogram"></canvas>
+<canvas id="quantile-chart"></canvas>
+<script>
+    function jptChartTemplate(data) {
+        return {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                hoverMode: 'index',
+                stacked: false,
+                title: {
+                    display: true
+                },
+                scales: {
+                    xAxes: [
+                        {
+                            scaleLabel: {
+                                display: true
+                            },
+                            ticks: {
+                                min: 0
+                            }
+                        }
+                    ]
+                },
+                elements: {
+                    line: {
+                        tension: 0
+                    }
+                },
+                tooltips: {
+                    callbacks: {
+                        title: function (tooltipItems, data) {
+                            var tooltip = tooltipItems[0];
+                            return data.datasets[tooltip.datasetIndex].data[tooltip.index].x
+                        }
+                    }
+                }
+            }
+        }
+    }
+</script>
+<script>
+    var chart = jptChartTemplate('<%= histogram =%>');
+    chart.options.title.text = 'Histogram of latencies';
+    chart.options.scales.xAxes[0].scaleLabel.labelString = "latency range [ms]";
+    chart.options.scales.yAxes = [
+        {
+            scaleLabel: {
+                labelString: "relative frequency [%]",
+                display: true
+            },
+            id: "probability-axis",
+            ticks: {
+                min: 0
+            }
+        }
+    ];
+    new Chart(document.getElementById("histogram").getContext("2d"), chart);
+</script>
+<script>
+    var chart = jptChartTemplate('<%= quantileFunction =%>');
+    chart.options.title.text = 'Quantile function of latencies';
+    chart.options.scales.xAxes[0].scaleLabel.labelString = "cumulative probability [%]";
+    chart.options.scales.yAxes = [
+        {
+            scaleLabel: {
+                labelString: "latency [ms]",
+                display: true
+            },
+            id: "latency-axis"
+        }
+    ];
+    new Chart(document.getElementById("quantile-chart").getContext("2d"), chart);
+</script>
+</body>
+</html>

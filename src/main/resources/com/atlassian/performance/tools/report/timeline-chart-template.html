@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JPT timeline chart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+    <style>
+        span.jpt-flag {
+            padding: 3px;
+            background: teal;
+            font-family: monospace;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<span class="jpt-flag">JPT commit: '<%= commit =%>'</span>
+<canvas id="vu-chart"></canvas>
+<script>
+    new Chart(
+        document.getElementById("vu-chart").getContext("2d"),
+        {
+            type: 'bar',
+            data: '<%= virtualUserChartData =%>',
+            options: {
+                responsive: true,
+                hoverMode: 'index',
+                stacked: false,
+                title: {
+                    display: true,
+                    text: 'Virtual users actions'
+                },
+                scales: {
+                    yAxes: [
+                        {
+                            type: "linear",
+                            display: true,
+                            position: "left",
+                            scaleLabel: {
+                                display: true,
+                                labelString: "duration"
+                            },
+                            id: "duration-axis",
+                            ticks: {
+                                min: 0
+                            }
+                        },
+                        {
+                            type: "linear",
+                            display: true,
+                            position: "right",
+                            id: "count-axis",
+                            scaleLabel: {
+                                display: true,
+                                labelString: "count"
+                            },
+                            ticks: {
+                                min: 0
+                            },
+                            gridLines: {
+                                drawOnChartArea: false
+                            }
+                        },
+                        {
+                            type: "linear",
+                            display: true,
+                            position: "right",
+                            id: "percentage-axis",
+                            scaleLabel: {
+                                display: true,
+                                labelString: "percentage [%]"
+                            },
+                            ticks: {
+                                min: 0,
+                                max: 100
+                            },
+                            gridLines: {
+                                drawOnChartArea: false
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    );
+
+    /**
+     * @typedef {Object} SystemChartOptions
+     * @property {Object} data
+     * @property {String} title
+     * @property {Object} axis
+     * @property {Object} axis.id
+     * @property {Object} axis.text
+     */
+    /**
+     * @param {HTMLCanvasElement} element
+     * @param {SystemChartOptions} chart
+     */
+    var systemMetricsChart = function (element, chart) {
+        new Chart(
+            element.getContext("2d"),
+            {
+                type: 'bar',
+                data: chart.data,
+                options: {
+                    responsive: true,
+                    hoverMode: 'index',
+                    stacked: false,
+                    title: {
+                        display: true,
+                        text: chart.title
+                    },
+                    scales: {
+                        yAxes: [{
+                            type: "linear",
+                            display: true,
+                            position: "left",
+                            scaleLabel: {
+                                display: true,
+                                labelString: chart.axis.text
+                            },
+                            id: chart.axis.id,
+                            ticks: {
+                                min: 0
+                            }
+                        }]
+                    }
+                }
+            }
+        );
+    };
+
+    '<%= systemMetricsCharts =%>'.forEach(function (chart) {
+        var canvas = document.createElement("canvas");
+        document.body.appendChild(canvas);
+        systemMetricsChart(canvas, chart)
+    });
+</script>
+</body>
+</html>
