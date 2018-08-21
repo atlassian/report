@@ -8,7 +8,7 @@ plugins {
 dependencies {
     listOf(
         "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion",
-        "com.atlassian.performance.tools:workspace:0.0.1",
+        "com.atlassian.performance.tools:workspace:[1.0.0,2.0.0)",
         "com.atlassian.performance.tools:io:0.0.1",
         "com.atlassian.performance.tools:infrastructure:0.0.2",
         "org.eclipse.jgit:org.eclipse.jgit:4.11.0.201803080745-r",

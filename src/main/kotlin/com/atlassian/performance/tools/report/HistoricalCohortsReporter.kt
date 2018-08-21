@@ -3,8 +3,8 @@ package com.atlassian.performance.tools.report
 import com.atlassian.performance.tools.infrastructure.virtualusers.GrowingLoadSchedule
 import com.atlassian.performance.tools.infrastructure.virtualusers.LoadProfile
 import com.atlassian.performance.tools.jiraactions.*
-import com.atlassian.performance.tools.workspace.RootWorkspace
-import com.atlassian.performance.tools.workspace.TaskWorkspace
+import com.atlassian.performance.tools.workspace.api.RootWorkspace
+import com.atlassian.performance.tools.workspace.api.TaskWorkspace
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
 import java.time.Duration

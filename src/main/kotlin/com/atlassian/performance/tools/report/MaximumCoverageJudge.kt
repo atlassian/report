@@ -1,6 +1,6 @@
 package com.atlassian.performance.tools.report
 
-import com.atlassian.performance.tools.workspace.TestWorkspace
+import com.atlassian.performance.tools.workspace.api.TestWorkspace
 
 class MaximumCoverageJudge {
 

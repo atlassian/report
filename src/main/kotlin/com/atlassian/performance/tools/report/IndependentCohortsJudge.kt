@@ -3,8 +3,8 @@ package com.atlassian.performance.tools.report
 import com.atlassian.performance.tools.report.action.EditedIssuesReport
 import com.atlassian.performance.tools.report.action.SearchJqlReport
 import com.atlassian.performance.tools.report.distribution.DistributionComparison
-import com.atlassian.performance.tools.workspace.TestWorkspace
-import com.atlassian.performance.tools.workspace.git.GitRepo
+import com.atlassian.performance.tools.workspace.api.TestWorkspace
+import com.atlassian.performance.tools.workspace.api.git.GitRepo
 
 /**
  * Judges each cohort result in absolute terms, ie. not relative to other cohorts.

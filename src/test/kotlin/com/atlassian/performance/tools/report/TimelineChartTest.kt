@@ -1,7 +1,7 @@
 package com.atlassian.performance.tools.report
 
 import com.atlassian.performance.tools.jiraactions.ActionMetricsParser
-import com.atlassian.performance.tools.workspace.git.HardcodedGitRepo
+import com.atlassian.performance.tools.workspace.api.git.HardcodedGitRepo
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.nio.file.Paths

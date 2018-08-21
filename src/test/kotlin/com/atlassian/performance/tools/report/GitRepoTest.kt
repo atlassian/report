@@ -1,6 +1,6 @@
 package com.atlassian.performance.tools.report
 
-import com.atlassian.performance.tools.workspace.git.GitRepo
+import com.atlassian.performance.tools.workspace.api.git.GitRepo
 import com.atlassian.performance.tools.workspace.git.LocalGitRepo
 import org.eclipse.jgit.internal.storage.file.FileRepository
 import org.hamcrest.Matchers.equalTo

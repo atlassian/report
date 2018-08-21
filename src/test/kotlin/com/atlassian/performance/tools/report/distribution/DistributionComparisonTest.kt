@@ -1,7 +1,7 @@
 package com.atlassian.performance.tools.report.distribution
 
 import com.atlassian.performance.tools.report.LocalRealResult
-import com.atlassian.performance.tools.workspace.git.HardcodedGitRepo
+import com.atlassian.performance.tools.workspace.api.git.HardcodedGitRepo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.File

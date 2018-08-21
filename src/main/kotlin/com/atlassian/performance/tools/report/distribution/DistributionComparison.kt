@@ -2,7 +2,7 @@ package com.atlassian.performance.tools.report.distribution
 
 import com.atlassian.performance.tools.io.ensureParentDirectory
 import com.atlassian.performance.tools.report.*
-import com.atlassian.performance.tools.workspace.git.GitRepo
+import com.atlassian.performance.tools.workspace.api.git.GitRepo
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
 
