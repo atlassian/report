@@ -5,10 +5,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-[Unreleased]: https://bitbucket.org/atlassian/workspace/branches/compare/master%0Drelease-0.0.2
+[Unreleased]: https://bitbucket.org/atlassian/workspace/branches/compare/master%0Drelease-0.0.3
+
+## [0.0.3] - 2018-08-22
+[0.0.3]: https://bitbucket.org/atlassian/workspace/branches/compare/release-0.0.3%0Drelease-0.0.2
 
 ### Added
-- Add [Plaintext Report](src/main/kotlin/com/atlassian/performance/tools/report/PlaintextReport.kt).
+- Add plain text report.
 
 ## [0.0.2] - 2018-08-21
 [0.0.2]: https://bitbucket.org/atlassian/workspace/branches/compare/release-0.0.2%0Drelease-0.0.1
