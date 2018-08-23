@@ -11,9 +11,9 @@ data class PerformanceCriteria(
     val maxInactiveVirtualUsers: Int = 1,
     val nodes: Int = 1
 ) {
-    fun getCenterCriteria() = actionCriteria.mapValues { (_, criteria) -> criteria.centerCriteria }
+    fun getCenterCriteria() = actionCriteria.mapValues { (_, criteria) -> criteria.centerToleranceRatio }
 
-    fun getDispersionCriteria() = actionCriteria.mapValues { (_, criteria) -> criteria.dispersionCriteria }
+    fun getDispersionCriteria() = actionCriteria.mapValues { (_, criteria) -> criteria.maxDispersionDifference }
 
     fun getSampleSizeCriteria() = actionCriteria.mapValues { (_, criteria) -> criteria.sampleSizeCriteria }
 
@@ -21,8 +21,8 @@ data class PerformanceCriteria(
 }
 
 data class Criteria(
-    val centerCriteria: CenterCriteria,
-    val dispersionCriteria: DispersionCriteria,
+    val centerToleranceRatio: Float,
+    val maxDispersionDifference: Duration,
     val sampleSizeCriteria: SampleSizeCriteria,
     val errorCriteria: ErrorCriteria,
     val outlierTrimming: OutlierTrimming
@@ -38,8 +38,8 @@ data class Criteria(
             upperTrim = 0.99
         )
     ) : this (
-        centerCriteria = CenterCriteria(toleranceRatio),
-        dispersionCriteria = DispersionCriteria(maxDispersionDifference),
+        centerToleranceRatio = toleranceRatio,
+        maxDispersionDifference = maxDispersionDifference,
         sampleSizeCriteria = SampleSizeCriteria(minimumSampleSize),
         errorCriteria = ErrorCriteria(acceptableErrorCount),
         outlierTrimming = outlierTrimming

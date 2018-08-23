@@ -32,7 +32,7 @@ class EditedIssuesReport {
         val issueKeysPerCohort: Map<String, List<String>> = results
             .map { result ->
                 val issueKeys = result
-                    .allActionMetrics
+                    .actionMetrics
                     .filter { it.label == EDIT_ISSUE_SUBMIT.label }
                     .mapNotNull { it.observation }
                     .map { IssueObservation(it) }

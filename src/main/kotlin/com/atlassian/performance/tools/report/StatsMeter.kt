@@ -7,7 +7,10 @@ import java.time.Duration
 class StatsMeter {
 
     fun measure(
-        result: EdibleResult
+        result: EdibleResult,
+        centralTendencyMetric: UnivariateStatistic,
+        dispersionMetric: UnivariateStatistic,
+        outlierTrimming: OutlierTrimming
     ): InteractionStats {
         if (result.failure != null) {
             return InteractionStats(
@@ -18,17 +21,16 @@ class StatsMeter {
                 errors = null
             )
         }
-        val metrics = result.criticalActionMetrics
+        val metrics = result.actionMetrics
         val statistics = ActionMetricStatistics(metrics)
         val centers = mutableMapOf<String, Duration>()
         val dispersions = mutableMapOf<String, Duration>()
         val sampleSizes = mutableMapOf<String, Long>()
         val errors = mutableMapOf<String, Int>()
-        for ((action, criteria) in result.criteria.actionCriteria) {
-            val label = action.label
+        for (label in result.actionLabels) {
             val durationData = ActionMetricsReader().read(metrics)[label] ?: DurationData.createEmptyMilliseconds()
-            centers[label] = measure(durationData, criteria.centerCriteria.centralTendencyMetric, criteria.outlierTrimming)
-            dispersions[label] = measure(durationData, criteria.dispersionCriteria.dispersionMetric, criteria.outlierTrimming)
+            centers[label] = measure(durationData, centralTendencyMetric, outlierTrimming)
+            dispersions[label] = measure(durationData, dispersionMetric, outlierTrimming)
 
             sampleSizes[label] = statistics.sampleSize.getOrDefault(label, 0).toLong()
             errors[label] = statistics.errors.getOrDefault(label, 0)

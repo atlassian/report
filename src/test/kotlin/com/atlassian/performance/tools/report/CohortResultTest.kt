@@ -2,7 +2,10 @@ package com.atlassian.performance.tools.report
 
 import com.atlassian.performance.tools.infrastructure.virtualusers.GrowingLoadSchedule
 import com.atlassian.performance.tools.infrastructure.virtualusers.LoadProfile
-import com.atlassian.performance.tools.jiraactions.*
+import com.atlassian.performance.tools.jiraactions.ActionMetric
+import com.atlassian.performance.tools.jiraactions.ActionResult
+import com.atlassian.performance.tools.jiraactions.BROWSE_BOARDS
+import com.atlassian.performance.tools.jiraactions.SEARCH_WITH_JQL
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
 import org.junit.Assert.assertThat
@@ -18,26 +21,10 @@ class CohortResultTest {
     @Test
     fun shouldCropColdCache() {
         val result = LocalRealResult(Paths.get("JIRA-JPT-9107")).loadRaw()
-        val loadProfile = LoadProfile(
-            loadSchedule = GrowingLoadSchedule(
-                duration = ofMinutes(10),
-                initialNodes = 1,
-                finalNodes = 1
-            ),
-            virtualUsersPerNode = 10,
-            seed = 1234
-        )
-        val criteria = PerformanceCriteria(
-            actionCriteria = mapOf(
-                BROWSE_BOARDS to Criteria(minimumSampleSize = 32)
-            ),
-            loadProfile = loadProfile
-        )
 
         val metrics = result.prepareForJudgement(
-            criteria,
             ColdCachesTimeline()
-        ).criticalActionMetrics
+        ).actionMetrics
 
         val actualEarliest = metrics
             .filter { it.label == BROWSE_BOARDS.label }
@@ -66,19 +53,10 @@ class CohortResultTest {
             virtualUsersPerNode = 20,
             seed = 1234
         )
-        val criteria = PerformanceCriteria(
-            actionCriteria = mapOf(
-                SEARCH_WITH_JQL to Criteria(minimumSampleSize = 30),
-                VIEW_BOARD to Criteria(minimumSampleSize = 10),
-                VIEW_DASHBOARD to Criteria(minimumSampleSize = 10)
-            ),
-            loadProfile = loadProfile
-        )
 
         val metrics = result.prepareForJudgement(
-            criteria,
             TestExecutionTimeline(loadProfile.loadSchedule.duration)
-        ).criticalActionMetrics
+        ).actionMetrics
 
         val actualLatest = metrics
             .sortedByDescending { it.start }

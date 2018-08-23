@@ -4,11 +4,12 @@ import com.atlassian.performance.tools.jiraactions.ActionType
 import com.atlassian.performance.tools.report.junit.FailedAssertionJUnitReport
 import com.atlassian.performance.tools.report.junit.JUnitReport
 import com.atlassian.performance.tools.report.junit.SuccessfulJUnitReport
+import java.time.Duration
 
 class RelativePerformanceStabilityJudge {
 
     internal fun judge(
-        criteria: Map<ActionType<*>, DispersionCriteria>,
+        maxDispersionDifferences: Map<ActionType<*>, Duration>,
         baselineStats: InteractionStats,
         experimentStats: InteractionStats
     ): Verdict {
@@ -21,13 +22,12 @@ class RelativePerformanceStabilityJudge {
             ))
         }
         return Verdict(
-            criteria.map { (action, dispersionCriteria) ->
+            maxDispersionDifferences.map { (action, maxDispersionDifference) ->
                 val label = action.label
-                val maxDispersionRegression = dispersionCriteria.maxDispersionDifference
                 val regression = experimentDispersions[label]!! - baselineDispersions[label]!!
                 val reportName = "Stability regression for $label ${experimentStats.cohort} vs ${baselineStats.cohort}"
-                return@map if (regression > maxDispersionRegression) {
-                    val message = "$label $regression stability regression overcame $maxDispersionRegression threshold"
+                return@map if (regression > maxDispersionDifference) {
+                    val message = "$label $regression stability regression overcame $maxDispersionDifference threshold"
                     FailedAssertionJUnitReport(reportName, message)
                 } else {
                     SuccessfulJUnitReport(testName = reportName)

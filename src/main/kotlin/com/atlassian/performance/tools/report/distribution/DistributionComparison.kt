@@ -46,7 +46,7 @@ class DistributionComparison(
     ): Chart<T> = Chart(
         results.flatMap { result ->
             result
-                .allActionMetrics
+                .actionMetrics
                 .groupBy { it.label }
                 .map { (actionType, metrics) ->
                     ChartLine(

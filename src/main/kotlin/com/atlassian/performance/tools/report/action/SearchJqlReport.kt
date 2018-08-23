@@ -5,23 +5,14 @@ import com.atlassian.performance.tools.jiraactions.ActionMetric
 import com.atlassian.performance.tools.jiraactions.SEARCH_WITH_JQL
 import com.atlassian.performance.tools.jiraactions.SearchJqlObservation
 import com.atlassian.performance.tools.report.DurationData
-import com.atlassian.performance.tools.report.OutlierTrimming
-import com.atlassian.performance.tools.report.PerformanceCriteria
-import com.atlassian.performance.tools.report.StatsMeter
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVPrinter
-import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation
-import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
 
 class SearchJqlReport(
-    criteria: PerformanceCriteria,
     allMetrics: List<ActionMetric>
 ) {
-    private val logger = LogManager.getLogger(this::class.java)
     private val metrics = allMetrics.filter { it.label == SEARCH_WITH_JQL.label }
-    private val outlierTrimming = criteria.actionCriteria[SEARCH_WITH_JQL]?.outlierTrimming
-    private val statsMeter = StatsMeter()
 
     fun report(
         target: Path
@@ -58,15 +49,10 @@ class SearchJqlReport(
     private fun stats(
         target: Path
     ) {
-        if (outlierTrimming == null) {
-            logger.debug("No criteria for $SEARCH_WITH_JQL. SearchJqlReport stats won't be available.")
-            return
-        }
-
         val stats = metrics.map { it to it.observation?.let { SearchJqlObservation(it) } }
             .filter { it.second != null }
             .groupBy({ it.second!!.jql }, { it })
-            .map { aggregate(it.key, it.value, outlierTrimming) }
+            .map { aggregate(it.key, it.value) }
 
         val headers = arrayOf("jql", "n", "latency", "minTotalResults", "maxTotalResults")
         val format = CSVFormat.DEFAULT.withHeader(*headers)
@@ -87,14 +73,13 @@ class SearchJqlReport(
 
     private fun aggregate(
         jql: String,
-        metrics: List<Pair<ActionMetric, SearchJqlObservation?>>,
-        outlierTrimming: OutlierTrimming
+        metrics: List<Pair<ActionMetric, SearchJqlObservation?>>
     ): SearchJqlStats {
         val duration = metrics.map { it.first }
             .fold(DurationData.createEmptyNanoseconds(), ::accumulateMetric)
         val minTotalResults = metrics.map { it.second!!.totalResults }.min()!!
         val maxTotalResults = metrics.map { it.second!!.totalResults }.max()!!
-        val averageLatency = statsMeter.measure(duration, StandardDeviation(), outlierTrimming)
+        val averageLatency = duration.durationMapping(duration.stats.mean)
 
         return SearchJqlStats(
             jql = jql,

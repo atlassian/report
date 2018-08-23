@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 [Unreleased]: https://bitbucket.org/atlassian/workspace/branches/compare/master%0Drelease-0.0.3
 
+### Fixed
+- Extract reports from judges
+
 ## [0.0.3] - 2018-08-22
 [0.0.3]: https://bitbucket.org/atlassian/workspace/branches/compare/release-0.0.3%0Drelease-0.0.2
 

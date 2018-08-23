@@ -8,7 +8,6 @@ import java.nio.file.Path
 interface CohortResult {
 
     fun prepareForJudgement(
-        criteria: PerformanceCriteria,
         timeline: Timeline
     ): EdibleResult
 }
@@ -19,12 +18,10 @@ class FailedCohortResult(
 ) : CohortResult {
 
     override fun prepareForJudgement(
-        criteria: PerformanceCriteria,
         timeline: Timeline
     ): EdibleResult = EdibleResult(
         failure = failure,
-        criteria = criteria,
-        allActionMetrics = emptyList(),
+        actionMetrics = emptyList(),
         cohort = cohort,
         systemMetrics = emptyList(),
         nodeDistribution = emptyMap()
@@ -40,11 +37,9 @@ class FullCohortResult(
 ) : CohortResult {
 
     override fun prepareForJudgement(
-        criteria: PerformanceCriteria,
         timeline: Timeline
     ): EdibleResult = EdibleResult(
-        criteria = criteria,
-        allActionMetrics = timeline.crop(parseActions(actionParser)),
+        actionMetrics = timeline.crop(parseActions(actionParser)),
         cohort = cohort,
         systemMetrics = systemParser.parse(results),
         nodeDistribution = nodeParser.parse(results),

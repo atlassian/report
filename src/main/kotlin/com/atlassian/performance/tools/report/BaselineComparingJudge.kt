@@ -6,13 +6,11 @@ package com.atlassian.performance.tools.report
 class BaselineComparingJudge {
 
     fun judge(
-        baseline: EdibleResult,
-        experiment: EdibleResult
+        performanceCriteria: PerformanceCriteria,
+        baselineStats: InteractionStats,
+        experimentStats: InteractionStats
     ): Verdict {
-        val baselineStats = baseline.actionStats
-        val experimentStats = experiment.actionStats
-        val criteria = baseline.criteria
-        return RelativeTypicalPerformanceJudge().judge(criteria.getCenterCriteria(), baselineStats, experimentStats) +
-            RelativePerformanceStabilityJudge().judge(criteria.getDispersionCriteria(), baselineStats, experimentStats)
+        return RelativeTypicalPerformanceJudge().judge(performanceCriteria.getCenterCriteria(), baselineStats, experimentStats) +
+            RelativePerformanceStabilityJudge().judge(performanceCriteria.getDispersionCriteria(), baselineStats, experimentStats)
     }
 }

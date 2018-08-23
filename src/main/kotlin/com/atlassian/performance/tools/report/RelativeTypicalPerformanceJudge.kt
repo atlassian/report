@@ -8,7 +8,7 @@ import com.atlassian.performance.tools.report.junit.SuccessfulJUnitReport
 class RelativeTypicalPerformanceJudge {
 
     fun judge(
-        criteria: Map<ActionType<*>, CenterCriteria>,
+        toleranceRatios: Map<ActionType<*>, Float>,
         baselineStats: InteractionStats,
         experimentStats: InteractionStats
     ): Verdict {
@@ -21,14 +21,14 @@ class RelativeTypicalPerformanceJudge {
             ))
         }
         val testReports = mutableListOf<JUnitReport>()
-        for ((action, centerCriteria) in criteria) {
+        for ((action, toleranceRatio) in toleranceRatios) {
             val baselineCenter = baselineCenters[action.label]!!
             val experimentCenter = experimentCenters[action.label]!!
             val regression = (experimentCenter.toNanos().toFloat() / baselineCenter.toNanos().toFloat()) - 1.00f
             val regressionDescription = "${action.label} ${regression.toPercentage()} typical performance regression"
-            val toleranceDescription = "${centerCriteria.toleranceRatio.toPercentage()} tolerance"
+            val toleranceDescription = "${toleranceRatio.toPercentage()} tolerance"
             val reportName = "Regression for ${action.label} ${experimentStats.cohort} vs ${baselineStats.cohort}"
-            if (regression > centerCriteria.toleranceRatio) {
+            if (regression > toleranceRatio) {
                 val message = "$regressionDescription overcame $toleranceDescription"
                 testReports.add(FailedAssertionJUnitReport(reportName, message))
             } else {
