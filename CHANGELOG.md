@@ -5,13 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-[Unreleased]: https://bitbucket.org/atlassian/workspace/branches/compare/master%0Drelease-0.0.3
+[Unreleased]: https://bitbucket.org/atlassian/workspace/branches/compare/master%0Drelease-1.0.0
+
+## [1.0.0] - 2018-08-24
+[1.0.0]: https://bitbucket.org/atlassian/workspace/branches/compare/release-1.0.0%0Drelease-0.0.3
 
 ### Changed
 - Define the public API.
 
 ### Added
-- Add plain text report to the full report
+- Include the plain text report in the full report.
 
 ### Fixed
 - Extract reports from judges.
