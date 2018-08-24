@@ -1,7 +1,7 @@
 package com.atlassian.performance.tools.report.chart
 
-import com.atlassian.performance.tools.infrastructure.metric.Dimension
-import com.atlassian.performance.tools.infrastructure.metric.SystemMetric
+import com.atlassian.performance.tools.infrastructure.api.metric.Dimension
+import com.atlassian.performance.tools.infrastructure.api.metric.SystemMetric
 import com.atlassian.performance.tools.io.ensureParentDirectory
 import com.atlassian.performance.tools.jiraactions.ActionMetric
 import com.atlassian.performance.tools.workspace.api.git.GitRepo

@@ -1,7 +1,7 @@
 package com.atlassian.performance.tools.report.api.result
 
-import com.atlassian.performance.tools.infrastructure.virtualusers.GrowingLoadSchedule
-import com.atlassian.performance.tools.infrastructure.virtualusers.LoadProfile
+import com.atlassian.performance.tools.infrastructure.api.virtualusers.GrowingLoadSchedule
+import com.atlassian.performance.tools.infrastructure.api.virtualusers.LoadProfile
 import com.atlassian.performance.tools.jiraactions.ActionMetric
 import com.atlassian.performance.tools.jiraactions.ActionResult
 import com.atlassian.performance.tools.jiraactions.BROWSE_BOARDS

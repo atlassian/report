@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Extract reports from judges.
+- Depend on a stable APT `infrastructure` version.
 
 ## [0.0.3] - 2018-08-22
 [0.0.3]: https://bitbucket.org/atlassian/workspace/branches/compare/release-0.0.3%0Drelease-0.0.2

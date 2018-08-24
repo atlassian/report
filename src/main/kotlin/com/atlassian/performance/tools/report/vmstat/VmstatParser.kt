@@ -1,7 +1,7 @@
 package com.atlassian.performance.tools.report.vmstat
 
-import com.atlassian.performance.tools.infrastructure.metric.Dimension
-import com.atlassian.performance.tools.infrastructure.metric.SystemMetric
+import com.atlassian.performance.tools.infrastructure.api.metric.Dimension
+import com.atlassian.performance.tools.infrastructure.api.metric.SystemMetric
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVParser
 import org.apache.commons.csv.CSVRecord

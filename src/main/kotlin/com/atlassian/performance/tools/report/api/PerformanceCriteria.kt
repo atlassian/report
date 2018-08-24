@@ -1,6 +1,6 @@
 package com.atlassian.performance.tools.report.api
 
-import com.atlassian.performance.tools.infrastructure.virtualusers.LoadProfile
+import com.atlassian.performance.tools.infrastructure.api.virtualusers.LoadProfile
 import com.atlassian.performance.tools.jiraactions.ActionType
 import java.time.Duration
 

@@ -1,7 +1,7 @@
 package com.atlassian.performance.tools.report
 
-import com.atlassian.performance.tools.infrastructure.metric.Dimension
-import com.atlassian.performance.tools.infrastructure.metric.SystemMetric
+import com.atlassian.performance.tools.infrastructure.api.metric.Dimension
+import com.atlassian.performance.tools.infrastructure.api.metric.SystemMetric
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.time.Duration

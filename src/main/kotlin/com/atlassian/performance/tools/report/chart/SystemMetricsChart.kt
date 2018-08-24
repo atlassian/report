@@ -1,7 +1,7 @@
 package com.atlassian.performance.tools.report.chart
 
-import com.atlassian.performance.tools.infrastructure.metric.Dimension
-import com.atlassian.performance.tools.infrastructure.metric.SystemMetric
+import com.atlassian.performance.tools.infrastructure.api.metric.Dimension
+import com.atlassian.performance.tools.infrastructure.api.metric.SystemMetric
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import javax.json.Json

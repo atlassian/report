@@ -1,7 +1,7 @@
 package com.atlassian.performance.tools.report.jstat
 
-import com.atlassian.performance.tools.infrastructure.jvm.Jstat
-import com.atlassian.performance.tools.infrastructure.metric.SystemMetric
+import com.atlassian.performance.tools.infrastructure.api.jvm.Jstat
+import com.atlassian.performance.tools.infrastructure.api.metric.SystemMetric
 import java.io.FileFilter
 import java.nio.file.Path
 

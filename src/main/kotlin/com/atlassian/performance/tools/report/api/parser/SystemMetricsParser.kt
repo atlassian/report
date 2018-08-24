@@ -1,6 +1,6 @@
 package com.atlassian.performance.tools.report.api.parser
 
-import com.atlassian.performance.tools.infrastructure.metric.SystemMetric
+import com.atlassian.performance.tools.infrastructure.api.metric.SystemMetric
 import com.atlassian.performance.tools.report.jstat.MergingJstatParser
 import com.atlassian.performance.tools.report.vmstat.MergingVmstatParser
 import java.nio.file.Path

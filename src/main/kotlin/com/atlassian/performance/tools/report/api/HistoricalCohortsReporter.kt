@@ -39,7 +39,7 @@ class HistoricalCohortsReporter(
             labels = actionTypes.map { it.label }
         ).report(
             workspace
-                .listPreviousTasks()
+                .listTasks()
                 .mapNotNull { extractResults(it) }
                 .map { it.actionStats }
         )
