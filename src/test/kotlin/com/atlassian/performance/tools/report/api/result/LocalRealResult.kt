@@ -5,6 +5,7 @@ import com.atlassian.performance.tools.report.api.FullTimeline
 import com.atlassian.performance.tools.report.api.parser.MergingNodeCountParser
 import com.atlassian.performance.tools.report.api.parser.SystemMetricsParser
 import java.io.File
+import java.nio.file.FileSystem
 import java.nio.file.Path
 
 class LocalRealResult(
@@ -12,7 +13,7 @@ class LocalRealResult(
 ) {
 
     fun loadRaw(): CohortResult = FullCohortResult(
-        cohort = path.toString(),
+        cohort = path.joinToString(separator = "/") { it.toString() },
         results = File(
             this::class
                 .java
