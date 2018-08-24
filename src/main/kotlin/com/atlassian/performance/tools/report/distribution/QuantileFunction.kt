@@ -3,7 +3,7 @@ package com.atlassian.performance.tools.report.distribution
 /**
  * Represents the [quantile function](https://en.wikipedia.org/wiki/Quantile_function).
  */
-class QuantileFunction {
+internal class QuantileFunction {
 
     fun plot(
         data: Collection<Number>

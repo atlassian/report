@@ -7,7 +7,7 @@ import java.math.RoundingMode
 /**
  * Represents relative [frequency](https://en.wikipedia.org/wiki/Frequency_(statistics)).
  */
-data class RelativeFrequency(
+internal data class RelativeFrequency(
     val valueRange: ClosedRange<Double>,
     val frequency: Double
 ) : Point<Int> {

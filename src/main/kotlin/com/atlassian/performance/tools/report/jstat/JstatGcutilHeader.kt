@@ -3,9 +3,9 @@ package com.atlassian.performance.tools.report.jstat
 /**
  * https://docs.oracle.com/javase/8/docs/technotes/tools/unix/jstat.html
  */
-enum class JstatGcutilHeader {
+internal enum class JstatGcutilHeader {
     /**
-     * @see com.atlassian.jira.test.performance.infrastructure.Jstat.Companion.TIME
+     * @see com.atlassian.performance.tools.infrastructure.jvm.Jstat.TIME
      */
     DATE,
 

@@ -2,7 +2,7 @@ package com.atlassian.performance.tools.report.jstat
 
 import java.nio.file.Path
 
-class JstatConverter {
+internal class JstatConverter {
 
     internal fun convertToCsv(
         jstat: Path

@@ -3,7 +3,7 @@ package com.atlassian.performance.tools.report.distribution
 /**
  * Represents the [histogram](https://en.wikipedia.org/wiki/Histogram).
  */
-class Histogram {
+internal class Histogram {
 
     fun plot(
         data: Collection<Number>

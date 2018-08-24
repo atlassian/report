@@ -5,7 +5,7 @@ import java.nio.file.Path
 /**
  * Converts vmstat log file to csv
  */
-class VmstatConverter {
+internal class VmstatConverter {
 
     internal fun convertToCsv(
         vmstatLog: Path

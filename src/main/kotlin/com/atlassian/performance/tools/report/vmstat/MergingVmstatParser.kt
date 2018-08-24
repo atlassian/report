@@ -5,7 +5,7 @@ import com.atlassian.performance.tools.infrastructure.os.Vmstat
 import java.io.FileFilter
 import java.nio.file.Path
 
-class MergingVmstatParser {
+internal class MergingVmstatParser {
 
     private val converter = VmstatConverter()
     private val parser = VmstatParser()

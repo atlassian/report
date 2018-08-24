@@ -8,7 +8,7 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics
 /**
  * Works around [MATH-1462](https://issues.apache.org/jira/browse/MATH-1462).
  */
-class RoughEmpiricalDistribution(
+internal class RoughEmpiricalDistribution(
     binCount: Int,
     data: DoubleArray
 ) : EmpiricalDistribution(binCount) {

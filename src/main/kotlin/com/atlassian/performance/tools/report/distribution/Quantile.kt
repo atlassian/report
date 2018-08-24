@@ -7,7 +7,7 @@ import java.math.RoundingMode
 /**
  * Represents a [quantile](https://en.wikipedia.org/wiki/Quantile).
  */
-data class Quantile(
+internal data class Quantile(
     val cumulativeProbability: Double,
     val value: Double
 ) : Point<Double> {

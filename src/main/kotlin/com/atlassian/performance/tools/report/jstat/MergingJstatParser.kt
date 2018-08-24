@@ -5,7 +5,7 @@ import com.atlassian.performance.tools.infrastructure.metric.SystemMetric
 import java.io.FileFilter
 import java.nio.file.Path
 
-class MergingJstatParser {
+internal class MergingJstatParser {
 
     private val converter = JstatConverter()
     private val parser = JstatGcutilParser()

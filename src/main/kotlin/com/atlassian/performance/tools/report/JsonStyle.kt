@@ -5,7 +5,7 @@ import javax.json.Json
 import javax.json.JsonObject
 import javax.json.stream.JsonGenerator
 
-class JsonStyle {
+internal class JsonStyle {
 
     fun prettyPrint(
         json: JsonObject

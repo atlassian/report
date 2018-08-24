@@ -8,7 +8,7 @@ import org.apache.commons.csv.CSVRecord
 import java.io.InputStream
 import java.time.*
 
-class VmstatParser {
+internal class VmstatParser {
 
     internal fun parse(
         inputStream: InputStream,

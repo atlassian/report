@@ -8,7 +8,7 @@ import org.apache.commons.csv.CSVRecord
 import java.io.InputStream
 import java.time.OffsetDateTime
 
-class JstatGcutilParser {
+internal class JstatGcutilParser {
     internal fun parse(
         inputStream: InputStream,
         system: String

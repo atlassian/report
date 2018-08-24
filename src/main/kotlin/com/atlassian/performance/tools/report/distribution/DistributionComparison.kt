@@ -2,11 +2,14 @@ package com.atlassian.performance.tools.report.distribution
 
 import com.atlassian.performance.tools.io.ensureParentDirectory
 import com.atlassian.performance.tools.report.*
+import com.atlassian.performance.tools.report.api.result.EdibleResult
+import com.atlassian.performance.tools.report.chart.Chart
+import com.atlassian.performance.tools.report.chart.ChartLine
 import com.atlassian.performance.tools.workspace.api.git.GitRepo
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
 
-class DistributionComparison(
+internal class DistributionComparison(
     private val repo: GitRepo
 ) {
 

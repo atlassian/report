@@ -1,6 +1,6 @@
 package com.atlassian.performance.tools.report.vmstat
 
-enum class VmstatHeader {
+internal enum class VmstatHeader {
     /**
      * The number of processes waiting for run time
      */

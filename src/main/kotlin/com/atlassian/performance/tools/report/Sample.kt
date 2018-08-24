@@ -1,6 +1,6 @@
 package com.atlassian.performance.tools.report
 
-data class Sample(
+internal data class Sample(
     val center: Double,
     val sampleSize: Long
 )

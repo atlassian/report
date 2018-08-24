@@ -2,7 +2,7 @@ package com.atlassian.performance.tools.report
 
 import java.math.BigDecimal
 
-interface Point<X> {
+internal interface Point<X> {
 
     val x: X
     val y: BigDecimal
