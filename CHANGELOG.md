@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Define the public API.
 
+### Added
+- Add plain text report to the full report
+
 ### Fixed
 - Extract reports from judges.
 - Depend on a stable APT `infrastructure` version.

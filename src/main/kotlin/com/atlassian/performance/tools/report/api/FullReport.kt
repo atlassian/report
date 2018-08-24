@@ -1,15 +1,18 @@
 package com.atlassian.performance.tools.report.api
 
-import com.atlassian.performance.tools.report.chart.TimelineChart
+import com.atlassian.performance.tools.jiraactions.ActionMetricStatistics
 import com.atlassian.performance.tools.report.api.action.EditedIssuesReport
 import com.atlassian.performance.tools.report.api.action.SearchJqlReport
 import com.atlassian.performance.tools.report.api.result.EdibleResult
+import com.atlassian.performance.tools.report.chart.TimelineChart
 import com.atlassian.performance.tools.report.distribution.DistributionComparison
 import com.atlassian.performance.tools.workspace.api.TestWorkspace
 import com.atlassian.performance.tools.workspace.api.git.GitRepo
+import org.apache.logging.log4j.LogManager
 
 class FullReport {
     private val repo = GitRepo.findFromCurrentDirectory()
+    private val logger = LogManager.getLogger(this::class.java)
 
     fun dump(
         results: List<EdibleResult>,
@@ -38,6 +41,12 @@ class FullReport {
                 actionMetrics = actionMetrics,
                 systemMetrics = result.systemMetrics
             )
+
+            val report = PlaintextReport(
+                ActionMetricStatistics(result.actionMetrics)
+            ).generate()
+
+            logger.info("Plain text report:\n$report")
             SearchJqlReport(
                 allMetrics = actionMetrics
             ).report(cohortWorkspace)
