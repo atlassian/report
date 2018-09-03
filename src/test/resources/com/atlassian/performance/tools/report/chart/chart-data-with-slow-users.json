@@ -1,3 +1,4 @@
+
 {
   "labels": [
     "2017-12-20T15:01",
@@ -41,7 +42,8 @@
         }
       ],
       "yAxisID": "duration-axis",
-      "hidden": false
+      "hidden": false,
+      "lineTension": 0
     },
     {
       "type": "line",
@@ -76,7 +78,8 @@
         }
       ],
       "yAxisID": "duration-axis",
-      "hidden": true
+      "hidden": true,
+      "lineTension": 0
     },
     {
       "type": "line",
@@ -111,7 +114,8 @@
         }
       ],
       "yAxisID": "count-axis",
-      "hidden": false
+      "hidden": false,
+      "lineTension": 0
     },
     {
       "type": "line",
@@ -146,7 +150,8 @@
         }
       ],
       "yAxisID": "count-axis",
-      "hidden": true
+      "hidden": true,
+      "lineTension": 0
     },
     {
       "type": "line",
@@ -181,7 +186,8 @@
         }
       ],
       "yAxisID": "count-axis",
-      "hidden": false
+      "hidden": false,
+      "lineTension": 0
     },
     {
       "type": "line",
@@ -216,7 +222,8 @@
         }
       ],
       "yAxisID": "count-axis",
-      "hidden": true
+      "hidden": true,
+      "lineTension": 0
     },
     {
       "type": "line",
@@ -251,7 +258,8 @@
         }
       ],
       "yAxisID": "percentage-axis",
-      "hidden": false
+      "hidden": false,
+      "lineTension": 0
     }
   ]
 }

@@ -20,6 +20,7 @@ The API consists of all public Java types from `com.atlassian.performance.tools.
 
 ### Fixed
 - Sort plain text report's actions alphabetically.
+- Linear interpolation on charts.
 
 ## [1.0.0] - 2018-08-24
 [1.0.0]: https://bitbucket.org/atlassian/workspace/branches/compare/release-1.0.0%0Drelease-0.0.3

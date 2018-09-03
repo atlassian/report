@@ -31,6 +31,7 @@ internal class ChartLine<X>(
         chartDataBuilder.add("data", dataBuilder)
         chartDataBuilder.add("yAxisID", yAxisId)
         chartDataBuilder.add("hidden", hidden)
+        chartDataBuilder.add("lineTension", 0)
 
         return chartDataBuilder.build()
     }
