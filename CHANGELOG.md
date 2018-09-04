@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## API
+## Compatibility
+The library offers compatibility contracts on the Java API and the POM.
+
+## Java API
 The API consists of all public Java types from `com.atlassian.performance.tools.report.api` and its subpackages:
 
   * [source compatibility]
@@ -14,6 +17,11 @@ The API consists of all public Java types from `com.atlassian.performance.tools.
 [source compatibility]: http://cr.openjdk.java.net/~darcy/OpenJdkDevGuide/OpenJdkDevelopersGuide.v0.777.html#source_compatibility
 [binary compatibility]: http://cr.openjdk.java.net/~darcy/OpenJdkDevGuide/OpenJdkDevelopersGuide.v0.777.html#binary_compatibility
 [behavioral compatibility]: http://cr.openjdk.java.net/~darcy/OpenJdkDevGuide/OpenJdkDevelopersGuide.v0.777.html#behavioral_compatibility
+
+### POM
+Changing the license is breaking a contract.
+Adding a requirement of a major version of a dependency is breaking a contract.
+Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
 [Unreleased]: https://bitbucket.org/atlassian/workspace/branches/compare/master%0Drelease-1.0.0

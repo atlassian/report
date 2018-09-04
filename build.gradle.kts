@@ -3,6 +3,7 @@ val kotlinVersion = "1.2.30"
 plugins {
     kotlin("jvm").version("1.2.30")
     id("com.atlassian.performance.tools.gradle-release").version("0.4.0")
+    `java-library`
 }
 
 configurations.all {
@@ -25,17 +26,20 @@ configurations.all {
 }
 
 dependencies {
+
+    api("com.atlassian.performance.tools:jira-actions:[2.0.0,3.0.0)")
+    api("com.atlassian.performance.tools:infrastructure:[1.0.0,2.0.0)")
+    api("com.atlassian.performance.tools:workspace:[2.0.0,3.0.0)")
+
     listOf(
-        "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion",
-        "com.atlassian.performance.tools:workspace:[2.0.0,3.0.0)",
         "com.atlassian.performance.tools:io:[1.0.0,2.0.0)",
-        "com.atlassian.performance.tools:infrastructure:[1.0.0,2.0.0)",
+        "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion",
         "org.eclipse.jgit:org.eclipse.jgit:4.11.0.201803080745-r",
         "org.apache.commons:commons-csv:1.4",
         "org.apache.commons:commons-math3:3.6.1"
     ).plus(
         log4jCore()
-    ).forEach { compile(it) }
+    ).forEach { implementation(it) }
 
     listOf(
         "junit:junit:4.12",
