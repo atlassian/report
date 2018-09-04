@@ -2,8 +2,8 @@ package com.atlassian.performance.tools.report.chart
 
 import com.atlassian.performance.tools.infrastructure.api.metric.Dimension
 import com.atlassian.performance.tools.infrastructure.api.metric.SystemMetric
-import com.atlassian.performance.tools.io.ensureParentDirectory
-import com.atlassian.performance.tools.jiraactions.ActionMetric
+import com.atlassian.performance.tools.io.api.ensureParentDirectory
+import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.workspace.api.git.GitRepo
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path

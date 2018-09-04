@@ -1,6 +1,6 @@
 package com.atlassian.performance.tools.report.distribution
 
-import com.atlassian.performance.tools.io.ensureParentDirectory
+import com.atlassian.performance.tools.io.api.ensureParentDirectory
 import com.atlassian.performance.tools.report.*
 import com.atlassian.performance.tools.report.api.result.EdibleResult
 import com.atlassian.performance.tools.report.chart.Chart

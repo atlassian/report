@@ -1,7 +1,7 @@
 package com.atlassian.performance.tools.report
 
-import com.atlassian.performance.tools.jiraactions.ActionMetric
-import com.atlassian.performance.tools.jiraactions.ActionResult
+import com.atlassian.performance.tools.jiraactions.api.ActionMetric
+import com.atlassian.performance.tools.jiraactions.api.ActionResult
 import org.hamcrest.Matchers.closeTo
 import org.junit.Assert.assertThat
 import org.junit.Test

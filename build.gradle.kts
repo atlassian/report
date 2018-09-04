@@ -5,11 +5,30 @@ plugins {
     id("com.atlassian.performance.tools.gradle-release").version("0.4.0")
 }
 
+configurations.all {
+    resolutionStrategy {
+        failOnVersionConflict()
+        eachDependency {
+            when (requested.module.toString()) {
+                "com.google.guava:guava" -> useVersion("23.6-jre")
+                "org.apache.commons:commons-csv" -> useVersion("1.4")
+                "org.apache.httpcomponents:httpclient" -> useVersion("4.5.5")
+                "org.apache.httpcomponents:httpcore" -> useVersion("4.4.9")
+                "org.codehaus.plexus:plexus-utils" -> useVersion("3.1.0")
+                "org.slf4j:slf4j-api" -> useVersion("1.8.0-alpha2")
+                "com.jcraft:jzlib" -> useVersion("1.1.3")
+                "com.google.code.gson:gson" -> useVersion("2.8.2")
+                "org.jsoup:jsoup" -> useVersion("1.10.2")
+            }
+        }
+    }
+}
+
 dependencies {
     listOf(
         "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion",
-        "com.atlassian.performance.tools:workspace:[1.0.0,2.0.0)",
-        "com.atlassian.performance.tools:io:0.0.1",
+        "com.atlassian.performance.tools:workspace:[2.0.0,3.0.0)",
+        "com.atlassian.performance.tools:io:[1.0.0,2.0.0)",
         "com.atlassian.performance.tools:infrastructure:[1.0.0,2.0.0)",
         "org.eclipse.jgit:org.eclipse.jgit:4.11.0.201803080745-r",
         "org.apache.commons:commons-csv:1.4",

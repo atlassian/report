@@ -1,7 +1,7 @@
 package com.atlassian.performance.tools.report.api
 
 import com.atlassian.performance.tools.infrastructure.api.virtualusers.LoadProfile
-import com.atlassian.performance.tools.jiraactions.ActionMetric
+import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import java.time.Duration
 
 class CompositeTimeline(

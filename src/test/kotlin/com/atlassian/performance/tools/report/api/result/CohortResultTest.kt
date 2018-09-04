@@ -2,10 +2,10 @@ package com.atlassian.performance.tools.report.api.result
 
 import com.atlassian.performance.tools.infrastructure.api.virtualusers.GrowingLoadSchedule
 import com.atlassian.performance.tools.infrastructure.api.virtualusers.LoadProfile
-import com.atlassian.performance.tools.jiraactions.ActionMetric
-import com.atlassian.performance.tools.jiraactions.ActionResult
-import com.atlassian.performance.tools.jiraactions.BROWSE_BOARDS
-import com.atlassian.performance.tools.jiraactions.SEARCH_WITH_JQL
+import com.atlassian.performance.tools.jiraactions.api.ActionMetric
+import com.atlassian.performance.tools.jiraactions.api.ActionResult
+import com.atlassian.performance.tools.jiraactions.api.BROWSE_BOARDS
+import com.atlassian.performance.tools.jiraactions.api.SEARCH_WITH_JQL
 import com.atlassian.performance.tools.report.api.ColdCachesTimeline
 import com.atlassian.performance.tools.report.api.TestExecutionTimeline
 import org.hamcrest.Matchers.equalTo

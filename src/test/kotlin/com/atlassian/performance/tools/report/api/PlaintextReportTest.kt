@@ -1,9 +1,9 @@
 package com.atlassian.performance.tools.report.api
 
-import com.atlassian.performance.tools.jiraactions.ActionMetric
-import com.atlassian.performance.tools.jiraactions.ActionMetricStatistics
-import com.atlassian.performance.tools.jiraactions.ActionResult.ERROR
-import com.atlassian.performance.tools.jiraactions.ActionResult.OK
+import com.atlassian.performance.tools.jiraactions.api.ActionMetric
+import com.atlassian.performance.tools.jiraactions.api.ActionMetricStatistics
+import com.atlassian.performance.tools.jiraactions.api.ActionResult.ERROR
+import com.atlassian.performance.tools.jiraactions.api.ActionResult.OK
 import com.atlassian.performance.tools.report.api.PlaintextReport
 import org.junit.Assert.assertEquals
 import org.junit.Test

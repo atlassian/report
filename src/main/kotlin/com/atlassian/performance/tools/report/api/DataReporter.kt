@@ -1,6 +1,6 @@
 package com.atlassian.performance.tools.report.api
 
-import com.atlassian.performance.tools.io.ensureParentDirectory
+import com.atlassian.performance.tools.io.api.ensureParentDirectory
 import com.atlassian.performance.tools.report.api.result.InteractionStats
 import com.atlassian.performance.tools.report.Sample
 import org.apache.commons.csv.CSVFormat

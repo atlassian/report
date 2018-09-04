@@ -1,6 +1,7 @@
 package com.atlassian.performance.tools.report.api
 
-import com.atlassian.performance.tools.jiraactions.*
+import com.atlassian.performance.tools.jiraactions.api.*
+import com.atlassian.performance.tools.jiraactions.api.parser.MergingActionMetricsParser
 import com.atlassian.performance.tools.report.api.parser.MergingNodeCountParser
 import com.atlassian.performance.tools.report.api.parser.SystemMetricsParser
 import com.atlassian.performance.tools.report.api.result.EdibleResult

@@ -1,8 +1,8 @@
 package com.atlassian.performance.tools.report.api.result
 
-import com.atlassian.performance.tools.io.directories
-import com.atlassian.performance.tools.jiraactions.ActionMetric
-import com.atlassian.performance.tools.jiraactions.MergingActionMetricsParser
+import com.atlassian.performance.tools.io.api.directories
+import com.atlassian.performance.tools.jiraactions.api.ActionMetric
+import com.atlassian.performance.tools.jiraactions.api.parser.MergingActionMetricsParser
 import com.atlassian.performance.tools.report.api.parser.MergingNodeCountParser
 import com.atlassian.performance.tools.report.api.parser.SystemMetricsParser
 import com.atlassian.performance.tools.report.api.Timeline

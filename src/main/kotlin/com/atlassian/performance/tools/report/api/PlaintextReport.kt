@@ -1,6 +1,6 @@
 package com.atlassian.performance.tools.report.api
 
-import com.atlassian.performance.tools.jiraactions.ActionMetricStatistics
+import com.atlassian.performance.tools.jiraactions.api.ActionMetricStatistics
 import java.lang.StringBuilder
 import java.util.*
 

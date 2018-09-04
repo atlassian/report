@@ -1,9 +1,9 @@
 package com.atlassian.performance.tools.report.api.action
 
-import com.atlassian.performance.tools.io.ensureParentDirectory
-import com.atlassian.performance.tools.jiraactions.ActionMetric
-import com.atlassian.performance.tools.jiraactions.SEARCH_WITH_JQL
-import com.atlassian.performance.tools.jiraactions.SearchJqlObservation
+import com.atlassian.performance.tools.io.api.ensureParentDirectory
+import com.atlassian.performance.tools.jiraactions.api.ActionMetric
+import com.atlassian.performance.tools.jiraactions.api.SEARCH_WITH_JQL
+import com.atlassian.performance.tools.jiraactions.api.observation.SearchJqlObservation
 import com.atlassian.performance.tools.report.api.result.DurationData
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVPrinter

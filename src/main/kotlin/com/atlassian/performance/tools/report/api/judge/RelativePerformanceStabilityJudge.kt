@@ -1,6 +1,6 @@
 package com.atlassian.performance.tools.report.api.judge
 
-import com.atlassian.performance.tools.jiraactions.ActionType
+import com.atlassian.performance.tools.jiraactions.api.ActionType
 import com.atlassian.performance.tools.report.api.result.InteractionStats
 import com.atlassian.performance.tools.report.api.junit.FailedAssertionJUnitReport
 import com.atlassian.performance.tools.report.api.junit.JUnitReport

@@ -1,6 +1,6 @@
 package com.atlassian.performance.tools.report.api
 
-import com.atlassian.performance.tools.jiraactions.*
+import com.atlassian.performance.tools.jiraactions.api.*
 import com.atlassian.performance.tools.report.api.result.InteractionStats
 import org.junit.Assert.assertEquals
 import org.junit.Rule

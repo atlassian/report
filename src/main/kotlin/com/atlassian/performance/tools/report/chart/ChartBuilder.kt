@@ -1,7 +1,7 @@
 package com.atlassian.performance.tools.report.chart
 
-import com.atlassian.performance.tools.jiraactions.ActionMetric
-import com.atlassian.performance.tools.jiraactions.ActionResult
+import com.atlassian.performance.tools.jiraactions.api.ActionMetric
+import com.atlassian.performance.tools.jiraactions.api.ActionResult
 import java.time.Duration
 import java.time.Instant
 import java.time.temporal.ChronoUnit

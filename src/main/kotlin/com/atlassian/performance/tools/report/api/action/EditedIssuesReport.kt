@@ -1,8 +1,8 @@
 package com.atlassian.performance.tools.report.api.action
 
-import com.atlassian.performance.tools.io.ensureParentDirectory
-import com.atlassian.performance.tools.jiraactions.EDIT_ISSUE_SUBMIT
-import com.atlassian.performance.tools.jiraactions.IssueObservation
+import com.atlassian.performance.tools.io.api.ensureParentDirectory
+import com.atlassian.performance.tools.jiraactions.api.EDIT_ISSUE_SUBMIT
+import com.atlassian.performance.tools.jiraactions.api.observation.IssueObservation
 import com.atlassian.performance.tools.report.api.result.EdibleResult
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVPrinter

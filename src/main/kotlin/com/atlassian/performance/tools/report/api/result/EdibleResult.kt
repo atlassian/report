@@ -1,7 +1,7 @@
 package com.atlassian.performance.tools.report.api.result
 
 import com.atlassian.performance.tools.infrastructure.api.metric.SystemMetric
-import com.atlassian.performance.tools.jiraactions.ActionMetric
+import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.report.api.OutlierTrimming
 import org.apache.commons.math3.stat.descriptive.moment.Mean
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation

@@ -1,6 +1,6 @@
 package com.atlassian.performance.tools.report.api.result
 
-import com.atlassian.performance.tools.jiraactions.ActionMetricStatistics
+import com.atlassian.performance.tools.jiraactions.api.ActionMetricStatistics
 import com.atlassian.performance.tools.report.ActionMetricsReader
 import com.atlassian.performance.tools.report.api.OutlierTrimming
 import org.apache.commons.math3.stat.descriptive.UnivariateStatistic
