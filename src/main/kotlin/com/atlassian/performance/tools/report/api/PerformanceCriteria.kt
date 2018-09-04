@@ -1,12 +1,12 @@
 package com.atlassian.performance.tools.report.api
 
-import com.atlassian.performance.tools.infrastructure.api.virtualusers.LoadProfile
 import com.atlassian.performance.tools.jiraactions.api.ActionType
+import com.atlassian.performance.tools.virtualusers.api.VirtualUserLoad
 import java.time.Duration
 
 data class PerformanceCriteria(
     val actionCriteria: Map<ActionType<*>, Criteria>,
-    val loadProfile: LoadProfile,
+    val virtualUserLoad: VirtualUserLoad,
     val maxVirtualUsersImbalance: Int = 8,
     val maxInactiveVirtualUsers: Int = 1,
     val nodes: Int = 1

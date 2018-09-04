@@ -1,6 +1,5 @@
 package com.atlassian.performance.tools.report.api
 
-import com.atlassian.performance.tools.infrastructure.api.virtualusers.LoadProfile
 import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import java.time.Duration
 
@@ -53,10 +52,10 @@ class TestExecutionTimeline(
 }
 
 class StandardTimeline(
-    loadProfile: LoadProfile
+    test: Duration
 ) : Timeline by CompositeTimeline(
     ColdCachesTimeline(),
-    TestExecutionTimeline(loadProfile.loadSchedule.duration)
+    TestExecutionTimeline(test)
 )
 
 class FullTimeline : Timeline {

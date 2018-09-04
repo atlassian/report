@@ -14,10 +14,10 @@ class MaximumCoverageJudge {
         criteria: PerformanceCriteria
     ): Verdict {
         val edibleBaseline = baseline.prepareForJudgement(
-            StandardTimeline(criteria.loadProfile)
+            StandardTimeline(criteria.virtualUserLoad.total)
         )
         val edibleExperiment = experiment.prepareForJudgement(
-            StandardTimeline(criteria.loadProfile)
+            StandardTimeline(criteria.virtualUserLoad.total)
         )
         val results = listOf(edibleBaseline, edibleExperiment)
         return IndependentCohortsJudge().judge(

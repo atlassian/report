@@ -28,8 +28,9 @@ configurations.all {
 dependencies {
 
     api("com.atlassian.performance.tools:jira-actions:[2.0.0,3.0.0)")
-    api("com.atlassian.performance.tools:infrastructure:[1.0.0,2.0.0)")
+    api("com.atlassian.performance.tools:infrastructure:[2.0.0,3.0.0)")
     api("com.atlassian.performance.tools:workspace:[2.0.0,3.0.0)")
+    api("com.atlassian.performance.tools:virtual-users:[1.0.0,2.0.0)")
 
     listOf(
         "com.atlassian.performance.tools:io:[1.0.0,2.0.0)",

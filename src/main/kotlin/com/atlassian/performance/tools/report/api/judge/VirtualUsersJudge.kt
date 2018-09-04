@@ -12,7 +12,7 @@ class VirtualUsersJudge(
         nodeCounts: Map<String, Int>,
         cohort: String
     ): Verdict {
-        val expected = criteria.loadProfile.maxExpectedVirtualUsers()
+        val expected = criteria.virtualUserLoad.virtualUsers
         val active = nodeCounts.values.sum()
         if (expected - active <= criteria.maxInactiveVirtualUsers) {
             return Verdict(

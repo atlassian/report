@@ -28,6 +28,9 @@ Dropping a requirement of a major version of a dependency is a new contract.
 
 ### Changed 
 - Use stable APT APIs.
+- Require APT `infrastructure:2`.
+- Require APT `virtual-users:1`.
+- API of `Timelines`.
 
 ### Fixed
 - Sort plain text report's actions alphabetically.
