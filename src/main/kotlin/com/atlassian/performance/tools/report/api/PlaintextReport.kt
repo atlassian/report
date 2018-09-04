@@ -17,7 +17,11 @@ class PlaintextReport(
         formatter.format("| Action name               | sample size   | errors   | 95th percentile [ms] |\n")
         formatter.format("+---------------------------+---------------+----------+----------------------+\n")
 
-        actionMetricStatistics.sampleSize.keys.forEach { action ->
+        actionMetricStatistics
+            .sampleSize
+            .keys
+            .sorted()
+            .forEach { action ->
             formatter.format(
                 lineFormat,
                 action,
