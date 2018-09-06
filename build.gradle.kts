@@ -37,7 +37,8 @@ dependencies {
         "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion",
         "org.eclipse.jgit:org.eclipse.jgit:4.11.0.201803080745-r",
         "org.apache.commons:commons-csv:1.4",
-        "org.apache.commons:commons-math3:3.6.1"
+        "org.apache.commons:commons-math3:3.6.1",
+        "org.apache.commons:commons-lang3:3.5"
     ).plus(
         log4jCore()
     ).forEach { implementation(it) }

@@ -1,6 +1,7 @@
 package com.atlassian.performance.tools.report.api
 
 import com.atlassian.performance.tools.jiraactions.api.ActionMetricStatistics
+import org.apache.commons.lang3.StringUtils.abbreviate
 import java.lang.StringBuilder
 import java.util.*
 
@@ -22,14 +23,14 @@ class PlaintextReport(
             .keys
             .sorted()
             .forEach { action ->
-            formatter.format(
-                lineFormat,
-                action,
-                actionMetricStatistics.sampleSize[action],
-                actionMetricStatistics.errors[action],
-                p95[action]?.toMillis()
-            )
-        }
+                formatter.format(
+                    lineFormat,
+                    abbreviate(action, 25),
+                    actionMetricStatistics.sampleSize[action],
+                    actionMetricStatistics.errors[action],
+                    p95[action]?.toMillis()
+                )
+            }
         formatter.format("+---------------------------+---------------+----------+----------------------+\n")
         return report.toString()
     }
