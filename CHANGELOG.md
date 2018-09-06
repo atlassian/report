@@ -32,6 +32,9 @@ Dropping a requirement of a major version of a dependency is a new contract.
 - Require APT `virtual-users:1`.
 - API of `Timelines`.
 
+### Added
+- Add APT `virtual-users:2` compatibility.
+
 ### Fixed
 - Sort plain text report's actions alphabetically.
 - Linear interpolation on charts.
