@@ -1,6 +1,6 @@
 package com.atlassian.performance.tools.report.chart
 
-import com.atlassian.performance.tools.jiraactions.api.ActionMetricsParser
+import com.atlassian.performance.tools.jiraactions.api.parser.ActionMetricsParser
 import com.atlassian.performance.tools.report.SystemMetricsGenerator
 import com.atlassian.performance.tools.workspace.api.git.HardcodedGitRepo
 import org.junit.Assert.assertTrue

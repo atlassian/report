@@ -1,7 +1,5 @@
 package com.atlassian.performance.tools.report.api.result
 
-import com.atlassian.performance.tools.infrastructure.api.virtualusers.GrowingLoadSchedule
-import com.atlassian.performance.tools.infrastructure.api.virtualusers.LoadProfile
 import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.jiraactions.api.ActionResult
 import com.atlassian.performance.tools.jiraactions.api.BROWSE_BOARDS
@@ -46,18 +44,9 @@ class CohortResultTest {
     @Test
     fun shouldCropStragglers() {
         val result = LocalRealResult(Paths.get("JIRA-JPTS1-23")).loadRaw()
-        val loadProfile = LoadProfile(
-            loadSchedule = GrowingLoadSchedule(
-                duration = ofMinutes(20), // in reality this was PT32M, but the test explores "what if?"
-                initialNodes = 1,
-                finalNodes = 28
-            ),
-            virtualUsersPerNode = 20,
-            seed = 1234
-        )
 
         val metrics = result.prepareForJudgement(
-            TestExecutionTimeline(loadProfile.loadSchedule.duration)
+            TestExecutionTimeline(ofMinutes(20))
         ).actionMetrics
 
         val actualLatest = metrics
