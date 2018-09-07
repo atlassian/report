@@ -21,7 +21,7 @@ class SampleSizeJudge {
         ))
         val testReports = mutableListOf<JUnitReport>()
         for ((action, sampleCriteria) in criteria) {
-            val sampleSize = sampleSizes[action.label]!!
+            val sampleSize = sampleSizes[action.label] ?: 0
             val minimumSampleSize = sampleCriteria.minimumSampleSize
             if (sampleSize < minimumSampleSize) {
                 val message = "The sample size of ${stats.cohort} ${action.label} is $sampleSize," +
