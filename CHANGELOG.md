@@ -26,9 +26,15 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://bitbucket.org/atlassian/workspace/branches/compare/master%0Drelease-2.0.0
 
+### Added
+- Add mean latency chart. Resolve [JPERF-65](https://ecosystem.atlassian.net/browse/JPERF-65).
+
 ### Fixed
 - Abbreviate action names in plain text report.
-- JPERF-59: Fix SampleSizeJudge when sample size is missing.
+- Fix SampleSizeJudge when sample size is missing. Fix [JPERF-59](https://ecosystem.atlassian.net/browse/JPERF-59).
+
+### Deprecated
+- Deprecate `HistoricalCohortsReporter#report(report: Path)`.
 
 ## [2.0.0] - 2018-09-06
 [2.0.0]: https://bitbucket.org/atlassian/workspace/branches/compare/release-2.0.0%0Drelease-1.0.0

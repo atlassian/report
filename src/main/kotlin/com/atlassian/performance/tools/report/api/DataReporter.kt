@@ -1,11 +1,10 @@
 package com.atlassian.performance.tools.report.api
 
 import com.atlassian.performance.tools.io.api.ensureParentDirectory
+import com.atlassian.performance.tools.report.MeanAggregator
 import com.atlassian.performance.tools.report.api.result.InteractionStats
-import com.atlassian.performance.tools.report.Sample
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVPrinter
-import org.apache.commons.math3.stat.descriptive.moment.Mean
 import org.apache.logging.log4j.LogManager
 import java.io.File
 import java.time.Duration
@@ -40,7 +39,7 @@ class DataReporter(
             listOf(
                 stats.cohort,
                 "response time average"
-            ) + labels.map { stats.centers?.get(it) }.map { it?.serialize() } + aggregateCenters(stats)
+            ) + labels.map { stats.centers?.get(it) }.map { it?.serialize() } + MeanAggregator().aggregateCenters(labels, stats)
         })
         printer.printRecords(data.map { stats ->
             listOf(stats.cohort, "request count") + labels.map { stats.sampleSizes?.get(it) }
@@ -58,30 +57,4 @@ class DataReporter(
     }
 
     private fun Duration.serialize(): Long = this.toMillis()
-
-    private fun aggregateCenters(stats: InteractionStats): Long? {
-        val aggregate = Mean()
-        val samples = labels.mapNotNull { sampleFor(it, stats) }
-        val centers = samples.map { it.center }.toDoubleArray()
-        val sampleSizes = samples.map { it.sampleSize }.map { it.toDouble() }.toDoubleArray()
-
-        return when {
-            sampleSizes.all { it == 0.0 } -> null
-            else -> aggregate.evaluate(centers, sampleSizes).toLong()
-        }
-    }
-
-    private fun sampleFor(
-        action: String,
-        stats: InteractionStats
-    ): Sample? {
-        val center = stats.centers?.get(action)?.serialize()?.toDouble()
-        val sampleSize = stats.sampleSizes?.get(action)
-
-        return if (center != null && sampleSize != null) {
-            Sample(center, sampleSize)
-        } else {
-            null
-        }
-    }
 }

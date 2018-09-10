@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JPT latency chart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+</head>
+<body>
+<canvas id="aggregate-chart"></canvas>
+<script>
+    new Chart(document.getElementById("aggregate-chart").getContext("2d"), {
+        type: 'horizontalBar',
+        data: '<%= aggregateChartData =%>',
+        options: {
+            title: {
+                display: true,
+                text: "Latency comparison across test runs"
+            },
+            scales: {
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Duration [ms]"
+                    },
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }],
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Test runs"
+                    }
+                }]
+            }
+        }
+    });
+</script>
+</body>
+</html>

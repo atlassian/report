@@ -6,6 +6,8 @@ import com.atlassian.performance.tools.report.api.parser.MergingNodeCountParser
 import com.atlassian.performance.tools.report.api.parser.SystemMetricsParser
 import com.atlassian.performance.tools.report.api.result.EdibleResult
 import com.atlassian.performance.tools.report.api.result.FullCohortResult
+import com.atlassian.performance.tools.report.api.result.InteractionStats
+import com.atlassian.performance.tools.report.chart.MeanLatencyChart
 import com.atlassian.performance.tools.workspace.api.RootWorkspace
 import com.atlassian.performance.tools.workspace.api.TaskWorkspace
 import org.apache.logging.log4j.LogManager
@@ -32,6 +34,10 @@ class HistoricalCohortsReporter(
         BROWSE_BOARDS
     )
 
+    @Deprecated(
+        message = "Replace with parameterless call",
+        replaceWith = ReplaceWith(expression = "dump()")
+    )
     fun report(
         report: Path
     ) {
@@ -39,11 +45,32 @@ class HistoricalCohortsReporter(
             output = report.toFile(),
             labels = actionTypes.map { it.label }
         ).report(
-            workspace
-                .listTasks()
-                .mapNotNull { extractResults(it) }
-                .map { it.actionStats }
+            getStats()
         )
+    }
+
+    fun dump() {
+        val stats = getStats()
+        val labels = actionTypes.map { it.label }
+        val report = workspace.directory.resolve("results.csv")
+        DataReporter(
+            output = report.toFile(),
+            labels = labels
+        ).report(stats)
+
+        val chart = workspace.directory.resolve("mean-latency-chart.html")
+        MeanLatencyChart().plot(
+            stats = stats,
+            labels = labels,
+            output = chart.toFile()
+        )
+    }
+
+    private fun getStats(): Collection<InteractionStats> {
+        return workspace
+            .listTasks()
+            .mapNotNull { extractResults(it) }
+            .map { it.actionStats }
     }
 
     private fun extractResults(

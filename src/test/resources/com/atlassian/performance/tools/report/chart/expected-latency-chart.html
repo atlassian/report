@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JPT latency chart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+</head>
+<body>
+<canvas id="aggregate-chart"></canvas>
+<script>
+    new Chart(document.getElementById("aggregate-chart").getContext("2d"), {
+        type: 'horizontalBar',
+        data: 
+{
+    "labels": [
+        "JIRA-JPT760-JOB1-8/alpha",
+        "JIRA-JPT760-JOB1-8/beta"
+    ],
+    "datasets": [
+        {
+            "label": "Latency experienced by virtual users",
+            "data": [
+                1580,
+                1591
+            ],
+            "backgroundColor": [
+                "rgba(54, 162, 235, 0.2)",
+                "rgba(75, 192, 192, 0.2)"
+            ],
+            "borderColor": [
+                "rgba(54, 162, 235, 1.0)",
+                "rgba(75, 192, 192, 1.0)"
+            ],
+            "borderWidth": 1
+        }
+    ]
+},
+        options: {
+            title: {
+                display: true,
+                text: "Latency comparison across test runs"
+            },
+            scales: {
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Duration [ms]"
+                    },
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }],
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Test runs"
+                    }
+                }]
+            }
+        }
+    });
+</script>
+</body>
+</html>

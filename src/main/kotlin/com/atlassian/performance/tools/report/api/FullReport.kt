@@ -4,6 +4,7 @@ import com.atlassian.performance.tools.jiraactions.api.ActionMetricStatistics
 import com.atlassian.performance.tools.report.api.action.EditedIssuesReport
 import com.atlassian.performance.tools.report.api.action.SearchJqlReport
 import com.atlassian.performance.tools.report.api.result.EdibleResult
+import com.atlassian.performance.tools.report.chart.MeanLatencyChart
 import com.atlassian.performance.tools.report.chart.TimelineChart
 import com.atlassian.performance.tools.report.distribution.DistributionComparison
 import com.atlassian.performance.tools.workspace.api.TestWorkspace
@@ -19,10 +20,17 @@ class FullReport {
         workspace: TestWorkspace,
         labels: List<String> = results.flatMap { it.actionLabels }.toSet().sorted()
     ) {
+        val stats = results.map { it.actionStats }
         DataReporter(
             output = workspace.directory.resolve("summary-per-cohort.csv").toFile(),
             labels = labels
-        ).report(results.map { it.actionStats })
+        ).report(stats)
+
+        MeanLatencyChart().plot(
+            stats = stats,
+            labels = labels,
+            output = workspace.directory.resolve("mean-latency-chart.html").toFile()
+        )
 
         DistributionComparison(repo).compare(
             output = workspace.directory.resolve("distribution-comparison.html"),
