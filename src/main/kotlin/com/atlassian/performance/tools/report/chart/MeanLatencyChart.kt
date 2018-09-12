@@ -7,9 +7,11 @@ import com.atlassian.performance.tools.report.api.result.InteractionStats
 import org.apache.logging.log4j.LogManager
 import java.io.File
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 import java.time.format.DateTimeFormatter.ofLocalizedDateTime
-import java.time.format.DateTimeFormatter.ofPattern
+import java.time.format.DateTimeFormatterBuilder
 import java.time.format.FormatStyle
+import java.time.temporal.ChronoField.NANO_OF_SECOND;
 import javax.json.Json
 import javax.json.JsonArray
 import javax.json.JsonObject
@@ -69,8 +71,13 @@ internal class MeanLatencyChart {
 
     private fun prettyPrint(cohort: String): String {
         return try {
+            val formatter = DateTimeFormatterBuilder()
+                .append(ISO_LOCAL_DATE)
+                .appendPattern("'T'HH-mm-ss")
+                .appendFraction(NANO_OF_SECOND, 0, 3, true)
+                .toFormatter()
             LocalDateTime
-                .parse(cohort, ofPattern("yyyy-MM-dd'T'HH-mm-ss.SSS"))
+                .parse(cohort, formatter)
                 .format(ofLocalizedDateTime(FormatStyle.SHORT))
         } catch (e: Exception) {
             cohort

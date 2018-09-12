@@ -26,6 +26,9 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://bitbucket.org/atlassian/workspace/branches/compare/master%0Drelease-2.1.0
 
+### Fixed
+- Fix date conversion in `MeanLatencyChart`. Fix [JPERF-77](https://ecosystem.atlassian.net/browse/JPERF-77).
+
 ## [2.1.0] - 2018-09-11
 [2.1.0]: https://bitbucket.org/atlassian/workspace/branches/compare/release-2.1.0%0Drelease-2.0.0
 
