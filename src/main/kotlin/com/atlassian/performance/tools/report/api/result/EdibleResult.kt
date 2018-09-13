@@ -8,6 +8,11 @@ import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
+/**
+ * Holds post-processed performance results ready for analysis.
+ *
+ * Logs an error if [failure] is present.
+ */
 data class EdibleResult(
     val actionMetrics: List<ActionMetric>,
     val systemMetrics: List<SystemMetric>,
@@ -17,7 +22,7 @@ data class EdibleResult(
 ) {
     init {
         if (failure != null) {
-            LOGGER.debug("$cohort failed", failure)
+            LOGGER.error("$cohort failed", failure)
         }
     }
 
