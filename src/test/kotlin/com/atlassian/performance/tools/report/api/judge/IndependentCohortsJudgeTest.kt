@@ -63,7 +63,7 @@ class IndependentCohortsJudgeTest {
             ).assertAccepted(
                     testClassName = "icj-test",
                     testResults = junitReports,
-                    expectedReportCount = 11
+                    expectedReportCount = 7
             )
             null
         } catch (e: Exception) {
@@ -73,8 +73,5 @@ class IndependentCohortsJudgeTest {
         assertThat(exception)
                 .`as`("result failure")
                 .hasMessageContaining("java.lang.RuntimeException: Provisioning failed")
-                .hasMessageContaining("Error count results are missing")
-                .hasMessageContaining("Sample size results are missing")
-                .hasMessageContaining("Results are not available for some nodes. There should be 1 results but is 0")
     }
 }

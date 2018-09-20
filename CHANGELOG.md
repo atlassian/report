@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://bitbucket.org/atlassian/workspace/branches/compare/master%0Drelease-2.2.0
 
+### Fixed
+- Skip secondary verdicts if failure verdict is negative. Fix [JPERF-106].
+
+[JPERF-106]: https://ecosystem.atlassian.net/browse/JPERF-106
+
 ## [2.2.0] - 2018-09-13
 [2.2.0]: https://bitbucket.org/atlassian/workspace/branches/compare/release-2.2.0%0Drelease-2.1.0
 

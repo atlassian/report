@@ -1,7 +1,7 @@
 package com.atlassian.performance.tools.report.api.judge
 
-import com.atlassian.performance.tools.report.api.PerformanceCriteria
 import com.atlassian.performance.tools.report.api.FullReport
+import com.atlassian.performance.tools.report.api.PerformanceCriteria
 import com.atlassian.performance.tools.report.api.result.EdibleResult
 import com.atlassian.performance.tools.workspace.api.TestWorkspace
 
@@ -41,10 +41,15 @@ class IndependentCohortsJudge {
         val cohort = result.cohort
         val stats = result.actionStats
         val nodeDistribution = result.nodeDistribution
-        return FailureJudge().judge(result.failure) +
-            SampleSizeJudge().judge(stats, criteria.getSampleSizeCriteria()) +
-            ErrorsJudge().judge(stats, criteria.getErrorCriteria()) +
-            NodeBalanceJudge(criteria, cohort).judge(nodeDistribution) +
-            VirtualUsersJudge(criteria).judge(nodeDistribution, cohort)
+        val failureVerdict = FailureJudge().judge(result.failure)
+        return if (failureVerdict.positive) {
+            failureVerdict +
+                SampleSizeJudge().judge(stats, criteria.getSampleSizeCriteria()) +
+                ErrorsJudge().judge(stats, criteria.getErrorCriteria()) +
+                NodeBalanceJudge(criteria, cohort).judge(nodeDistribution) +
+                VirtualUsersJudge(criteria).judge(nodeDistribution, cohort)
+        } else {
+            failureVerdict
+        }
     }
 }
