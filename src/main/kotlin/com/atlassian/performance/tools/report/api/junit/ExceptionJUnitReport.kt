@@ -25,5 +25,5 @@ internal class ExceptionJUnitReport(
         """.trimIndent().format(stackTrace)
     }
 
-    override fun toString(): String = exception.javaClass.name
+    override fun toString(): String = "${exception.javaClass.name}: ${exception.message ?: ""}"
 }
