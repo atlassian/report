@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://bitbucket.org/atlassian/workspace/branches/compare/master%0Drelease-2.2.1
 
+### Fixed
+- Restore original column ordering in `IndependentCohortsJudge`. Fix [JPERF-192].
+
+[JPERF-192]: https://ecosystem.atlassian.net/browse/JPERF-192
+
 ## [2.2.1] - 2018-09-21
 [2.2.1]: https://bitbucket.org/atlassian/workspace/branches/compare/release-2.2.1%0Drelease-2.2.0
 

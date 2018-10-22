@@ -27,7 +27,8 @@ class IndependentCohortsJudge {
     ): Verdict {
         FullReport().dump(
             results = results.map { (result, _) -> result },
-            workspace = workspace
+            workspace = workspace,
+            labels = LinkedHashSet(results.flatMap { (_, criteria) -> criteria.actionCriteria.keys.map { it.label } }).toList()
         )
         return results
             .map { (result, criteria) -> judge(result, criteria) }
