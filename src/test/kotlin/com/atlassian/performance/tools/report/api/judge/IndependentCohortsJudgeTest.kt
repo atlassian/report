@@ -1,5 +1,10 @@
 package com.atlassian.performance.tools.report.api.judge
 
+import com.atlassian.performance.tools.jiraactions.api.ActionType
+import com.atlassian.performance.tools.jiraactions.api.BROWSE_PROJECTS
+import com.atlassian.performance.tools.jiraactions.api.VIEW_DASHBOARD
+import com.atlassian.performance.tools.jiraactions.api.VIEW_ISSUE
+import com.atlassian.performance.tools.report.api.Criteria
 import com.atlassian.performance.tools.report.api.FullTimeline
 import com.atlassian.performance.tools.report.api.PerformanceCriteria
 import com.atlassian.performance.tools.report.api.result.FailedCohortResult
@@ -7,6 +12,7 @@ import com.atlassian.performance.tools.report.api.result.LocalRealResult
 import com.atlassian.performance.tools.virtualusers.api.VirtualUserLoad
 import com.atlassian.performance.tools.workspace.api.TestWorkspace
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -73,5 +79,34 @@ class IndependentCohortsJudgeTest {
         assertThat(exception)
                 .`as`("result failure")
                 .hasMessageContaining("java.lang.RuntimeException: Provisioning failed")
+    }
+
+    @Test
+    fun shouldPreserveColumnsOrderInReport() {
+        val results = listOf(
+            Paths.get("JIRA-JPT760-JOB1-8/alpha"),
+            Paths.get("JIRA-JPT760-JOB1-8/beta")
+        ).map { LocalRealResult(it).loadEdible() }
+        val criteria = Criteria(minimumSampleSize = 0)
+        val actionCriteria = mapOf<ActionType<*>, Criteria>(
+            VIEW_ISSUE to criteria,
+            BROWSE_PROJECTS to criteria,
+            VIEW_DASHBOARD to criteria
+        )
+        val workspace = TestWorkspace(Files.createTempDirectory("icj-workspace"))
+        val report = workspace.directory.resolve("summary-per-cohort.csv").toFile()
+        val expectedHeader = "cohort,metric,View Issue,Browse Projects,View Dashboard,AGGREGATE"
+
+        IndependentCohortsJudge().judge(
+            results = results,
+            workspace = workspace,
+            criteria = PerformanceCriteria(
+                actionCriteria = actionCriteria,
+                virtualUserLoad = VirtualUserLoad()
+            )
+        )
+
+        val actualHeader = report.reader().readLines()[0]
+        assertEquals(expectedHeader, actualHeader)
     }
 }
