@@ -24,7 +24,10 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://bitbucket.org/atlassian/workspace/branches/compare/master%0Drelease-2.2.1
+[Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-2.2.2
+
+## [2.2.2] - 2018-10-23
+[2.2.2]: https://bitbucket.org/atlassian/report/branches/compare/release-2.2.2%0Drelease-2.2.1
 
 ### Fixed
 - Restore original column ordering in `IndependentCohortsJudge`. Fix [JPERF-192].
@@ -32,7 +35,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 [JPERF-192]: https://ecosystem.atlassian.net/browse/JPERF-192
 
 ## [2.2.1] - 2018-09-21
-[2.2.1]: https://bitbucket.org/atlassian/workspace/branches/compare/release-2.2.1%0Drelease-2.2.0
+[2.2.1]: https://bitbucket.org/atlassian/report/branches/compare/release-2.2.1%0Drelease-2.2.0
 
 ### Fixed
 - Skip secondary verdicts if failure verdict is negative. Fix [JPERF-106].
@@ -40,7 +43,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 [JPERF-106]: https://ecosystem.atlassian.net/browse/JPERF-106
 
 ## [2.2.0] - 2018-09-13
-[2.2.0]: https://bitbucket.org/atlassian/workspace/branches/compare/release-2.2.0%0Drelease-2.1.0
+[2.2.0]: https://bitbucket.org/atlassian/report/branches/compare/release-2.2.0%0Drelease-2.1.0
 
 ### Added 
 - Log test errors in `EdibleResult`.
@@ -49,7 +52,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 - Fix date conversion in `MeanLatencyChart`. Fix [JPERF-77](https://ecosystem.atlassian.net/browse/JPERF-77).
 
 ## [2.1.0] - 2018-09-11
-[2.1.0]: https://bitbucket.org/atlassian/workspace/branches/compare/release-2.1.0%0Drelease-2.0.0
+[2.1.0]: https://bitbucket.org/atlassian/report/branches/compare/release-2.1.0%0Drelease-2.0.0
 
 ### Added
 - Add mean latency chart. Resolve [JPERF-65](https://ecosystem.atlassian.net/browse/JPERF-65).
@@ -62,7 +65,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 - Deprecate `HistoricalCohortsReporter#report(report: Path)`.
 
 ## [2.0.0] - 2018-09-06
-[2.0.0]: https://bitbucket.org/atlassian/workspace/branches/compare/release-2.0.0%0Drelease-1.0.0
+[2.0.0]: https://bitbucket.org/atlassian/report/branches/compare/release-2.0.0%0Drelease-1.0.0
 
 ### Changed 
 - Use stable APT APIs.
@@ -78,7 +81,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 - Linear interpolation on charts.
 
 ## [1.0.0] - 2018-08-24
-[1.0.0]: https://bitbucket.org/atlassian/workspace/branches/compare/release-1.0.0%0Drelease-0.0.3
+[1.0.0]: https://bitbucket.org/atlassian/report/branches/compare/release-1.0.0%0Drelease-0.0.3
 
 ### Changed
 - Define the public API.
@@ -91,13 +94,13 @@ Dropping a requirement of a major version of a dependency is a new contract.
 - Depend on a stable APT `infrastructure` version.
 
 ## [0.0.3] - 2018-08-22
-[0.0.3]: https://bitbucket.org/atlassian/workspace/branches/compare/release-0.0.3%0Drelease-0.0.2
+[0.0.3]: https://bitbucket.org/atlassian/report/branches/compare/release-0.0.3%0Drelease-0.0.2
 
 ### Added
 - Add plain text report.
 
 ## [0.0.2] - 2018-08-21
-[0.0.2]: https://bitbucket.org/atlassian/workspace/branches/compare/release-0.0.2%0Drelease-0.0.1
+[0.0.2]: https://bitbucket.org/atlassian/report/branches/compare/release-0.0.2%0Drelease-0.0.1
 
 ### Added
 - Add missing [CHANGELOG.md](CHANGELOG.md).
