@@ -13,42 +13,42 @@ class RelativeTypicalPerformanceJudge {
         baselineStats: InteractionStats,
         experimentStats: InteractionStats
     ): Verdict {
-        val baselineCenters = baselineStats.centers
-        val experimentCenters = experimentStats.centers
-        if (baselineCenters == null || experimentCenters == null) {
-            return Verdict(listOfNotNull(
-                judgeMissingResults(baselineStats),
-                judgeMissingResults(experimentStats)
-            ))
-        }
         val testReports = mutableListOf<JUnitReport>()
         for ((action, toleranceRatio) in toleranceRatios) {
-            val baselineCenter = baselineCenters[action.label]!!
-            val experimentCenter = experimentCenters[action.label]!!
-            val regression = (experimentCenter.toNanos().toFloat() / baselineCenter.toNanos().toFloat()) - 1.00f
-            val regressionDescription = "${action.label} ${regression.toPercentage()} typical performance regression"
-            val toleranceDescription = "${toleranceRatio.toPercentage()} tolerance"
-            val reportName = "Regression for ${action.label} ${experimentStats.cohort} vs ${baselineStats.cohort}"
-            if (regression > toleranceRatio) {
-                val message = "$regressionDescription overcame $toleranceDescription"
-                testReports.add(FailedAssertionJUnitReport(reportName, message))
-            } else {
-                testReports.add(SuccessfulJUnitReport(reportName))
-            }
+            testReports.add(
+                judge(
+                    action,
+                    toleranceRatio,
+                    baselineStats,
+                    experimentStats
+                )
+            )
         }
         return Verdict(testReports)
     }
 
-    private fun judgeMissingResults(
-        stats: InteractionStats
-    ): JUnitReport? {
-        return if (stats.centers == null) {
-            FailedAssertionJUnitReport(
-                testName = "Latency: ${stats.cohort}",
-                assertion = "Latency results are missing"
-            )
+    private fun judge(
+        action: ActionType<*>,
+        toleranceRatio: Float,
+        baselineStats: InteractionStats,
+        experimentStats: InteractionStats
+    ): JUnitReport {
+        val label = action.label
+        val baselineCohort = baselineStats.cohort
+        val experimentCohort = experimentStats.cohort
+        val reportName = "Regression for $label $experimentCohort vs $baselineCohort"
+        val baselineCenter = baselineStats.centers?.get(label)
+            ?: return FailedAssertionJUnitReport(reportName, "No action $label results for $baselineCohort")
+        val experimentCenter = experimentStats.centers?.get(label)
+            ?: return FailedAssertionJUnitReport(reportName, "No action $label results for $experimentCohort")
+        val regression = (experimentCenter.toNanos().toFloat() / baselineCenter.toNanos().toFloat()) - 1.00f
+        return if (regression > toleranceRatio) {
+            val regressionDescription = "$label ${regression.toPercentage()} typical performance regression"
+            val toleranceDescription = "${toleranceRatio.toPercentage()} tolerance"
+            val message = "$regressionDescription overcame $toleranceDescription"
+            FailedAssertionJUnitReport(reportName, message)
         } else {
-            null
+            SuccessfulJUnitReport(reportName)
         }
     }
 }

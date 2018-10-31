@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-2.2.2
 
+### Fixed
+- Fix NPE in `RelativeTypicalPerformanceJudge` when action results are missing. Fix [JPERF-248].
+
+[JPERF-248]: https://ecosystem.atlassian.net/browse/JPERF-248
+
 ## [2.2.2] - 2018-10-23
 [2.2.2]: https://bitbucket.org/atlassian/report/branches/compare/release-2.2.2%0Drelease-2.2.1
 
