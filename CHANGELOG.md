@@ -24,7 +24,10 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-2.2.2
+[Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-2.2.3
+
+## [2.2.3] - 2018-10-31
+[2.2.3]: https://bitbucket.org/atlassian/report/branches/compare/release-2.2.3%0Drelease-2.2.2
 
 ### Fixed
 - Fix NPE in `RelativeTypicalPerformanceJudge` when action results are missing. Fix [JPERF-248].
