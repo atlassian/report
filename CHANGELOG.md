@@ -26,6 +26,12 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-2.2.3
 
+### Added
+- Add support for `infrastructure:3`.
+- Add support for `infrastructure:4`.
+- Add support for `jira-actions:3`.
+- Add support for `virtual-users:3`.
+
 ## [2.2.3] - 2018-10-31
 [2.2.3]: https://bitbucket.org/atlassian/report/branches/compare/release-2.2.3%0Drelease-2.2.2
 

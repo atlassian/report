@@ -1,7 +1,7 @@
-val kotlinVersion = "1.2.30"
+val kotlinVersion = "1.2.70"
 
 plugins {
-    kotlin("jvm").version("1.2.30")
+    kotlin("jvm").version("1.2.70")
     id("com.atlassian.performance.tools.gradle-release").version("0.4.3")
     `java-library`
 }
@@ -22,20 +22,23 @@ configurations.all {
                 "com.google.code.gson:gson" -> useVersion("2.8.2")
                 "org.jsoup:jsoup" -> useVersion("1.10.2")
             }
+            when (requested.group) {
+                "org.jetbrains.kotlin" -> useVersion(kotlinVersion)
+            }
         }
     }
 }
 
 dependencies {
 
-    api("com.atlassian.performance.tools:jira-actions:[2.0.0,3.0.0)")
-    api("com.atlassian.performance.tools:infrastructure:[2.0.0,3.0.0)")
+    api("com.atlassian.performance.tools:jira-actions:[2.0.0,4.0.0)")
+    api("com.atlassian.performance.tools:infrastructure:[2.0.0,5.0.0)")
     api("com.atlassian.performance.tools:workspace:[2.0.0,3.0.0)")
-    api("com.atlassian.performance.tools:virtual-users:[1.0.0,3.0.0)")
+    api("com.atlassian.performance.tools:virtual-users:[1.0.0,4.0.0)")
 
     listOf(
         "com.atlassian.performance.tools:io:[1.0.0,2.0.0)",
-        "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion",
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion",
         "org.eclipse.jgit:org.eclipse.jgit:4.11.0.201803080745-r",
         "org.apache.commons:commons-csv:1.4",
         "org.apache.commons:commons-math3:3.6.1",
