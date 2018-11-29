@@ -66,7 +66,7 @@ fun log4j(
     "org.apache.logging.log4j:log4j-$module:2.10.0"
 }
 
-task<Wrapper>("wrapper") {
-    gradleVersion = "4.9"
+tasks.getByName("wrapper", Wrapper::class).apply {
+    gradleVersion = "5.0"
     distributionType = Wrapper.DistributionType.ALL
 }
