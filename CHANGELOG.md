@@ -28,6 +28,9 @@ Dropping a requirement of a major version of a dependency is a new contract.
 
 ### Added
 - Provide builder for EdibleResult.
+- Provide API to perform calculations on action metrics. Resolves [JPERF-338].
+
+[JPERF-338]: https://ecosystem.atlassian.net/browse/JPERF-338
 
 ## [2.3.1] - 2019-01-08
 [2.3.1]: https://bitbucket.org/atlassian/report/branches/compare/release-2.3.1%0Drelease-2.3.1

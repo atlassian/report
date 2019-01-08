@@ -1,5 +1,6 @@
 package com.atlassian.performance.tools.report.api.result
 
+import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.jiraactions.api.ActionMetricStatistics
 import com.atlassian.performance.tools.report.ActionMetricsReader
 import com.atlassian.performance.tools.report.api.OutlierTrimming
@@ -25,19 +26,44 @@ class StatsMeter {
         }
         val metrics = result.actionMetrics
         val statistics = ActionMetricStatistics(metrics)
-        val centers = mutableMapOf<String, Duration>()
-        val dispersions = mutableMapOf<String, Duration>()
+        val centers = calculate(metrics, centralTendencyMetric, outlierTrimming)
+        val dispersions = calculate(metrics, dispersionMetric, outlierTrimming)
         val sampleSizes = mutableMapOf<String, Long>()
         val errors = mutableMapOf<String, Int>()
         for (label in result.actionLabels) {
-            val durationData = ActionMetricsReader().read(metrics)[label] ?: DurationData.createEmptyMilliseconds()
-            centers[label] = measure(durationData, centralTendencyMetric, outlierTrimming)
-            dispersions[label] = measure(durationData, dispersionMetric, outlierTrimming)
-
             sampleSizes[label] = statistics.sampleSize.getOrDefault(label, 0).toLong()
             errors[label] = statistics.errors.getOrDefault(label, 0)
         }
         return InteractionStats(result.cohort, sampleSizes, centers, dispersions, errors)
+    }
+
+    /**
+     * Calculates `metric` for the list of `metrics`. Failed actions are not included in the result.
+     *
+     * @return Map of results for each label
+     * @since 2.4.0
+     */
+    fun calculate(
+        metrics: List<ActionMetric>,
+        metric: UnivariateStatistic,
+        outlierTrimming: OutlierTrimming
+    ): Map<String, Duration> {
+        val labels = metrics.map { it.label }.toSet()
+        return labels
+            .asSequence()
+            .map { label -> calculate(label, metrics, metric, outlierTrimming) }
+            .toMap()
+    }
+
+    private fun calculate(
+        label: String,
+        metrics: List<ActionMetric>,
+        metric: UnivariateStatistic,
+        outlierTrimming: OutlierTrimming
+    ): Pair<String, Duration> {
+        val durationData = ActionMetricsReader().read(metrics)[label] ?: DurationData.createEmptyMilliseconds()
+        val results = measure(durationData, metric, outlierTrimming)
+        return label to results
     }
 
     fun measure(
