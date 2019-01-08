@@ -3,9 +3,9 @@ package com.atlassian.performance.tools.report.api.result
 import com.atlassian.performance.tools.io.api.directories
 import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.jiraactions.api.parser.MergingActionMetricsParser
+import com.atlassian.performance.tools.report.api.Timeline
 import com.atlassian.performance.tools.report.api.parser.MergingNodeCountParser
 import com.atlassian.performance.tools.report.api.parser.SystemMetricsParser
-import com.atlassian.performance.tools.report.api.Timeline
 import java.nio.file.Path
 
 interface CohortResult {
@@ -22,13 +22,9 @@ class FailedCohortResult(
 
     override fun prepareForJudgement(
         timeline: Timeline
-    ): EdibleResult = EdibleResult(
-        failure = failure,
-        actionMetrics = emptyList(),
-        cohort = cohort,
-        systemMetrics = emptyList(),
-        nodeDistribution = emptyMap()
-    )
+    ): EdibleResult = EdibleResult.Builder(cohort)
+        .failure(failure)
+        .build()
 }
 
 class FullCohortResult(
@@ -41,13 +37,11 @@ class FullCohortResult(
 
     override fun prepareForJudgement(
         timeline: Timeline
-    ): EdibleResult = EdibleResult(
-        actionMetrics = timeline.crop(parseActions(actionParser)),
-        cohort = cohort,
-        systemMetrics = systemParser.parse(results),
-        nodeDistribution = nodeParser.parse(results),
-        failure = null
-    )
+    ): EdibleResult = EdibleResult.Builder(cohort)
+        .actionMetrics(timeline.crop(parseActions(actionParser)))
+        .systemMetrics(systemParser.parse(results))
+        .nodeDistribution(nodeParser.parse(results))
+        .build()
 
     private fun parseActions(
         parser: MergingActionMetricsParser

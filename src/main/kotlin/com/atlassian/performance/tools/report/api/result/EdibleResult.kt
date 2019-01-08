@@ -12,8 +12,10 @@ import org.apache.logging.log4j.Logger
  * Holds post-processed performance results ready for analysis.
  *
  * Logs an error if [failure] is present.
+ *
+ * @deprecated The generated `copy` and `componentN` methods should not be used. It will become a non-data class.
  */
-data class EdibleResult(
+data class EdibleResult @Deprecated("Use EdibleResult.Builder instead.") constructor(
     val actionMetrics: List<ActionMetric>,
     val systemMetrics: List<SystemMetric>,
     val nodeDistribution: Map<String, Int>,
@@ -42,5 +44,27 @@ data class EdibleResult(
 
     companion object {
         private val LOGGER: Logger = LogManager.getLogger(this::class.java)
+    }
+
+    class Builder(private var cohort: String) {
+        private var actionMetrics: List<ActionMetric> = emptyList()
+        private var systemMetrics: List<SystemMetric> = emptyList()
+        private var nodeDistribution: Map<String, Int> = emptyMap()
+        private var failure: Exception? = null
+
+
+        fun actionMetrics(actionMetrics: List<ActionMetric>) = apply { this.actionMetrics = actionMetrics }
+        fun systemMetrics(systemMetrics: List<SystemMetric>) = apply { this.systemMetrics = systemMetrics }
+        fun nodeDistribution(nodeDistribution: Map<String, Int>) = apply { this.nodeDistribution = nodeDistribution }
+        fun failure(failure: Exception) = apply { this.failure = failure }
+
+        @SuppressWarnings
+        fun build() = EdibleResult(
+            cohort = cohort,
+            actionMetrics = actionMetrics,
+            systemMetrics = systemMetrics,
+            nodeDistribution = nodeDistribution,
+            failure = failure
+        )
     }
 }
