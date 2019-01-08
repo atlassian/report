@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="TEST CLASS NAME" tests="1" skipped="0" failures="1" errors="0">
+<testcase name="TEST NAME" classname="TEST CLASS NAME">
+    <failure message="OOPS" type="com.atlassian.performance.tools.report.api.junit.ExceptionJUnitReportTest$MockException">java.lang.Exception: OOPS
+	at com.atlassian.performance.tools.report.api.junit.ExceptionJUnitReportTest.shouldGenerateXmlReport(ExceptionJUnitReportTest.kt:10)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+</failure>
+</testcase>
+</testsuite>
