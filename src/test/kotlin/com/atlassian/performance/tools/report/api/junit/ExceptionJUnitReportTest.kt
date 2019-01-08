@@ -1,7 +1,6 @@
 package com.atlassian.performance.tools.report.api.junit
 
-import org.hamcrest.Matchers
-import org.junit.Assert.assertThat
+import org.assertj.core.api.Assertions
 import org.junit.Test
 
 class ExceptionJUnitReportTest {
@@ -12,6 +11,16 @@ class ExceptionJUnitReportTest {
 
         val xml = report.toXml("TEST CLASS NAME")
 
-        assertThat(xml, Matchers.startsWith("""<?xml version="1.0" encoding="UTF-8"?>"""))
+        Assertions.assertThat(xml).startsWith("""<?xml version="1.0" encoding="UTF-8"?>""")
+    }
+
+    @Test
+    fun shouldParsePercents() {
+        val message = "OOPS%{"
+        val report = ExceptionJUnitReport("TEST NAME", Exception(message))
+
+        val xml = report.toXml("TEST CLASS NAME")
+
+        Assertions.assertThat(xml).contains(message)
     }
 }
