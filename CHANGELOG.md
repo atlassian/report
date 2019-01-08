@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-2.3.0
 
+### Fixed
+- Create a JUnit report from exceptions containing '%' character. Fix [JPERF-339].
+
+[JPERF-339]: https://ecosystem.atlassian.net/browse/JPERF-339
+
 ## [2.3.0] - 2018-11-29
 [2.3.0]: https://bitbucket.org/atlassian/report/branches/compare/release-2.3.0%0Drelease-2.2.3
 
