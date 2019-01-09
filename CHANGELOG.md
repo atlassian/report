@@ -26,6 +26,15 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-2.6.0
 
+### Added
+- Add `WaterfallHighlightReport`.
+- Enable `WaterfallHighlightReport` in `FullReport`. Resolve [JPERF-316].
+
+### Removed
+- Drop support for `jira-actions:2`.
+
+[JPERF-316]: https://ecosystem.atlassian.net/browse/JPERF-316
+
 ## [2.6.0] - 2019-01-11
 [2.6.0]: https://bitbucket.org/atlassian/report/branches/compare/release-2.6.0%0Drelease-2.5.0
 
