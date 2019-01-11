@@ -3,13 +3,28 @@ package com.atlassian.performance.tools.report.api.judge
 import com.atlassian.performance.tools.report.api.PerformanceCriteria
 import com.atlassian.performance.tools.report.api.StandardTimeline
 import com.atlassian.performance.tools.report.api.result.CohortResult
+import com.atlassian.performance.tools.report.api.result.RawCohortResult
 import com.atlassian.performance.tools.workspace.api.TestWorkspace
 
 class MaximumCoverageJudge {
 
+    @Suppress("DEPRECATION")
+    @Deprecated(message = "Use the other judge method.")
     fun judge(
         baseline: CohortResult,
         experiment: CohortResult,
+        report: TestWorkspace,
+        criteria: PerformanceCriteria
+    ): Verdict = judge(
+        baseline = CohortResult.toRawCohortResult(baseline),
+        experiment = CohortResult.toRawCohortResult(experiment),
+        report = report,
+        criteria = criteria
+    )
+
+    fun judge(
+        baseline: RawCohortResult,
+        experiment: RawCohortResult,
         report: TestWorkspace,
         criteria: PerformanceCriteria
     ): Verdict {

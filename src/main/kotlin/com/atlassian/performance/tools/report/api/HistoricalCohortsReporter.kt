@@ -1,17 +1,13 @@
 package com.atlassian.performance.tools.report.api
 
 import com.atlassian.performance.tools.jiraactions.api.*
-import com.atlassian.performance.tools.jiraactions.api.parser.MergingActionMetricsParser
-import com.atlassian.performance.tools.report.api.parser.MergingNodeCountParser
-import com.atlassian.performance.tools.report.api.parser.SystemMetricsParser
 import com.atlassian.performance.tools.report.api.result.EdibleResult
-import com.atlassian.performance.tools.report.api.result.FullCohortResult
 import com.atlassian.performance.tools.report.api.result.InteractionStats
+import com.atlassian.performance.tools.report.api.result.RawCohortResult
 import com.atlassian.performance.tools.report.chart.MeanLatencyChart
 import com.atlassian.performance.tools.workspace.api.RootWorkspace
 import com.atlassian.performance.tools.workspace.api.TaskWorkspace
 import org.apache.logging.log4j.LogManager
-import java.nio.file.Path
 
 /**
  * Reports on cohort results from all JPT tasks available in the [workspace].
@@ -61,12 +57,9 @@ class HistoricalCohortsReporter(
     private fun extractResults(
         task: TaskWorkspace
     ): EdibleResult? = try {
-        val edibleResult = FullCohortResult(
+        val edibleResult = RawCohortResult.Factory().fullResult(
             cohort = task.directory.fileName.toString(),
-            results = task.directory,
-            actionParser = MergingActionMetricsParser(),
-            systemParser = SystemMetricsParser(),
-            nodeParser = MergingNodeCountParser()
+            results = task.directory
         ).prepareForJudgement(FullTimeline())
         logger.info("Found previous results in ${task.directory}")
         edibleResult

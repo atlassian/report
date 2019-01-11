@@ -7,8 +7,8 @@ import com.atlassian.performance.tools.jiraactions.api.VIEW_ISSUE
 import com.atlassian.performance.tools.report.api.Criteria
 import com.atlassian.performance.tools.report.api.FullTimeline
 import com.atlassian.performance.tools.report.api.PerformanceCriteria
-import com.atlassian.performance.tools.report.api.result.FailedCohortResult
 import com.atlassian.performance.tools.report.api.result.LocalRealResult
+import com.atlassian.performance.tools.report.api.result.RawCohortResult
 import com.atlassian.performance.tools.virtualusers.api.VirtualUserLoad
 import com.atlassian.performance.tools.workspace.api.TestWorkspace
 import org.assertj.core.api.Assertions.assertThat
@@ -51,10 +51,11 @@ class IndependentCohortsJudgeTest {
         ).map { resultPath ->
             LocalRealResult(resultPath).loadEdible()
         }.plus(
-                FailedCohortResult(
-                        cohort = "a-failed-cohort",
-                        failure = RuntimeException("Provisioning failed")
-                ).prepareForJudgement(FullTimeline())
+            RawCohortResult.Factory().failedResult(
+                cohort = "a-failed-cohort",
+                results = Files.createTempDirectory("a-failed-cohort"),
+                failure = RuntimeException("Provisioning failed")
+            ).prepareForJudgement(FullTimeline())
         )
         val junitReports = Files.createTempDirectory("junit-reports")
 

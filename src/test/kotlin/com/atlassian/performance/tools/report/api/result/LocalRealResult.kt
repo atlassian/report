@@ -10,8 +10,7 @@ import java.nio.file.Path
 class LocalRealResult(
     private val path: Path
 ) {
-
-    fun loadRaw(): CohortResult = FullCohortResult(
+    fun load(): CohortResult = FullCohortResult(
         cohort = path.joinToString(separator = "/") { it.toString() },
         results = File(
             this::class
@@ -22,6 +21,16 @@ class LocalRealResult(
         actionParser = MergingActionMetricsParser(),
         systemParser = SystemMetricsParser(),
         nodeParser = MergingNodeCountParser()
+    )
+
+    fun loadRaw(): RawCohortResult = RawCohortResult.Factory().fullResult(
+        cohort = path.joinToString(separator = "/") { it.toString() },
+        results = File(
+            this::class
+                .java
+                .getResource("real-results/$path")
+                .toURI()
+        ).toPath()
     )
 
     fun loadEdible(): EdibleResult = loadRaw().prepareForJudgement(FullTimeline())

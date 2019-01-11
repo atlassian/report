@@ -26,6 +26,17 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-3.0.0
 
+### Added
+- Expose failure and results in `CohortResult`.
+- Add `RawCohortResult`. Unblock [JPERF-363].
+
+### Deprecated
+- Deprecate `CohortResult` in favour of `RawCohortResult`.
+- Deprecate `FullCohortResult` in favour of `RawCohortResult.Factory`.
+- Deprecate `FailedCohortResult` in favour of `RawCohortResult.Factory`.
+
+[JPERF-363]: https://ecosystem.atlassian.net/browse/JPERF-363
+
 ## [3.0.0] - 2019-01-17
 [3.0.0]: https://bitbucket.org/atlassian/report/branches/compare/release-3.0.0%0Drelease-2.6.0
 

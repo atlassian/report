@@ -6,20 +6,18 @@ import com.atlassian.performance.tools.jiraactions.api.BROWSE_BOARDS
 import com.atlassian.performance.tools.jiraactions.api.SEARCH_WITH_JQL
 import com.atlassian.performance.tools.report.api.ColdCachesTimeline
 import com.atlassian.performance.tools.report.api.TestExecutionTimeline
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.not
-import org.junit.Assert.assertThat
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.nio.file.Paths
 import java.time.Duration.ofMillis
 import java.time.Duration.ofMinutes
 import java.time.Instant
 
-class CohortResultTest {
+class RawCohortResultTest {
 
     @Test
     fun shouldCropColdCache() {
-        val result = LocalRealResult(Paths.get("JIRA-JPT-9107")).load()
+        val result = LocalRealResult(Paths.get("JIRA-JPT-9107")).loadRaw()
 
         val metrics = result.prepareForJudgement(
             ColdCachesTimeline()
@@ -35,12 +33,12 @@ class CohortResultTest {
             result = ActionResult.OK,
             duration = ofMillis(15359)
         ).build()
-        assertThat(actualEarliest, not(equalTo(earlyAndCold)))
+        assertThat(actualEarliest).isNotEqualTo(earlyAndCold)
     }
 
     @Test
     fun shouldCropStragglers() {
-        val result = LocalRealResult(Paths.get("JIRA-JPTS1-23")).load()
+        val result = LocalRealResult(Paths.get("JIRA-JPTS1-23")).loadRaw()
 
         val metrics = result.prepareForJudgement(
             TestExecutionTimeline(ofMinutes(20))
@@ -55,6 +53,6 @@ class CohortResultTest {
             result = ActionResult.ERROR,
             duration = ofMinutes(5) + ofMillis(10)
         ).build()
-        assertThat(actualLatest, not(equalTo(straggler)))
+        assertThat(actualLatest).isNotEqualTo(straggler)
     }
 }

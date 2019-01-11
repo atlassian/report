@@ -8,13 +8,24 @@ import com.atlassian.performance.tools.report.api.parser.MergingNodeCountParser
 import com.atlassian.performance.tools.report.api.parser.SystemMetricsParser
 import java.nio.file.Path
 
+@Deprecated(message = "Use RawCohortResult instead. For easier migration use toRawCohort method.")
 interface CohortResult {
 
     fun prepareForJudgement(
         timeline: Timeline
     ): EdibleResult
+
+    companion object {
+        fun toRawCohortResult(cohortResult: CohortResult): RawCohortResult =
+            when (cohortResult) {
+                is FailedCohortResult -> cohortResult.convert()
+                is FullCohortResult -> cohortResult.convert()
+                else -> throw Exception("Only FailedCohortResult and FullCohortResult are supported!")
+            }
+    }
 }
 
+@Deprecated(message = "Use RawCohortResult.Factory instead.")
 class FailedCohortResult(
     private val cohort: String,
     private val failure: Exception
@@ -25,8 +36,11 @@ class FailedCohortResult(
     ): EdibleResult = EdibleResult.Builder(cohort)
         .failure(failure)
         .build()
+
+    internal fun convert(): RawCohortResult = RawCohortResult.Factory().legacyResult(cohort, failure)
 }
 
+@Deprecated(message = "Use RawCohortResult.Factory instead.")
 class FullCohortResult(
     private val cohort: String,
     private val results: Path,
@@ -37,7 +51,9 @@ class FullCohortResult(
 
     override fun prepareForJudgement(
         timeline: Timeline
-    ): EdibleResult = EdibleResult.Builder(cohort)
+    ): EdibleResult = EdibleResult.Builder(
+        cohort
+    )
         .actionMetrics(timeline.crop(parseActions(actionParser)))
         .systemMetrics(systemParser.parse(results))
         .nodeDistribution(nodeParser.parse(results))
@@ -56,4 +72,6 @@ class FullCohortResult(
             .map { it.resolve("action-metrics.jpt") }
         return parser.parse(vuDirectories)
     }
+
+    internal fun convert(): RawCohortResult = RawCohortResult.Factory().fullResult(cohort, results)
 }
