@@ -1,6 +1,5 @@
 package com.atlassian.performance.tools.report.api
 
-import com.atlassian.performance.tools.io.api.ensureDirectory
 import com.atlassian.performance.tools.jiraactions.api.ActionMetricStatistics
 import com.atlassian.performance.tools.report.api.action.EditedIssuesReport
 import com.atlassian.performance.tools.report.api.action.SearchJqlReport
@@ -59,11 +58,6 @@ class FullReport {
             SearchJqlReport(
                 allMetrics = actionMetrics
             ).report(cohortWorkspace)
-
-            WaterfallHighlightReport().report(
-                metrics = actionMetrics,
-                workspace = TestWorkspace(cohortWorkspace.resolve("WaterfallHighlight").ensureDirectory())
-            )
         }
     }
 }

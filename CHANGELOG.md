@@ -24,10 +24,22 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-2.5.0
+[Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-2.6.0
+
+## [2.6.0] - 2019-01-11
+[2.6.0]: https://bitbucket.org/atlassian/report/branches/compare/release-2.6.0%0Drelease-2.5.0
+
+### Fixed
+- Remove `WaterfallHighlightReport` in order to restore compatibility with `jira-actions:[2.0.0,3.1.0)`.  
+  This is not a breaking change, because the API from 2.5.0 was not stable.  
 
 ## [2.5.0] - 2019-01-10
 [2.5.0]: https://bitbucket.org/atlassian/report/branches/compare/release-2.5.0%0Drelease-2.4.0
+
+### INCOMPATIBILITY BUG
+2.5.0 is botched.
+Don't use new APIs from this version. It's not compatible with `jira-actions:[2.0.0,3.1.0)`. 
+Roll back to 2.4.0 or roll forward to 2.6.0 or later to restore this compatibility.
 
 ### Added
 - Add `WaterfallHighlightReport`.
