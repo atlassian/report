@@ -32,6 +32,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 
 ### Removed
 - Drop support for `jira-actions:2`.
+- Remove Kotlin data-class generated methods from API.
 
 [JPERF-316]: https://ecosystem.atlassian.net/browse/JPERF-316
 

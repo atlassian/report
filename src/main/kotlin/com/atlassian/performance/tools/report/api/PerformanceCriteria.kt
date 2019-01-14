@@ -4,7 +4,7 @@ import com.atlassian.performance.tools.jiraactions.api.ActionType
 import com.atlassian.performance.tools.virtualusers.api.VirtualUserLoad
 import java.time.Duration
 
-data class PerformanceCriteria(
+class PerformanceCriteria(
     val actionCriteria: Map<ActionType<*>, Criteria>,
     val virtualUserLoad: VirtualUserLoad,
     val maxVirtualUsersImbalance: Int = 8,
@@ -20,7 +20,7 @@ data class PerformanceCriteria(
     fun getErrorCriteria() = actionCriteria.mapValues { (_, criteria) -> criteria.errorCriteria }
 }
 
-data class Criteria(
+class Criteria(
     val centerToleranceRatio: Float,
     val maxDispersionDifference: Duration,
     val sampleSizeCriteria: SampleSizeCriteria,
@@ -46,10 +46,10 @@ data class Criteria(
     )
 }
 
-data class SampleSizeCriteria(
+class SampleSizeCriteria(
     val minimumSampleSize: Long
 )
 
-data class ErrorCriteria(
+class ErrorCriteria(
     val acceptableErrorCount: Int
 )

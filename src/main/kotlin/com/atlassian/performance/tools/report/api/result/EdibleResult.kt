@@ -12,10 +12,8 @@ import org.apache.logging.log4j.Logger
  * Holds post-processed performance results ready for analysis.
  *
  * Logs an error if [failure] is present.
- *
- * @deprecated The generated `copy` and `componentN` methods should not be used. It will become a non-data class.
  */
-data class EdibleResult @Deprecated("Use EdibleResult.Builder instead.") constructor(
+class EdibleResult @Deprecated("Use EdibleResult.Builder instead.") constructor(
     val actionMetrics: List<ActionMetric>,
     val systemMetrics: List<SystemMetric>,
     val nodeDistribution: Map<String, Int>,

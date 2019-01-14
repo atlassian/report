@@ -3,7 +3,7 @@ package com.atlassian.performance.tools.report.api.result
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import java.time.Duration
 
-data class DurationData(
+class DurationData(
     val stats: DescriptiveStatistics,
     internal val durationMapping: (Double) -> Duration
 ) {

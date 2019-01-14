@@ -6,7 +6,7 @@ import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
 
-data class Verdict(
+class Verdict(
     private val reports: List<JUnitReport>
 ) {
     private val logger = LogManager.getLogger(this::class.java)
