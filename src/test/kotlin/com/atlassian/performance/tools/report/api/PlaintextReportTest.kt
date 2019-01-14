@@ -13,16 +13,16 @@ import java.util.UUID.randomUUID
 
 class PlaintextReportTest {
     private val actionMetrics = listOf(
-        ActionMetric("a very very very long action name", OK, ofSeconds(1), now(), randomUUID(), null),
-        ActionMetric("view", OK, ofSeconds(1), now(), randomUUID(), null),
-        ActionMetric("view", OK, ofSeconds(2), now(), randomUUID(), null),
-        ActionMetric("view", OK, ofSeconds(3), now(), randomUUID(), null),
-        ActionMetric("view", ERROR, ofSeconds(4), now(), randomUUID(), null),
-        ActionMetric("view", ERROR, ofSeconds(5), now(), randomUUID(), null),
-        ActionMetric("create", ERROR, ofSeconds(1), now(), randomUUID(), null),
-        ActionMetric("create", ERROR, ofSeconds(2), now(), randomUUID(), null),
-        ActionMetric("create", ERROR, ofSeconds(3), now(), randomUUID(), null),
-        ActionMetric("login", OK, ofSeconds(1), now(), randomUUID(), null)
+        ActionMetric.Builder("a very very very long action name", OK, ofSeconds(1), now()).build(),
+        ActionMetric.Builder("view", OK, ofSeconds(1), now()).build(),
+        ActionMetric.Builder("view", OK, ofSeconds(2), now()).build(),
+        ActionMetric.Builder("view", OK, ofSeconds(3), now()).build(),
+        ActionMetric.Builder("view", ERROR, ofSeconds(4), now()).build(),
+        ActionMetric.Builder("view", ERROR, ofSeconds(5), now()).build(),
+        ActionMetric.Builder("create", ERROR, ofSeconds(1), now()).build(),
+        ActionMetric.Builder("create", ERROR, ofSeconds(2), now()).build(),
+        ActionMetric.Builder("create", ERROR, ofSeconds(3), now()).build(),
+        ActionMetric.Builder("login", OK, ofSeconds(1), now()).build()
     )
 
     @Test

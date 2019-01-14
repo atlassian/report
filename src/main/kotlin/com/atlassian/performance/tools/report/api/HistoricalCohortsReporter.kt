@@ -34,21 +34,6 @@ class HistoricalCohortsReporter(
         BROWSE_BOARDS
     )
 
-    @Deprecated(
-        message = "Replace with parameterless call",
-        replaceWith = ReplaceWith(expression = "dump()")
-    )
-    fun report(
-        report: Path
-    ) {
-        DataReporter(
-            output = report.toFile(),
-            labels = actionTypes.map { it.label }
-        ).report(
-            getStats()
-        )
-    }
-
     fun dump() {
         val stats = getStats()
         val labels = actionTypes.map { it.label }

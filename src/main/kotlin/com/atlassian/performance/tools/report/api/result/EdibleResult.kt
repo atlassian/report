@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger
  *
  * Logs an error if [failure] is present.
  */
-class EdibleResult @Deprecated("Use EdibleResult.Builder instead.") constructor(
+class EdibleResult private constructor(
     val actionMetrics: List<ActionMetric>,
     val systemMetrics: List<SystemMetric>,
     val nodeDistribution: Map<String, Int>,
@@ -56,7 +56,6 @@ class EdibleResult @Deprecated("Use EdibleResult.Builder instead.") constructor(
         fun nodeDistribution(nodeDistribution: Map<String, Int>) = apply { this.nodeDistribution = nodeDistribution }
         fun failure(failure: Exception) = apply { this.failure = failure }
 
-        @SuppressWarnings
         fun build() = EdibleResult(
             cohort = cohort,
             actionMetrics = actionMetrics,

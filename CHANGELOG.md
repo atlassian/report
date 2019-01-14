@@ -32,7 +32,8 @@ Dropping a requirement of a major version of a dependency is a new contract.
 
 ### Removed
 - Drop support for `jira-actions:2`.
-- Remove Kotlin data-class generated methods from API.
+- Remove Kotlin data-class generated methods from API for `Verdict`, `DurationData`, `EdibleResult`, `InteractionStats`, `PerformanceCriteria`.
+- Remove all deprecated API: primary constructor of `EdibleResult`, `HistoricalCohortsReporter#report(report: Path)`.
 
 [JPERF-316]: https://ecosystem.atlassian.net/browse/JPERF-316
 

@@ -32,7 +32,7 @@ class StatsMeterTest {
             )
             .build()
 
-        val (cohort, sampleSizes, centers, dispersions, errors) = statsMeter.measure(
+        val stats = statsMeter.measure(
             result = edibleResult,
             centralTendencyMetric = Max(),
             dispersionMetric = Min(),
@@ -41,6 +41,10 @@ class StatsMeterTest {
                 upperTrim = 1.0
             )
         )
+        val sampleSizes = stats.sampleSizes
+        val centers = stats.centers
+        val dispersions = stats.dispersions
+        val errors = stats.errors
 
         assertThat(sampleSizes!![action1]).isEqualTo(3)
         assertThat(sampleSizes[action2]).isEqualTo(3)
@@ -53,13 +57,11 @@ class StatsMeterTest {
     }
 
     private fun createActionMetric(label: String, duration: Duration, result: ActionResult = ActionResult.OK): ActionMetric {
-        return ActionMetric(
+        return ActionMetric.Builder(
             label = label,
             result = result,
             start = Instant.now(),
-            duration = duration,
-            virtualUser = UUID.randomUUID(),
-            observation = null
-        )
+            duration = duration
+        ).build()
     }
 }

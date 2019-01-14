@@ -16,27 +16,24 @@ class ActionMetricsReaderTest {
     @Test
     fun shouldParseStandardDuration() {
         val stats = reader.read(listOf(
-            ActionMetric(
+            ActionMetric.Builder(
                 label = "View Dashboard",
                 result = ActionResult.OK,
                 duration = Duration.ofMillis(400),
-                virtualUser = UUID.randomUUID(),
                 start = now()
-            ),
-            ActionMetric(
+            ).build(),
+            ActionMetric.Builder(
                 label = "View Dashboard",
                 result = ActionResult.ERROR,
                 duration = Duration.ofMillis(2000),
-                virtualUser = UUID.randomUUID(),
                 start = now()
-            ),
-            ActionMetric(
+            ).build(),
+            ActionMetric.Builder(
                 label = "View Dashboard",
                 result = ActionResult.OK,
                 duration = Duration.ofMillis(100),
-                virtualUser = UUID.randomUUID(),
                 start = now()
-            )
+            ).build()
         ))
 
         val maxEditIssueTiming = stats["View Dashboard"]!!.stats.max

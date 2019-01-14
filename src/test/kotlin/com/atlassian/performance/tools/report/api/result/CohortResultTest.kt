@@ -14,7 +14,6 @@ import java.nio.file.Paths
 import java.time.Duration.ofMillis
 import java.time.Duration.ofMinutes
 import java.time.Instant
-import java.util.*
 
 class CohortResultTest {
 
@@ -30,14 +29,12 @@ class CohortResultTest {
             .filter { it.label == BROWSE_BOARDS.label }
             .sortedBy { it.start }
             .first()
-        val earlyAndCold = ActionMetric(
+        val earlyAndCold = ActionMetric.Builder(
             label = BROWSE_BOARDS.label,
             start = Instant.parse("2018-04-27T09:22:00.537Z"),
             result = ActionResult.OK,
-            duration = ofMillis(15359),
-            virtualUser = UUID.fromString("3db7be47-daed-4929-980c-4668e61136b8"),
-            observation = null
-        )
+            duration = ofMillis(15359)
+        ).build()
         assertThat(actualEarliest, not(equalTo(earlyAndCold)))
     }
 
@@ -52,14 +49,12 @@ class CohortResultTest {
         val actualLatest = metrics
             .sortedByDescending { it.start }
             .first()
-        val straggler = ActionMetric(
+        val straggler = ActionMetric.Builder(
             label = SEARCH_WITH_JQL.label,
             start = Instant.parse("2018-04-27T15:12:27.740Z"),
             result = ActionResult.ERROR,
-            duration = ofMinutes(5) + ofMillis(10),
-            virtualUser = UUID.fromString("0844c81e-c860-4b75-abde-ef69a5167a3f"),
-            observation = null
-        )
+            duration = ofMinutes(5) + ofMillis(10)
+        ).build()
         assertThat(actualLatest, not(equalTo(straggler)))
     }
 }

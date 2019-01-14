@@ -103,7 +103,7 @@ class DataReporterTest {
     fun shouldReportPartialCohorts() {
         val stats = listOf(
             stats("1.0.0", "star", "tiny"),
-            stats("2.0.0", "ring", "medium").copy(
+            stats("2.0.0", "ring", "medium").withProperties(
                 sampleSizes = null,
                 centers = null,
                 dispersions = null,
@@ -174,5 +174,18 @@ class DataReporterTest {
             "Browse Projects" to 0,
             "Browse Boards" to 0
         )
+    )
+
+    private fun InteractionStats.withProperties(
+        sampleSizes: Map<String, Long>?,
+        centers: Map<String, Duration>?,
+        dispersions: Map<String, Duration>?,
+        errors: Map<String, Int>?
+    ) = InteractionStats(
+        cohort = cohort,
+        sampleSizes = sampleSizes,
+        centers = centers,
+        dispersions = dispersions,
+        errors = errors
     )
 }
