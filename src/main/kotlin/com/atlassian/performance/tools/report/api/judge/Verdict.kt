@@ -6,6 +6,9 @@ import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
 
+/**
+ * @deprecated The generated `copy` and `componentN` methods should not be used. It will become a non-data class.
+ */
 data class Verdict(
     private val reports: List<JUnitReport>
 ) {

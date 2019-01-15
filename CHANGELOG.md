@@ -26,6 +26,9 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-2.6.0
 
+### Deprecated
+- Deprecate Kotlin data-class generated methods from API for `PerformanceCriteria`, `Verdict`, `DurationData`, `InteractionStats`.
+
 ## [2.6.0] - 2019-01-11
 [2.6.0]: https://bitbucket.org/atlassian/report/branches/compare/release-2.6.0%0Drelease-2.5.0
 

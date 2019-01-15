@@ -4,6 +4,9 @@ import com.atlassian.performance.tools.jiraactions.api.ActionType
 import com.atlassian.performance.tools.virtualusers.api.VirtualUserLoad
 import java.time.Duration
 
+/**
+ * @deprecated The generated `copy` and `componentN` methods should not be used. It will become a non-data class.
+ */
 data class PerformanceCriteria(
     val actionCriteria: Map<ActionType<*>, Criteria>,
     val virtualUserLoad: VirtualUserLoad,
@@ -20,6 +23,9 @@ data class PerformanceCriteria(
     fun getErrorCriteria() = actionCriteria.mapValues { (_, criteria) -> criteria.errorCriteria }
 }
 
+/**
+ * @deprecated The generated `copy` and `componentN` methods should not be used. It will become a non-data class.
+ */
 data class Criteria(
     val centerToleranceRatio: Float,
     val maxDispersionDifference: Duration,
@@ -46,10 +52,16 @@ data class Criteria(
     )
 }
 
+/**
+ * @deprecated The generated `copy` and `componentN` methods should not be used. It will become a non-data class.
+ */
 data class SampleSizeCriteria(
     val minimumSampleSize: Long
 )
 
+/**
+ * @deprecated The generated `copy` and `componentN` methods should not be used. It will become a non-data class.
+ */
 data class ErrorCriteria(
     val acceptableErrorCount: Int
 )
