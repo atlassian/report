@@ -24,7 +24,10 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-2.6.0
+[Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/release%2F2.x.y%0Drelease-2.7.0
+
+## [2.7.0] - 2019-01-16
+[2.7.0]: https://bitbucket.org/atlassian/report/branches/compare/release-2.7.0%0Drelease-2.6.0
 
 ### Deprecated
 - Deprecate Kotlin data-class generated methods from API for `PerformanceCriteria`, `Verdict`, `DurationData`, `InteractionStats`.

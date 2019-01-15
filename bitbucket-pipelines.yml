@@ -18,7 +18,7 @@ pipelines:
         script:
           - bash ./gradlew publish
   branches:
-    master:
+    release/2.x.y:
       - step:
           name: Build project
           caches:
