@@ -24,7 +24,10 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-2.6.0
+[Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-3.0.0
+
+## [3.0.0] - 2019-01-17
+[3.0.0]: https://bitbucket.org/atlassian/report/branches/compare/release-3.0.0%0Drelease-2.6.0
 
 ### Added
 - Add `WaterfallHighlightReport`.
