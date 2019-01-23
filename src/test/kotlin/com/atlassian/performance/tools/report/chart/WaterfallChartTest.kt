@@ -34,4 +34,25 @@ class WaterfallChartTest {
         val expectedOutput = File(javaClass.getResource("expected-waterfall-chart.html").toURI())
         Assertions.assertThat(actualOutput).hasSameContentAs(expectedOutput)
     }
+
+    @Test
+    fun shouldOutputHtmlForRequestsWithoutPath() {
+        //given
+        val output = Paths.get("build/actual-waterfall-chart-without-path.html")
+        val inputMetricsResource = "search-with-jql.jpt"
+        val actionMetrics: List<ActionMetric> = ActionMetricsParser().parse(javaClass.getResourceAsStream(inputMetricsResource))
+        val metric = actionMetrics[0]
+
+        // when
+        WaterfallChart().plot(
+            metric = metric,
+            output = output.toFile()
+        )
+
+        // then
+        println("Waterfall chart is available at $output")
+        val actualOutput = output.toFile()
+        val expectedOutput = File(javaClass.getResource("expected-waterfall-chart-without-path.html").toURI())
+        Assertions.assertThat(actualOutput).hasSameContentAs(expectedOutput)
+    }
 }
