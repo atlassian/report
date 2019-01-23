@@ -24,7 +24,10 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-3.1.0
+[Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-3.1.1
+
+## [3.1.1] - 2019-01-23
+[3.1.1]: https://bitbucket.org/atlassian/report/branches/compare/release-3.1.1%0Drelease-3.1.0
 
 ### Fixed
 - Fix nullability issue in `WaterfallChart`. Resolve [JPERF-365].
