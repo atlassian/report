@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-3.1.0
 
+### Fixed
+- Fix nullability issue in `WaterfallChart`. Resolve [JPERF-365].
+
+[JPERF-365]: https://ecosystem.atlassian.net/browse/JPERF-365
+
 ## [3.1.0] - 2019-01-22
 [3.1.0]: https://bitbucket.org/atlassian/report/branches/compare/release-3.1.0%0Drelease-3.0.0
 

@@ -19,7 +19,7 @@ internal class Utils {
     fun prettyPrint(json: JsonObject): String = JsonStyle().prettyPrint(json)
 
     fun prettyPrint(address: URI): String {
-        val path = address.path
+        val path = address.path ?: address.schemeSpecificPart ?: "unknown"
         val label = path.substring(path.lastIndexOf('/') + 1) + (address.query ?: "")
         val maxLength = 30
         return if (label.length > maxLength) {
