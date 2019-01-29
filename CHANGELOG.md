@@ -26,6 +26,14 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.1.3...master
 
+### Added
+- Add `TableReporter` for HTML table reports. Resolve [JPERF-452].
+
+### Fixed
+- Include HTML table report in `FullReport`. 
+
+[JPERF-452]: https://ecosystem.atlassian.net/browse/JPERF-452
+
 ## [3.1.3] - 2019-03-20
 [3.1.3]: https://github.com/atlassian/report/compare/release-3.1.2...release-3.1.3
 
