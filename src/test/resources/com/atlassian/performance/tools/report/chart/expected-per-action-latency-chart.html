@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JPT latency chart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+</head>
+<body>
+<div>
+<canvas id="chart"></canvas>
+</div>
+<div id="labelButtons">
+</div>
+<script>
+    var labelChooserListener = function (event) {
+        var label = event.target.innerText;
+        var labelIndex = chartData.labels.findIndex(v => v === label);
+
+        if (labelIndex >= 0) {
+            chartData.labels.splice(labelIndex, 1);
+
+            for (var index = 0; index < chartData.datasets.length; ++index) {
+                chartData.datasets[index].data.splice(labelIndex, 1);
+            }
+
+        }
+
+        chart.update();
+        event.target.remove()
+    };
+
+    var buttons = document.getElementById("labelButtons");
+
+    var chartData = 
+{
+    "labels": [
+        "Add Comment",
+        "Browse Boards",
+        "Browse Projects",
+        "Create Issue",
+        "Edit Issue",
+        "Full Add Comment",
+        "Full Create Issue",
+        "Full Edit Issue",
+        "Log In",
+        "Project Summary",
+        "Search with JQL",
+        "View Backlog",
+        "View Board",
+        "View Dashboard",
+        "View Issue"
+    ],
+    "datasets": [
+        {
+            "label": "7.13.1 Data Center",
+            "backgroundColor": [
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630"
+            ],
+            "data": [
+                1280,
+                1196,
+                791,
+                2795,
+                1385,
+                1824,
+                19532,
+                5823,
+                6180,
+                442,
+                6556,
+                3234,
+                2625,
+                563,
+                1003
+            ]
+        },
+        {
+            "label": "7.13.1 Server",
+            "backgroundColor": [
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00"
+            ],
+            "data": [
+                1134,
+                902,
+                775,
+                2577,
+                1253,
+                1645,
+                18902,
+                5286,
+                3573,
+                388,
+                6462,
+                3089,
+                2562,
+                567,
+                895
+            ]
+        },
+        {
+            "label": "7.6.10 Data Center",
+            "backgroundColor": [
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E"
+            ],
+            "data": [
+                1297,
+                1189,
+                764,
+                2728,
+                1386,
+                1882,
+                18833,
+                5632,
+                3973,
+                755,
+                6688,
+                3809,
+                3380,
+                541,
+                1013
+            ]
+        },
+        {
+            "label": "7.6.10 Server",
+            "backgroundColor": [
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9"
+            ],
+            "data": [
+                1125,
+                931,
+                744,
+                2497,
+                1299,
+                1599,
+                18264,
+                5363,
+                1437,
+                661,
+                6436,
+                3636,
+                3294,
+                542,
+                895
+            ]
+        }
+    ]
+};
+
+    chartData.labels.forEach(function(element) {
+        var text = document.createTextNode(element);
+        var button = document.createElement("button");
+        button.append(text);
+        buttons.append(button);
+        button.addEventListener('click', labelChooserListener);
+    });
+
+    var chart = new Chart(document.getElementById("chart").getContext("2d"), {
+        type: 'horizontalBar',
+        data: chartData,
+        options: {
+            title: {
+                display: true,
+                text: "Latency comparison across for different actions"
+            },
+            scales: {
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Duration [ms]"
+                    },
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }],
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Actions"
+                    }
+                }]
+            }
+        }
+    });
+</script>
+</body>
+</html>

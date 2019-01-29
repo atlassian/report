@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JPT latency chart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+</head>
+<body>
+<div>
+<canvas id="chart"></canvas>
+</div>
+<div id="labelButtons">
+</div>
+<script>
+    var labelChooserListener = function (event) {
+        var label = event.target.innerText;
+        var labelIndex = chartData.labels.findIndex(v => v === label);
+
+        if (labelIndex >= 0) {
+            chartData.labels.splice(labelIndex, 1);
+
+            for (var index = 0; index < chartData.datasets.length; ++index) {
+                chartData.datasets[index].data.splice(labelIndex, 1);
+            }
+
+        }
+
+        chart.update();
+        event.target.remove()
+    };
+
+    var buttons = document.getElementById("labelButtons");
+
+    var chartData = 
+{
+    "labels": [
+        "1.3M attachments",
+        "1M issues",
+        "200k users and 45k groups",
+        "2800 custom fields",
+        "2900 boards",
+        "2M issues",
+        "3000 projects",
+        "340 security levels and 400 permissions",
+        "5.8M comments",
+        "900 workflows"
+    ],
+    "datasets": [
+        {
+            "label": "7.13.1 Data Center",
+            "backgroundColor": [
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630",
+                "#FF5630"
+            ],
+            "data": [
+                3467,
+                3294,
+                3534,
+                5161,
+                3466,
+                3755,
+                3732,
+                3275,
+                3544,
+                3593
+            ]
+        },
+        {
+            "label": "7.13.1 Server",
+            "backgroundColor": [
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00",
+                "#FFAB00"
+            ],
+            "data": [
+                3054,
+                2851,
+                3237,
+                4678,
+                3313,
+                3323,
+                3227,
+                3196,
+                3252,
+                3208
+            ]
+        },
+        {
+            "label": "7.6.10 Data Center",
+            "backgroundColor": [
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E",
+                "#36B37E"
+            ],
+            "data": [
+                3353,
+                3052,
+                3451,
+                4904,
+                3670,
+                3645,
+                3458,
+                3383,
+                3571,
+                3427
+            ]
+        },
+        {
+            "label": "7.6.10 Server",
+            "backgroundColor": [
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9",
+                "#00B8D9"
+            ],
+            "data": [
+                3017,
+                2740,
+                3091,
+                4604,
+                3194,
+                3307,
+                3095,
+                3117,
+                3162,
+                3155
+            ]
+        }
+    ]
+};
+
+    chartData.labels.forEach(function(element) {
+        var text = document.createTextNode(element);
+        var button = document.createElement("button");
+        button.append(text);
+        buttons.append(button);
+        button.addEventListener('click', labelChooserListener);
+    });
+
+    var chart = new Chart(document.getElementById("chart").getContext("2d"), {
+        type: 'horizontalBar',
+        data: chartData,
+        options: {
+            title: {
+                display: true,
+                text: "Latency comparison across for different actions"
+            },
+            scales: {
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Duration [ms]"
+                    },
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }],
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Actions"
+                    }
+                }]
+            }
+        }
+    });
+</script>
+</body>
+</html>
