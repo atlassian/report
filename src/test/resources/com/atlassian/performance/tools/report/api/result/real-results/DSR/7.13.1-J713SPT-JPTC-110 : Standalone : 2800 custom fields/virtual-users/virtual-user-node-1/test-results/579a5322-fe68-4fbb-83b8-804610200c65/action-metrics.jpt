@@ -1,0 +1,284 @@
+{"label":"Log In","result":"OK","duration":"PT3.994S","start":"2018-12-20T11:42:31.689Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT12.401S","start":"2018-12-20T11:42:35.731Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"resolved is not empty order by description","issues":50,"totalResults":731328}}
+{"label":"View Issue","result":"ERROR","duration":"PT10.076S","start":"2018-12-20T11:42:49.382Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT18.234S","start":"2018-12-20T11:43:03.291Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"text ~ \"a*\" order by summary","issues":50,"totalResults":998632}}
+{"label":"View Issue","result":"OK","duration":"PT0.956S","start":"2018-12-20T11:43:24.060Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.523S","start":"2018-12-20T11:43:25.156Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.794S","start":"2018-12-20T11:43:25.679Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.952S","start":"2018-12-20T11:43:26.553Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT2.338S","start":"2018-12-20T11:43:27.595Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.895S","start":"2018-12-20T11:43:30.045Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.775S","start":"2018-12-20T11:43:31.057Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT3.324S","start":"2018-12-20T11:43:31.904Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"assignee = admin order by project","issues":50,"totalResults":1000012}}
+{"label":"View Dashboard","result":"OK","duration":"PT0.451S","start":"2018-12-20T11:43:36.489Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.891S","start":"2018-12-20T11:43:36.941Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.529S","start":"2018-12-20T11:43:37.895Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.834S","start":"2018-12-20T11:43:38.425Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Full Edit Issue","result":"ERROR","duration":"PT5.449S","start":"2018-12-20T11:43:39.356Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT15.839S","start":"2018-12-20T11:43:44.806Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"reporter was admin order by description","issues":50,"totalResults":1000023}}
+{"label":"View Issue","result":"OK","duration":"PT0.949S","start":"2018-12-20T11:44:01.951Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.699S","start":"2018-12-20T11:44:02.994Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.754S","start":"2018-12-20T11:44:03.762Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.789S","start":"2018-12-20T11:44:04.577Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.692S","start":"2018-12-20T11:44:05.460Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT9.809S","start":"2018-12-20T11:44:06.299Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"reporter was admin order by description","issues":50,"totalResults":1000025}}
+{"label":"Search with JQL","result":"OK","duration":"PT2.229S","start":"2018-12-20T11:44:17.471Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"project = SENS order by status","issues":50,"totalResults":666}}
+{"label":"Edit Issue","result":"OK","duration":"PT1.84S","start":"2018-12-20T11:44:29.842Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issueKey":"SENS-186"}}
+{"label":"Full Edit Issue","result":"OK","duration":"PT10.47S","start":"2018-12-20T11:44:21.212Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT11.432S","start":"2018-12-20T11:44:31.682Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"reporter was admin order by description","issues":50,"totalResults":1000029}}
+{"label":"View Issue","result":"OK","duration":"PT0.994S","start":"2018-12-20T11:44:44.501Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.458S","start":"2018-12-20T11:44:45.568Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.744S","start":"2018-12-20T11:44:46.027Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.718S","start":"2018-12-20T11:44:46.833Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.867S","start":"2018-12-20T11:44:47.620Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.822S","start":"2018-12-20T11:44:48.544Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT2.16S","start":"2018-12-20T11:44:49.438Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"project = CCIS and assignee = admin order by reporter","issues":50,"totalResults":666}}
+{"label":"Search with JQL","result":"OK","duration":"PT5.288S","start":"2018-12-20T11:44:59.039Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"text ~ \"Greenland\" order by key","issues":50,"totalResults":4787}}
+{"label":"View Issue","result":"OK","duration":"PT1.116S","start":"2018-12-20T11:45:11.861Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.864S","start":"2018-12-20T11:45:13.087Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT23.371S","start":"2018-12-20T11:45:14.029Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"text ~ \"a*\" order by summary","issues":50,"totalResults":998632}}
+{"label":"View Issue","result":"OK","duration":"PT0.773S","start":"2018-12-20T11:45:39.952Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Browse Projects","result":"OK","duration":"PT0.799S","start":"2018-12-20T11:45:40.806Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.846S","start":"2018-12-20T11:45:43.061Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.771S","start":"2018-12-20T11:45:43.961Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.433S","start":"2018-12-20T11:45:44.802Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Project Summary","result":"OK","duration":"PT0.301S","start":"2018-12-20T11:45:45.235Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Add Comment","result":"OK","duration":"PT1.105S","start":"2018-12-20T11:45:46.206Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Full Add Comment","result":"OK","duration":"PT1.775S","start":"2018-12-20T11:45:45.537Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT4.4S","start":"2018-12-20T11:45:47.312Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"assignee = admin order by project","issues":50,"totalResults":1000021}}
+{"label":"View Dashboard","result":"OK","duration":"PT0.452S","start":"2018-12-20T11:45:53.062Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.798S","start":"2018-12-20T11:45:53.515Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.925S","start":"2018-12-20T11:45:54.392Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.701S","start":"2018-12-20T11:45:55.375Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.901S","start":"2018-12-20T11:45:56.144Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT21.926S","start":"2018-12-20T11:45:57.124Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"text ~ \"a*\" order by summary","issues":50,"totalResults":998632}}
+{"label":"View Issue","result":"OK","duration":"PT0.97S","start":"2018-12-20T11:46:21.956Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.792S","start":"2018-12-20T11:46:23.010Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Browse Boards","result":"OK","duration":"PT0.86S","start":"2018-12-20T11:46:23.871Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT4.653S","start":"2018-12-20T11:46:25.232Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"text ~ \"Greenland\" order by key","issues":50,"totalResults":4787}}
+{"label":"View Backlog","result":"OK","duration":"PT3.286S","start":"2018-12-20T11:46:37.096Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":170}}
+{"label":"Full Edit Issue","result":"ERROR","duration":"PT5.678S","start":"2018-12-20T11:46:41.337Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT8.116S","start":"2018-12-20T11:46:47.018Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.85S","start":"2018-12-20T11:46:55.135Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Board","result":"OK","duration":"PT0.76S","start":"2018-12-20T11:46:56.075Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":0}}
+{"label":"View Issue","result":"OK","duration":"PT0.869S","start":"2018-12-20T11:46:56.866Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Browse Projects","result":"OK","duration":"PT0.814S","start":"2018-12-20T11:46:57.814Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.978S","start":"2018-12-20T11:47:00.191Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT3.716S","start":"2018-12-20T11:47:01.233Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"assignee = admin order by project","issues":50,"totalResults":1000027}}
+{"label":"View Backlog","result":"OK","duration":"PT3.183S","start":"2018-12-20T11:47:06.377Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":184}}
+{"label":"View Issue","result":"OK","duration":"PT0.979S","start":"2018-12-20T11:47:10.459Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.777S","start":"2018-12-20T11:47:11.528Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Backlog","result":"OK","duration":"PT2.703S","start":"2018-12-20T11:47:12.367Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":170}}
+{"label":"View Backlog","result":"OK","duration":"PT2.716S","start":"2018-12-20T11:47:15.975Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":194}}
+{"label":"View Board","result":"OK","duration":"PT3.458S","start":"2018-12-20T11:47:19.629Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":376}}
+{"label":"View Issue","result":"OK","duration":"PT0.866S","start":"2018-12-20T11:47:25.206Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.867S","start":"2018-12-20T11:47:26.150Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT2.176S","start":"2018-12-20T11:47:27.080Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"project = CCIS and assignee = admin order by reporter","issues":50,"totalResults":666}}
+{"label":"View Issue","result":"OK","duration":"PT0.765S","start":"2018-12-20T11:47:36.851Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Browse Projects","result":"OK","duration":"PT0.723S","start":"2018-12-20T11:47:37.736Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.983S","start":"2018-12-20T11:47:40.073Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.507S","start":"2018-12-20T11:47:41.123Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT4.016S","start":"2018-12-20T11:47:41.631Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"assignee = admin order by project","issues":50,"totalResults":1000032}}
+{"label":"Search with JQL","result":"OK","duration":"PT1.97S","start":"2018-12-20T11:47:46.930Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"project = CCIS and assignee = admin order by reporter","issues":50,"totalResults":666}}
+{"label":"View Issue","result":"OK","duration":"PT0.826S","start":"2018-12-20T11:47:56.263Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.872S","start":"2018-12-20T11:47:57.163Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.759S","start":"2018-12-20T11:47:58.101Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Project Summary","result":"OK","duration":"PT0.494S","start":"2018-12-20T11:47:58.984Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT4.906S","start":"2018-12-20T11:47:59.478Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"text ~ \"Greenland\" order by key","issues":50,"totalResults":4787}}
+{"label":"Project Summary","result":"OK","duration":"PT0.247S","start":"2018-12-20T11:48:12.037Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Board","result":"OK","duration":"PT4.576S","start":"2018-12-20T11:48:12.284Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":380}}
+{"label":"View Issue","result":"OK","duration":"PT0.811S","start":"2018-12-20T11:48:19.095Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.869S","start":"2018-12-20T11:48:19.977Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Browse Boards","result":"OK","duration":"PT0.773S","start":"2018-12-20T11:48:20.919Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Backlog","result":"OK","duration":"PT2.563S","start":"2018-12-20T11:48:22.160Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":182}}
+{"label":"View Issue","result":"OK","duration":"PT0.839S","start":"2018-12-20T11:48:25.570Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.813S","start":"2018-12-20T11:48:26.527Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.427S","start":"2018-12-20T11:48:27.405Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Create Issue","result":"OK","duration":"PT6.101S","start":"2018-12-20T11:48:56.769Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Full Create Issue","result":"OK","duration":"PT35.465S","start":"2018-12-20T11:48:27.405Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Board","result":"OK","duration":"PT4.071S","start":"2018-12-20T11:49:02.870Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":368}}
+{"label":"Search with JQL","result":"OK","duration":"PT4.017S","start":"2018-12-20T11:49:09.094Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"assignee = admin order by project","issues":50,"totalResults":1000037}}
+{"label":"View Issue","result":"OK","duration":"PT0.874S","start":"2018-12-20T11:49:14.536Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Browse Projects","result":"OK","duration":"PT0.706S","start":"2018-12-20T11:49:15.503Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.691S","start":"2018-12-20T11:49:17.866Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Browse Projects","result":"OK","duration":"PT0.66S","start":"2018-12-20T11:49:18.614Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.769S","start":"2018-12-20T11:49:20.874Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.454S","start":"2018-12-20T11:49:21.727Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Backlog","result":"OK","duration":"PT2.693S","start":"2018-12-20T11:49:22.181Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":182}}
+{"label":"View Issue","result":"OK","duration":"PT0.89S","start":"2018-12-20T11:49:25.795Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Edit Issue","result":"OK","duration":"PT0.994S","start":"2018-12-20T11:49:28.032Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issueKey":"SP-17"}}
+{"label":"Full Edit Issue","result":"OK","duration":"PT2.291S","start":"2018-12-20T11:49:26.736Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Add Comment","result":"OK","duration":"PT1.014S","start":"2018-12-20T11:49:29.458Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Full Add Comment","result":"OK","duration":"PT1.445S","start":"2018-12-20T11:49:29.027Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Backlog","result":"OK","duration":"PT2.803S","start":"2018-12-20T11:49:30.473Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":170}}
+{"label":"View Dashboard","result":"OK","duration":"PT0.741S","start":"2018-12-20T11:49:34.172Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Create Issue","result":"OK","duration":"PT5.232S","start":"2018-12-20T11:50:05.978Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Full Create Issue","result":"OK","duration":"PT37.038S","start":"2018-12-20T11:49:34.172Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT1.041S","start":"2018-12-20T11:50:11.210Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Board","result":"OK","duration":"PT3.235S","start":"2018-12-20T11:50:12.251Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":368}}
+{"label":"View Issue","result":"OK","duration":"PT1.042S","start":"2018-12-20T11:50:17.695Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.785S","start":"2018-12-20T11:50:18.819Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.756S","start":"2018-12-20T11:50:19.665Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT21.351S","start":"2018-12-20T11:50:20.485Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"text ~ \"a*\" order by summary","issues":50,"totalResults":998629}}
+{"label":"View Issue","result":"OK","duration":"PT0.803S","start":"2018-12-20T11:50:44.938Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.844S","start":"2018-12-20T11:50:45.865Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Board","result":"OK","duration":"PT3.442S","start":"2018-12-20T11:50:46.769Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":380}}
+{"label":"Full Edit Issue","result":"ERROR","duration":"PT7.465S","start":"2018-12-20T11:50:52.593Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Project Summary","result":"OK","duration":"PT5.441S","start":"2018-12-20T11:51:00.061Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Backlog","result":"OK","duration":"PT2.918S","start":"2018-12-20T11:51:05.503Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":175}}
+{"label":"Search with JQL","result":"OK","duration":"PT4.352S","start":"2018-12-20T11:51:09.662Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"text ~ \"Greenland\" order by key","issues":50,"totalResults":4787}}
+{"label":"View Issue","result":"OK","duration":"PT0.727S","start":"2018-12-20T11:51:22.039Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Board","result":"OK","duration":"PT0.519S","start":"2018-12-20T11:51:22.843Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":0}}
+{"label":"Search with JQL","result":"OK","duration":"PT4.697S","start":"2018-12-20T11:51:23.374Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"text ~ \"Greenland\" order by key","issues":50,"totalResults":4787}}
+{"label":"View Issue","result":"OK","duration":"PT1.937S","start":"2018-12-20T11:51:35.622Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.531S","start":"2018-12-20T11:51:37.635Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Create Issue","result":"OK","duration":"PT4.79S","start":"2018-12-20T11:52:09.014Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Full Create Issue","result":"OK","duration":"PT36.17S","start":"2018-12-20T11:51:37.635Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Backlog","result":"OK","duration":"PT3.358S","start":"2018-12-20T11:52:13.805Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":198}}
+{"label":"View Dashboard","result":"OK","duration":"PT0.626S","start":"2018-12-20T11:52:18.675Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.808S","start":"2018-12-20T11:52:19.301Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.893S","start":"2018-12-20T11:52:20.208Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.775S","start":"2018-12-20T11:52:21.162Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.735S","start":"2018-12-20T11:52:22.019Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.71S","start":"2018-12-20T11:52:22.812Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT3.531S","start":"2018-12-20T11:52:23.616Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"resolved is not empty order by description","issues":50,"totalResults":731328}}
+{"label":"View Dashboard","result":"OK","duration":"PT0.532S","start":"2018-12-20T11:52:29.582Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.795S","start":"2018-12-20T11:52:30.114Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.436S","start":"2018-12-20T11:52:31.009Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.762S","start":"2018-12-20T11:52:31.445Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Edit Issue","result":"OK","duration":"PT0.874S","start":"2018-12-20T11:52:33.645Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issueKey":"SP-1"}}
+{"label":"Full Edit Issue","result":"OK","duration":"PT2.199S","start":"2018-12-20T11:52:32.320Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.509S","start":"2018-12-20T11:52:34.519Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Create Issue","result":"OK","duration":"PT5.092S","start":"2018-12-20T11:53:05.290Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Full Create Issue","result":"OK","duration":"PT35.863S","start":"2018-12-20T11:52:34.519Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT21.513S","start":"2018-12-20T11:53:10.382Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"text ~ \"a*\" order by summary","issues":50,"totalResults":998629}}
+{"label":"View Issue","result":"OK","duration":"PT0.911S","start":"2018-12-20T11:53:34.871Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.827S","start":"2018-12-20T11:53:35.856Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.874S","start":"2018-12-20T11:53:36.747Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.711S","start":"2018-12-20T11:53:37.689Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.729S","start":"2018-12-20T11:53:38.470Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT11.297S","start":"2018-12-20T11:53:39.254Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"reporter was admin order by description","issues":50,"totalResults":1000064}}
+{"label":"Search with JQL","result":"OK","duration":"PT3.406S","start":"2018-12-20T11:53:52.007Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"resolved is not empty order by description","issues":50,"totalResults":731328}}
+{"label":"Project Summary","result":"OK","duration":"PT0.307S","start":"2018-12-20T11:53:57.844Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Full Edit Issue","result":"ERROR","duration":"PT5.041S","start":"2018-12-20T11:53:58.151Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT9.564S","start":"2018-12-20T11:54:03.194Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"resolved is not empty order by description","issues":50,"totalResults":731328}}
+{"label":"View Board","result":"OK","duration":"PT0.602S","start":"2018-12-20T11:54:15.359Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":0}}
+{"label":"View Issue","result":"OK","duration":"PT0.943S","start":"2018-12-20T11:54:15.984Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.499S","start":"2018-12-20T11:54:17.009Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Board","result":"OK","duration":"PT0.454S","start":"2018-12-20T11:54:17.509Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":0}}
+{"label":"View Issue","result":"OK","duration":"PT0.99S","start":"2018-12-20T11:54:18.003Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.809S","start":"2018-12-20T11:54:19.088Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.687S","start":"2018-12-20T11:54:19.959Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.593S","start":"2018-12-20T11:54:20.712Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Create Issue","result":"OK","duration":"PT4.277S","start":"2018-12-20T11:54:52.573Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Full Create Issue","result":"OK","duration":"PT36.138S","start":"2018-12-20T11:54:20.712Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Board","result":"OK","duration":"PT1.083S","start":"2018-12-20T11:54:56.850Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":0}}
+{"label":"View Issue","result":"OK","duration":"PT1.058S","start":"2018-12-20T11:54:57.945Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT20.963S","start":"2018-12-20T11:54:59.100Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"text ~ \"a*\" order by summary","issues":50,"totalResults":998629}}
+{"label":"Search with JQL","result":"OK","duration":"PT3.883S","start":"2018-12-20T11:55:27.466Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"assignee = admin order by project","issues":50,"totalResults":1000063}}
+{"label":"View Issue","result":"OK","duration":"PT0.819S","start":"2018-12-20T11:55:32.831Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.819S","start":"2018-12-20T11:55:33.773Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT2.046S","start":"2018-12-20T11:55:34.650Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"project = CCIS and assignee = admin order by reporter","issues":50,"totalResults":666}}
+{"label":"View Issue","result":"OK","duration":"PT0.888S","start":"2018-12-20T11:55:44.265Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Browse Projects","result":"OK","duration":"PT0.717S","start":"2018-12-20T11:55:45.230Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.712S","start":"2018-12-20T11:55:47.658Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.732S","start":"2018-12-20T11:55:48.479Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.507S","start":"2018-12-20T11:55:49.332Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Backlog","result":"OK","duration":"PT2.623S","start":"2018-12-20T11:55:49.839Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":183}}
+{"label":"Project Summary","result":"OK","duration":"PT0.381S","start":"2018-12-20T11:55:53.453Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Add Comment","result":"OK","duration":"PT1.178S","start":"2018-12-20T11:55:54.341Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Full Add Comment","result":"OK","duration":"PT1.686S","start":"2018-12-20T11:55:53.834Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT2.158S","start":"2018-12-20T11:55:55.520Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"project = SENS order by status","issues":50,"totalResults":666}}
+{"label":"View Dashboard","result":"OK","duration":"PT0.502S","start":"2018-12-20T11:55:59.068Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.912S","start":"2018-12-20T11:55:59.571Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.929S","start":"2018-12-20T11:56:00.581Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.802S","start":"2018-12-20T11:56:01.582Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.677S","start":"2018-12-20T11:56:02.462Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT2.078S","start":"2018-12-20T11:56:03.217Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"project = CCIS and assignee = admin order by reporter","issues":50,"totalResults":666}}
+{"label":"View Issue","result":"OK","duration":"PT0.91S","start":"2018-12-20T11:56:13.175Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.976S","start":"2018-12-20T11:56:14.159Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Browse Boards","result":"OK","duration":"PT0.68S","start":"2018-12-20T11:56:15.203Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT19.941S","start":"2018-12-20T11:56:16.399Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"text ~ \"a*\" order by summary","issues":50,"totalResults":998629}}
+{"label":"View Backlog","result":"OK","duration":"PT2.533S","start":"2018-12-20T11:56:39.497Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":201}}
+{"label":"Full Edit Issue","result":"ERROR","duration":"PT5.227S","start":"2018-12-20T11:56:43.094Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT6.211S","start":"2018-12-20T11:56:48.323Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.912S","start":"2018-12-20T11:56:54.534Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Board","result":"OK","duration":"PT0.574S","start":"2018-12-20T11:56:55.524Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":0}}
+{"label":"View Issue","result":"OK","duration":"PT0.916S","start":"2018-12-20T11:56:56.113Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Browse Projects","result":"OK","duration":"PT0.64S","start":"2018-12-20T11:56:57.084Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.909S","start":"2018-12-20T11:56:59.398Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT2.075S","start":"2018-12-20T11:57:00.362Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"project = CCIS and assignee = admin order by reporter","issues":50,"totalResults":666}}
+{"label":"View Backlog","result":"OK","duration":"PT2.608S","start":"2018-12-20T11:57:10.331Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":187}}
+{"label":"View Issue","result":"OK","duration":"PT1.038S","start":"2018-12-20T11:57:14.274Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.781S","start":"2018-12-20T11:57:15.391Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Backlog","result":"OK","duration":"PT2.669S","start":"2018-12-20T11:57:16.226Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":191}}
+{"label":"View Backlog","result":"OK","duration":"PT2.798S","start":"2018-12-20T11:57:20.035Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":190}}
+{"label":"View Board","result":"OK","duration":"PT0.448S","start":"2018-12-20T11:57:23.791Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":0}}
+{"label":"View Issue","result":"OK","duration":"PT0.723S","start":"2018-12-20T11:57:24.260Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.751S","start":"2018-12-20T11:57:25.096Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT11.512S","start":"2018-12-20T11:57:25.927Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"reporter was admin order by description","issues":50,"totalResults":1000079}}
+{"label":"View Issue","result":"OK","duration":"PT1.781S","start":"2018-12-20T11:57:38.827Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Browse Projects","result":"OK","duration":"PT0.677S","start":"2018-12-20T11:57:40.699Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.863S","start":"2018-12-20T11:57:42.973Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.504S","start":"2018-12-20T11:57:43.917Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT4.322S","start":"2018-12-20T11:57:44.422Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"text ~ \"Greenland\" order by key","issues":50,"totalResults":4787}}
+{"label":"Search with JQL","result":"OK","duration":"PT20.889S","start":"2018-12-20T11:57:56.053Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"text ~ \"a*\" order by summary","issues":50,"totalResults":998629}}
+{"label":"View Issue","result":"OK","duration":"PT0.876S","start":"2018-12-20T11:58:19.857Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.958S","start":"2018-12-20T11:58:20.804Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.964S","start":"2018-12-20T11:58:21.815Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Project Summary","result":"OK","duration":"PT0.266S","start":"2018-12-20T11:58:22.849Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT3.346S","start":"2018-12-20T11:58:23.116Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"resolved is not empty order by description","issues":50,"totalResults":731328}}
+{"label":"Project Summary","result":"OK","duration":"PT0.27S","start":"2018-12-20T11:58:29.148Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Board","result":"OK","duration":"PT3.429S","start":"2018-12-20T11:58:29.418Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":368}}
+{"label":"View Issue","result":"OK","duration":"PT0.824S","start":"2018-12-20T11:58:35.025Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.862S","start":"2018-12-20T11:58:35.920Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Browse Boards","result":"OK","duration":"PT0.681S","start":"2018-12-20T11:58:36.853Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Backlog","result":"OK","duration":"PT2.674S","start":"2018-12-20T11:58:38.098Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":190}}
+{"label":"View Issue","result":"OK","duration":"PT0.863S","start":"2018-12-20T11:58:41.786Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT1.13S","start":"2018-12-20T11:58:42.740Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.566S","start":"2018-12-20T11:58:43.935Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Create Issue","result":"OK","duration":"PT4.833S","start":"2018-12-20T11:59:14.610Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Full Create Issue","result":"OK","duration":"PT35.508S","start":"2018-12-20T11:58:43.935Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Board","result":"OK","duration":"PT0.852S","start":"2018-12-20T11:59:19.444Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":0}}
+{"label":"Search with JQL","result":"OK","duration":"PT3.693S","start":"2018-12-20T11:59:20.311Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"resolved is not empty order by description","issues":50,"totalResults":731328}}
+{"label":"View Issue","result":"OK","duration":"PT0.85S","start":"2018-12-20T11:59:26.388Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Browse Projects","result":"OK","duration":"PT0.81S","start":"2018-12-20T11:59:27.322Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.88S","start":"2018-12-20T11:59:29.594Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Browse Projects","result":"OK","duration":"PT0.738S","start":"2018-12-20T11:59:30.549Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.974S","start":"2018-12-20T11:59:32.865Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.499S","start":"2018-12-20T11:59:33.902Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Backlog","result":"OK","duration":"PT2.687S","start":"2018-12-20T11:59:34.401Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":171}}
+{"label":"View Issue","result":"OK","duration":"PT0.902S","start":"2018-12-20T11:59:37.977Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Full Edit Issue","result":"ERROR","duration":"PT5.565S","start":"2018-12-20T11:59:38.961Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Full Add Comment","result":"ERROR","duration":"PT7.263S","start":"2018-12-20T11:59:44.527Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Backlog","result":"OK","duration":"PT2.864S","start":"2018-12-20T11:59:51.792Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":170}}
+{"label":"View Dashboard","result":"OK","duration":"PT0.663S","start":"2018-12-20T11:59:55.854Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Full Create Issue","result":"ERROR","duration":"PT39.632S","start":"2018-12-20T11:59:55.854Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.674S","start":"2018-12-20T12:00:35.487Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Board","result":"OK","duration":"PT3.184S","start":"2018-12-20T12:00:36.161Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":368}}
+{"label":"View Issue","result":"OK","duration":"PT1.044S","start":"2018-12-20T12:00:41.569Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.886S","start":"2018-12-20T12:00:42.700Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.869S","start":"2018-12-20T12:00:43.648Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"OK","duration":"PT3.756S","start":"2018-12-20T12:00:44.583Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"assignee = admin order by project","issues":50,"totalResults":1000086}}
+{"label":"View Issue","result":"OK","duration":"PT0.953S","start":"2018-12-20T12:00:49.702Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.665S","start":"2018-12-20T12:00:50.713Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Board","result":"OK","duration":"PT0.519S","start":"2018-12-20T12:00:51.439Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":0}}
+{"label":"Full Edit Issue","result":"ERROR","duration":"PT5.245S","start":"2018-12-20T12:00:51.971Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Project Summary","result":"ERROR","duration":"PT7.383S","start":"2018-12-20T12:00:57.218Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Backlog","result":"OK","duration":"PT10.669S","start":"2018-12-20T12:01:04.602Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":195}}
+{"label":"Search with JQL","result":"OK","duration":"PT3.963S","start":"2018-12-20T12:01:16.634Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"assignee = admin order by project","issues":50,"totalResults":1000087}}
+{"label":"View Issue","result":"OK","duration":"PT0.927S","start":"2018-12-20T12:01:21.923Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Board","result":"OK","duration":"PT0.538S","start":"2018-12-20T12:01:22.934Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":0}}
+{"label":"Search with JQL","result":"OK","duration":"PT3.792S","start":"2018-12-20T12:01:23.484Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"jql":"resolved is not empty order by description","issues":50,"totalResults":731328}}
+{"label":"View Issue","result":"OK","duration":"PT0.855S","start":"2018-12-20T12:01:29.984Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Dashboard","result":"OK","duration":"PT0.525S","start":"2018-12-20T12:01:30.930Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Create Issue","result":"OK","duration":"PT4.898S","start":"2018-12-20T12:02:00.710Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Full Create Issue","result":"OK","duration":"PT34.678S","start":"2018-12-20T12:01:30.930Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Backlog","result":"OK","duration":"PT3.328S","start":"2018-12-20T12:02:05.608Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65","observation":{"issues":191}}
+{"label":"View Dashboard","result":"OK","duration":"PT0.574S","start":"2018-12-20T12:02:10.581Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.808S","start":"2018-12-20T12:02:11.156Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.916S","start":"2018-12-20T12:02:12.048Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.66S","start":"2018-12-20T12:02:13.027Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.743S","start":"2018-12-20T12:02:13.763Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"View Issue","result":"OK","duration":"PT0.787S","start":"2018-12-20T12:02:14.576Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
+{"label":"Search with JQL","result":"INTERRUPTED","duration":"PT15.837S","start":"2018-12-20T12:02:15.458Z","virtualUser":"579a5322-fe68-4fbb-83b8-804610200c65"}
