@@ -27,6 +27,11 @@ class FullReport {
             labels = labels
         ).report(stats)
 
+        TableReporter(
+            output = workspace.directory.resolve("summary-per-cohort.html").toFile(),
+            labels = labels
+        ).report(stats)
+
         MeanLatencyChart().plot(
             stats = stats,
             labels = labels,

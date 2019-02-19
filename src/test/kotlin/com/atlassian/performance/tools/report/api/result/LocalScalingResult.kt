@@ -32,6 +32,7 @@ internal class LocalScalingResult(
             .toURI()
     ).listDirectories()
         .map { loadEdible(it) }
+        .sortedBy { it.cohort }
 
     private fun loadEdible(
         cohortDirectory: File
