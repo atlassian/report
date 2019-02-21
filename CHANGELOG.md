@@ -24,10 +24,10 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://bitbucket.org/atlassian/report/branches/compare/master%0Drelease-3.1.1
+[Unreleased]: https://github.com/atlassian/report/compare/release-3.1.1...master
 
 ## [3.1.1] - 2019-01-23
-[3.1.1]: https://bitbucket.org/atlassian/report/branches/compare/release-3.1.1%0Drelease-3.1.0
+[3.1.1]: https://github.com/atlassian/report/compare/release-3.1.0...release-3.1.1
 
 ### Fixed
 - Fix nullability issue in `WaterfallChart`. Resolve [JPERF-365].
@@ -35,7 +35,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 [JPERF-365]: https://ecosystem.atlassian.net/browse/JPERF-365
 
 ## [3.1.0] - 2019-01-22
-[3.1.0]: https://bitbucket.org/atlassian/report/branches/compare/release-3.1.0%0Drelease-3.0.0
+[3.1.0]: https://github.com/atlassian/report/compare/release-3.0.0...release-3.1.0
 
 ### Added
 - Expose failure and results in `CohortResult`.
@@ -49,7 +49,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 [JPERF-363]: https://ecosystem.atlassian.net/browse/JPERF-363
 
 ## [3.0.0] - 2019-01-17
-[3.0.0]: https://bitbucket.org/atlassian/report/branches/compare/release-3.0.0%0Drelease-2.6.0
+[3.0.0]: https://github.com/atlassian/report/compare/release-2.6.0...release-3.0.0
 
 ### Added
 - Add `WaterfallHighlightReport`.
@@ -63,14 +63,14 @@ Dropping a requirement of a major version of a dependency is a new contract.
 [JPERF-316]: https://ecosystem.atlassian.net/browse/JPERF-316
 
 ## [2.6.0] - 2019-01-11
-[2.6.0]: https://bitbucket.org/atlassian/report/branches/compare/release-2.6.0%0Drelease-2.5.0
+[2.6.0]: https://github.com/atlassian/report/compare/release-2.5.0...release-2.6.0
 
 ### Fixed
 - Remove `WaterfallHighlightReport` in order to restore compatibility with `jira-actions:[2.0.0,3.1.0)`.  
   This is not a breaking change, because the API from 2.5.0 was not stable.  
 
 ## [2.5.0] - 2019-01-10
-[2.5.0]: https://bitbucket.org/atlassian/report/branches/compare/release-2.5.0%0Drelease-2.4.0
+[2.5.0]: https://github.com/atlassian/report/compare/release-2.4.0...release-2.5.0
 
 ### INCOMPATIBILITY BUG
 2.5.0 is botched.
@@ -84,7 +84,7 @@ Roll back to 2.4.0 or roll forward to 2.6.0 or later to restore this compatibili
 [JPERF-316]: https://ecosystem.atlassian.net/browse/JPERF-316
 
 ## [2.4.0] - 2019-01-08
-[2.4.0]: https://bitbucket.org/atlassian/report/branches/compare/release-2.4.0%0Drelease-2.3.1
+[2.4.0]: https://github.com/atlassian/report/compare/release-2.3.1...release-2.4.0
 
 ### Added
 - Provide builder for EdibleResult.
@@ -93,7 +93,7 @@ Roll back to 2.4.0 or roll forward to 2.6.0 or later to restore this compatibili
 [JPERF-338]: https://ecosystem.atlassian.net/browse/JPERF-338
 
 ## [2.3.1] - 2019-01-08
-[2.3.1]: https://bitbucket.org/atlassian/report/branches/compare/release-2.3.1%0Drelease-2.3.0
+[2.3.1]: https://github.com/atlassian/report/compare/release-2.3.0...release-2.3.1
 
 ### Fixed
 - Create a JUnit report from exceptions containing '%' character. Fix [JPERF-339].
@@ -101,7 +101,7 @@ Roll back to 2.4.0 or roll forward to 2.6.0 or later to restore this compatibili
 [JPERF-339]: https://ecosystem.atlassian.net/browse/JPERF-339
 
 ## [2.3.0] - 2018-11-29
-[2.3.0]: https://bitbucket.org/atlassian/report/branches/compare/release-2.3.0%0Drelease-2.2.3
+[2.3.0]: https://github.com/atlassian/report/compare/release-2.2.3...release-2.3.0
 
 ### Added
 - Add support for `infrastructure:3`.
@@ -110,7 +110,7 @@ Roll back to 2.4.0 or roll forward to 2.6.0 or later to restore this compatibili
 - Add support for `virtual-users:3`.
 
 ## [2.2.3] - 2018-10-31
-[2.2.3]: https://bitbucket.org/atlassian/report/branches/compare/release-2.2.3%0Drelease-2.2.2
+[2.2.3]: https://github.com/atlassian/report/compare/release-2.2.2...release-2.2.3
 
 ### Fixed
 - Fix NPE in `RelativeTypicalPerformanceJudge` when action results are missing. Fix [JPERF-248].
@@ -118,7 +118,7 @@ Roll back to 2.4.0 or roll forward to 2.6.0 or later to restore this compatibili
 [JPERF-248]: https://ecosystem.atlassian.net/browse/JPERF-248
 
 ## [2.2.2] - 2018-10-23
-[2.2.2]: https://bitbucket.org/atlassian/report/branches/compare/release-2.2.2%0Drelease-2.2.1
+[2.2.2]: https://github.com/atlassian/report/compare/release-2.2.1...release-2.2.2
 
 ### Fixed
 - Restore original column ordering in `IndependentCohortsJudge`. Fix [JPERF-192].
@@ -126,7 +126,7 @@ Roll back to 2.4.0 or roll forward to 2.6.0 or later to restore this compatibili
 [JPERF-192]: https://ecosystem.atlassian.net/browse/JPERF-192
 
 ## [2.2.1] - 2018-09-21
-[2.2.1]: https://bitbucket.org/atlassian/report/branches/compare/release-2.2.1%0Drelease-2.2.0
+[2.2.1]: https://github.com/atlassian/report/compare/release-2.2.0...release-2.2.1
 
 ### Fixed
 - Skip secondary verdicts if failure verdict is negative. Fix [JPERF-106].
@@ -134,7 +134,7 @@ Roll back to 2.4.0 or roll forward to 2.6.0 or later to restore this compatibili
 [JPERF-106]: https://ecosystem.atlassian.net/browse/JPERF-106
 
 ## [2.2.0] - 2018-09-13
-[2.2.0]: https://bitbucket.org/atlassian/report/branches/compare/release-2.2.0%0Drelease-2.1.0
+[2.2.0]: https://github.com/atlassian/report/compare/release-2.1.0...release-2.2.0
 
 ### Added 
 - Log test errors in `EdibleResult`.
@@ -143,7 +143,7 @@ Roll back to 2.4.0 or roll forward to 2.6.0 or later to restore this compatibili
 - Fix date conversion in `MeanLatencyChart`. Fix [JPERF-77](https://ecosystem.atlassian.net/browse/JPERF-77).
 
 ## [2.1.0] - 2018-09-11
-[2.1.0]: https://bitbucket.org/atlassian/report/branches/compare/release-2.1.0%0Drelease-2.0.0
+[2.1.0]: https://github.com/atlassian/report/compare/release-2.0.0...release-2.1.0
 
 ### Added
 - Add mean latency chart. Resolve [JPERF-65](https://ecosystem.atlassian.net/browse/JPERF-65).
@@ -156,7 +156,7 @@ Roll back to 2.4.0 or roll forward to 2.6.0 or later to restore this compatibili
 - Deprecate `HistoricalCohortsReporter#report(report: Path)`.
 
 ## [2.0.0] - 2018-09-06
-[2.0.0]: https://bitbucket.org/atlassian/report/branches/compare/release-2.0.0%0Drelease-1.0.0
+[2.0.0]: https://github.com/atlassian/report/compare/release-1.0.0...release-2.0.0
 
 ### Changed 
 - Use stable APT APIs.
@@ -172,7 +172,7 @@ Roll back to 2.4.0 or roll forward to 2.6.0 or later to restore this compatibili
 - Linear interpolation on charts.
 
 ## [1.0.0] - 2018-08-24
-[1.0.0]: https://bitbucket.org/atlassian/report/branches/compare/release-1.0.0%0Drelease-0.0.3
+[1.0.0]: https://github.com/atlassian/report/compare/release-0.0.3...release-1.0.0
 
 ### Changed
 - Define the public API.
@@ -185,13 +185,13 @@ Roll back to 2.4.0 or roll forward to 2.6.0 or later to restore this compatibili
 - Depend on a stable APT `infrastructure` version.
 
 ## [0.0.3] - 2018-08-22
-[0.0.3]: https://bitbucket.org/atlassian/report/branches/compare/release-0.0.3%0Drelease-0.0.2
+[0.0.3]: https://github.com/atlassian/report/compare/release-0.0.2...release-0.0.3
 
 ### Added
 - Add plain text report.
 
 ## [0.0.2] - 2018-08-21
-[0.0.2]: https://bitbucket.org/atlassian/report/branches/compare/release-0.0.2%0Drelease-0.0.1
+[0.0.2]: https://github.com/atlassian/report/compare/release-0.0.1...release-0.0.2
 
 ### Added
 - Add missing [CHANGELOG.md](CHANGELOG.md).
@@ -200,7 +200,7 @@ Roll back to 2.4.0 or roll forward to 2.6.0 or later to restore this compatibili
 - Depend on a stable version of APT `workspace`.
 
 ## [0.0.1] - 2018-08-06
-[0.0.1]: https://bitbucket.org/atlassian/report/branches/compare/release-0.0.1%0Dinitial-commit
+[0.0.1]: https://github.com/atlassian/report/compare/initial-commit...release-0.0.1
 
 ### Added
 - Migrate performance reporting from [JPT submodule].

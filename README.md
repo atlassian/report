@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/atlassian/report.svg?branch=master)](https://travis-ci.com/atlassian/report)
+
 # Performance reporting
 Produces various reports out of raw performance data.
 Includes automated judgement calls.
