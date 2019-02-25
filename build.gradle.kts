@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 val kotlinVersion = "1.2.70"
 
 plugins {
@@ -64,6 +67,13 @@ fun log4j(
     vararg modules: String
 ): List<String> = modules.map { module ->
     "org.apache.logging.log4j:log4j-$module:2.10.0"
+}
+
+tasks.withType<Test> {
+    testLogging {
+        events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+        exceptionFormat = TestExceptionFormat.FULL
+    }
 }
 
 tasks.getByName("wrapper", Wrapper::class).apply {
