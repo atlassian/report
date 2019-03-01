@@ -1,29 +1,28 @@
 package com.atlassian.performance.tools.report.chart
 
-import com.atlassian.performance.tools.jiraactions.api.parser.ActionMetricsParser
-import com.atlassian.performance.tools.report.SystemMetricsGenerator
+import com.atlassian.performance.tools.report.api.result.LocalRealResult
 import com.atlassian.performance.tools.workspace.api.git.HardcodedGitRepo
-import org.junit.Assert.assertTrue
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import java.io.File
+import java.nio.file.Files
 import java.nio.file.Paths
 
 class TimelineChartTest {
 
-    private val repo = HardcodedGitRepo(head = "abcd")
-
-    /**
-     * The test has very low value as a unit test, but it has a great value as a dev loop booster for report developers.
-     */
     @Test
-    fun generate() {
-        val actionMetrics = ActionMetricsParser().parse(
-            javaClass.getResourceAsStream("action-metrics-full.jpt")
+    fun shouldGenerateOutput() {
+        val result = LocalRealResult(Paths.get("QUICK-54/c5.18xlarge, 2 nodes, run 1.zip")).loadEdible()
+        val actualOutput = Files.createTempFile("apt-report-test-timeline", ".html")
+        val chart = TimelineChart(HardcodedGitRepo(head = "abcd"))
+
+        chart.generate(
+            actualOutput,
+            result.actionMetrics,
+            result.systemMetrics
         )
-        val systemMetrics = SystemMetricsGenerator().asList()
-        val reportPath = Paths.get("build/mock-report.html")
 
-        TimelineChart(repo).generate(reportPath, actionMetrics, systemMetrics)
-
-        assertTrue(reportPath.toFile().exists())
+        val expectedOutput = File(javaClass.getResource("expected-timeline-chart.html").toURI()).toPath()
+        assertThat(actualOutput).hasSameContentAs(expectedOutput)
     }
 }
