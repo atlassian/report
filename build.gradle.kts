@@ -66,6 +66,10 @@ fun log4j(
     "org.apache.logging.log4j:log4j-$module:2.10.0"
 }
 
+tasks.getByName("test", Test::class).apply {
+    maxHeapSize = "2g" // Work around https://ecosystem.atlassian.net/browse/JPERF-395
+}
+
 tasks.getByName("wrapper", Wrapper::class).apply {
     gradleVersion = "5.0"
     distributionType = Wrapper.DistributionType.ALL
