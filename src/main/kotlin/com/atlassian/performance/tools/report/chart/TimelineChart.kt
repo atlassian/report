@@ -4,6 +4,7 @@ import com.atlassian.performance.tools.infrastructure.api.metric.Dimension
 import com.atlassian.performance.tools.infrastructure.api.metric.SystemMetric
 import com.atlassian.performance.tools.io.api.ensureParentDirectory
 import com.atlassian.performance.tools.jiraactions.api.ActionMetric
+import com.atlassian.performance.tools.report.JsonStyle
 import com.atlassian.performance.tools.workspace.api.git.GitRepo
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
@@ -28,11 +29,11 @@ internal class TimelineChart(
             .use { it.readText() }
             .replace(
                 oldValue = "'<%= virtualUserChartData =%>'",
-                newValue = ChartBuilder().build(actionMetrics).toJson().toString()
+                newValue = JsonStyle().prettyPrint(ChartBuilder().build(actionMetrics).toJson())
             )
             .replace(
                 oldValue = "'<%= systemMetricsCharts =%>'",
-                newValue = systemMetricsCharts(trimmedSystemMetrics).toString()
+                newValue = JsonStyle().prettyPrint(systemMetricsCharts(trimmedSystemMetrics))
             )
             .replace(
                 oldValue = "'<%= commit =%>'",

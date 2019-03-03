@@ -2,13 +2,13 @@ package com.atlassian.performance.tools.report
 
 import java.io.StringWriter
 import javax.json.Json
-import javax.json.JsonObject
+import javax.json.JsonStructure
 import javax.json.stream.JsonGenerator
 
 internal class JsonStyle {
 
     fun prettyPrint(
-        json: JsonObject
+        json: JsonStructure
     ): String {
         val stringWriter = StringWriter()
         Json
