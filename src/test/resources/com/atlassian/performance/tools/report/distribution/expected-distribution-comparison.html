@@ -19,7 +19,32 @@
 <canvas id="histogram"></canvas>
 <canvas id="quantile-chart"></canvas>
 <script>
+    function groupBy(arr, fn) {
+        return arr.reduce(function(acc, e) {
+            var key = fn(e);
+
+            if (!acc[key])
+                acc[key] = [e];
+            else
+                acc[key].push(e);
+
+            return acc;
+        }, {});
+    }
+
+    function flattenGroups(groups) {
+        return Object.values(groups).reduce(function (acc, e) {
+            return acc.concat(e);
+        }, []);
+    }
+
     function jptChartTemplate(data) {
+        var datasetGroups = groupBy(data.datasets, function (dataset) {
+            return dataset.cohort;
+        });
+
+        data.datasets = flattenGroups(datasetGroups);
+
         return {
             type: 'line',
             data: data,
@@ -1453,6 +1478,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Log In",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(253, 6, 22)",
             "backgroundColor": "rgb(253, 6, 22)",
             "fill": false,
@@ -1665,6 +1691,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Search with JQL",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(88, 148, 248)",
             "backgroundColor": "rgb(88, 148, 248)",
             "fill": false,
@@ -1877,6 +1904,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: View Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(140, 67, 204)",
             "backgroundColor": "rgb(140, 67, 204)",
             "fill": false,
@@ -2089,6 +2117,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: View Dashboard",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(226, 224, 179)",
             "backgroundColor": "rgb(226, 224, 179)",
             "fill": false,
@@ -2301,6 +2330,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Edit Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(236, 50, 124)",
             "backgroundColor": "rgb(236, 50, 124)",
             "fill": false,
@@ -2513,6 +2543,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Full Edit Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(2, 239, 130)",
             "backgroundColor": "rgb(2, 239, 130)",
             "fill": false,
@@ -2725,6 +2756,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Browse Projects",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(210, 42, 194)",
             "backgroundColor": "rgb(210, 42, 194)",
             "fill": false,
@@ -2937,6 +2969,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Browse Boards",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(120, 67, 238)",
             "backgroundColor": "rgb(120, 67, 238)",
             "fill": false,
@@ -3149,6 +3182,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Project Summary",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(93, 32, 59)",
             "backgroundColor": "rgb(93, 32, 59)",
             "fill": false,
@@ -3361,6 +3395,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Create Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(251, 181, 224)",
             "backgroundColor": "rgb(251, 181, 224)",
             "fill": false,
@@ -3573,6 +3608,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Full Create Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(230, 252, 228)",
             "backgroundColor": "rgb(230, 252, 228)",
             "fill": false,
@@ -3785,6 +3821,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Add Comment",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(109, 161, 7)",
             "backgroundColor": "rgb(109, 161, 7)",
             "fill": false,
@@ -3997,6 +4034,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Full Add Comment",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(24, 101, 109)",
             "backgroundColor": "rgb(24, 101, 109)",
             "fill": false,
@@ -4209,6 +4247,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: View Board",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(34, 114, 93)",
             "backgroundColor": "rgb(34, 114, 93)",
             "fill": false,
@@ -4421,6 +4460,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Log In",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(155, 123, 109)",
             "backgroundColor": "rgb(155, 123, 109)",
             "fill": false,
@@ -4633,6 +4673,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: View Dashboard",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(201, 229, 16)",
             "backgroundColor": "rgb(201, 229, 16)",
             "fill": false,
@@ -4845,6 +4886,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Search with JQL",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(83, 135, 120)",
             "backgroundColor": "rgb(83, 135, 120)",
             "fill": false,
@@ -5057,6 +5099,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: View Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(190, 213, 206)",
             "backgroundColor": "rgb(190, 213, 206)",
             "fill": false,
@@ -5269,6 +5312,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Browse Projects",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(19, 37, 101)",
             "backgroundColor": "rgb(19, 37, 101)",
             "fill": false,
@@ -5481,6 +5525,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Browse Boards",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(78, 43, 132)",
             "backgroundColor": "rgb(78, 43, 132)",
             "fill": false,
@@ -5693,6 +5738,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Create Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(139, 90, 172)",
             "backgroundColor": "rgb(139, 90, 172)",
             "fill": false,
@@ -5905,6 +5951,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Full Create Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(56, 220, 84)",
             "backgroundColor": "rgb(56, 220, 84)",
             "fill": false,
@@ -6117,6 +6164,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Project Summary",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(4, 150, 144)",
             "backgroundColor": "rgb(4, 150, 144)",
             "fill": false,
@@ -6329,6 +6377,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: View Board",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(26, 201, 140)",
             "backgroundColor": "rgb(26, 201, 140)",
             "fill": false,
@@ -6541,6 +6590,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Add Comment",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(35, 47, 236)",
             "backgroundColor": "rgb(35, 47, 236)",
             "fill": false,
@@ -6753,6 +6803,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Full Add Comment",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(32, 14, 127)",
             "backgroundColor": "rgb(32, 14, 127)",
             "fill": false,
@@ -6965,6 +7016,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Edit Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(205, 241, 43)",
             "backgroundColor": "rgb(205, 241, 43)",
             "fill": false,
@@ -7177,6 +7229,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Full Edit Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(82, 26, 107)",
             "backgroundColor": "rgb(82, 26, 107)",
             "fill": false,
@@ -7514,6 +7567,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Log In",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(253, 6, 22)",
             "backgroundColor": "rgb(253, 6, 22)",
             "fill": false,
@@ -7930,6 +7984,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Search with JQL",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(88, 148, 248)",
             "backgroundColor": "rgb(88, 148, 248)",
             "fill": false,
@@ -8346,6 +8401,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: View Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(140, 67, 204)",
             "backgroundColor": "rgb(140, 67, 204)",
             "fill": false,
@@ -8762,6 +8818,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: View Dashboard",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(226, 224, 179)",
             "backgroundColor": "rgb(226, 224, 179)",
             "fill": false,
@@ -9178,6 +9235,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Edit Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(236, 50, 124)",
             "backgroundColor": "rgb(236, 50, 124)",
             "fill": false,
@@ -9594,6 +9652,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Full Edit Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(2, 239, 130)",
             "backgroundColor": "rgb(2, 239, 130)",
             "fill": false,
@@ -10010,6 +10069,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Browse Projects",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(210, 42, 194)",
             "backgroundColor": "rgb(210, 42, 194)",
             "fill": false,
@@ -10426,6 +10486,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Browse Boards",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(120, 67, 238)",
             "backgroundColor": "rgb(120, 67, 238)",
             "fill": false,
@@ -10842,6 +10903,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Project Summary",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(93, 32, 59)",
             "backgroundColor": "rgb(93, 32, 59)",
             "fill": false,
@@ -11258,6 +11320,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Create Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(251, 181, 224)",
             "backgroundColor": "rgb(251, 181, 224)",
             "fill": false,
@@ -11674,6 +11737,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Full Create Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(230, 252, 228)",
             "backgroundColor": "rgb(230, 252, 228)",
             "fill": false,
@@ -12090,6 +12154,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Add Comment",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(109, 161, 7)",
             "backgroundColor": "rgb(109, 161, 7)",
             "fill": false,
@@ -12506,6 +12571,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: Full Add Comment",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(24, 101, 109)",
             "backgroundColor": "rgb(24, 101, 109)",
             "fill": false,
@@ -12922,6 +12988,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/alpha: View Board",
+            "cohort": "JIRA-JPT760-JOB1-8/alpha",
             "borderColor": "rgb(34, 114, 93)",
             "backgroundColor": "rgb(34, 114, 93)",
             "fill": false,
@@ -13338,6 +13405,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Log In",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(155, 123, 109)",
             "backgroundColor": "rgb(155, 123, 109)",
             "fill": false,
@@ -13754,6 +13822,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: View Dashboard",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(201, 229, 16)",
             "backgroundColor": "rgb(201, 229, 16)",
             "fill": false,
@@ -14170,6 +14239,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Search with JQL",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(83, 135, 120)",
             "backgroundColor": "rgb(83, 135, 120)",
             "fill": false,
@@ -14586,6 +14656,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: View Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(190, 213, 206)",
             "backgroundColor": "rgb(190, 213, 206)",
             "fill": false,
@@ -15002,6 +15073,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Browse Projects",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(19, 37, 101)",
             "backgroundColor": "rgb(19, 37, 101)",
             "fill": false,
@@ -15418,6 +15490,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Browse Boards",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(78, 43, 132)",
             "backgroundColor": "rgb(78, 43, 132)",
             "fill": false,
@@ -15834,6 +15907,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Create Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(139, 90, 172)",
             "backgroundColor": "rgb(139, 90, 172)",
             "fill": false,
@@ -16250,6 +16324,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Full Create Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(56, 220, 84)",
             "backgroundColor": "rgb(56, 220, 84)",
             "fill": false,
@@ -16666,6 +16741,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Project Summary",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(4, 150, 144)",
             "backgroundColor": "rgb(4, 150, 144)",
             "fill": false,
@@ -17082,6 +17158,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: View Board",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(26, 201, 140)",
             "backgroundColor": "rgb(26, 201, 140)",
             "fill": false,
@@ -17498,6 +17575,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Add Comment",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(35, 47, 236)",
             "backgroundColor": "rgb(35, 47, 236)",
             "fill": false,
@@ -17914,6 +17992,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Full Add Comment",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(32, 14, 127)",
             "backgroundColor": "rgb(32, 14, 127)",
             "fill": false,
@@ -18330,6 +18409,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Edit Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(205, 241, 43)",
             "backgroundColor": "rgb(205, 241, 43)",
             "fill": false,
@@ -18746,6 +18826,7 @@
         {
             "type": "line",
             "label": "JIRA-JPT760-JOB1-8/beta: Full Edit Issue",
+            "cohort": "JIRA-JPT760-JOB1-8/beta",
             "borderColor": "rgb(82, 26, 107)",
             "backgroundColor": "rgb(82, 26, 107)",
             "fill": false,

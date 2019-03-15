@@ -19,7 +19,32 @@
 <canvas id="histogram"></canvas>
 <canvas id="quantile-chart"></canvas>
 <script>
+    function groupBy(arr, fn) {
+        return arr.reduce(function(acc, e) {
+            var key = fn(e);
+
+            if (!acc[key])
+                acc[key] = [e];
+            else
+                acc[key].push(e);
+
+            return acc;
+        }, {});
+    }
+
+    function flattenGroups(groups) {
+        return Object.values(groups).reduce(function (acc, e) {
+            return acc.concat(e);
+        }, []);
+    }
+
     function jptChartTemplate(data) {
+        var datasetGroups = groupBy(data.datasets, function (dataset) {
+            return dataset.cohort;
+        });
+
+        data.datasets = flattenGroups(datasetGroups);
+
         return {
             type: 'line',
             data: data,
