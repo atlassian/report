@@ -4,6 +4,7 @@ import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.jiraactions.api.parser.ActionMetricsParser
 import com.atlassian.performance.tools.report.chart.waterfall.WaterfallChart
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.File
 import java.nio.file.Paths
@@ -54,5 +55,27 @@ class WaterfallChartTest {
         val actualOutput = output.toFile()
         val expectedOutput = File(javaClass.getResource("expected-waterfall-chart-without-path.html").toURI())
         Assertions.assertThat(actualOutput).hasSameContentAs(expectedOutput)
+    }
+
+    @Test
+    fun shouldNotThrowWhenResponseEndIsBeforeResponseStart() {
+        //given
+        val output = Paths.get("build/actual-waterfall-chart-with-no-exceptions.html")
+        val inputMetricsResource = "action-metrics-with-responseEnd-before-responseStart.jpt"
+        val actionMetrics: List<ActionMetric> = ActionMetricsParser().parse(javaClass.getResourceAsStream(inputMetricsResource))
+        val metric = actionMetrics[8]
+
+        // when
+        val noExceptions = Assertions.catchThrowable {
+            WaterfallChart().plot(
+                metric = metric,
+                output = output.toFile()
+            )
+        }
+
+        // then
+        assertThat(noExceptions)
+            .`as`("should not throw when responseEnd is before responseStart")
+            .doesNotThrowAnyException()
     }
 }
