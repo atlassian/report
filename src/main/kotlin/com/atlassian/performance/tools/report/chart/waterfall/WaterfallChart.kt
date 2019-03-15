@@ -140,13 +140,20 @@ internal class WaterfallChart {
     }
 
     private fun resourceToStack(resource: PerformanceResourceTiming): PhaseStackBuilder {
-        // special case, see paragraph 7. of 4.6.1 Processing Model:  https://www.w3.org/TR/resource-timing-2/#processing-model
+        // special case, see paragraph 9. of 4.6.1 Processing Model:  https://www.w3.org/TR/resource-timing-2/#processing-model
         val timingAllowCheckFailed = resource.domainLookupStart.isZero &&
             resource.domainLookupEnd.isZero &&
             resource.connectStart.isZero &&
             resource.connectEnd.isZero &&
             resource.requestStart.isZero &&
             resource.responseStart.isZero
+        // Sometimes responseEnd equals to 0, while responseStart != 0, effectively putting responseEnd event BEFORE responseStart event
+        // As far as I can read https://www.w3.org/TR/resource-timing-2/ logic it should never happen
+        // so it looks like a bug, we will treat responseEnd as equal to responseStart in such case
+        val responseEnd = when(resource.responseEnd.isZero && !resource.requestStart.isZero) {
+            true -> resource.responseStart
+            false -> resource.responseEnd
+        }
 
         return PhaseStackBuilder()
             .push(
@@ -207,7 +214,7 @@ internal class WaterfallChart {
                     true -> resource.responseEnd
                     false -> resource.responseStart
                 },
-                resource.responseEnd
+                responseEnd
             )
     }
 

@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.1.1...master
 
+### Fixed
+- Do not throw negative phase exception in `WaterfallChart` when `responseEnd` is before `responseStart`. Fix [JPERF-416].
+
+[JPERF-416]: https://ecosystem.atlassian.net/browse/JPERF-416
+
 ## [3.1.1] - 2019-01-23
 [3.1.1]: https://github.com/atlassian/report/compare/release-3.1.0...release-3.1.1
 
