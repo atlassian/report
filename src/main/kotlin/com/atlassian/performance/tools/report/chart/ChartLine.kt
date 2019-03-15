@@ -10,7 +10,8 @@ internal class ChartLine<X>(
     private val label: String,
     private val type: String,
     private val yAxisId: String,
-    private val hidden: Boolean = false
+    private val hidden: Boolean = false,
+    private val cohort: String = ""
 ) where X : Comparable<X> {
     fun toJson(): JsonObject {
         val dataBuilder = Json.createArrayBuilder()
@@ -25,6 +26,11 @@ internal class ChartLine<X>(
         val chartDataBuilder = Json.createObjectBuilder()
         chartDataBuilder.add("type", type)
         chartDataBuilder.add("label", label)
+
+        if (!cohort.isBlank()) {
+            chartDataBuilder.add("cohort", cohort)
+        }
+
         chartDataBuilder.add("borderColor", getColor(label))
         chartDataBuilder.add("backgroundColor", getColor(label))
         chartDataBuilder.add("fill", false)

@@ -55,6 +55,7 @@ internal class DistributionComparison(
                     ChartLine(
                         data = summarize(metrics.map { it.duration.toMillis().toInt() }),
                         label = "${result.cohort}: $actionType",
+                        cohort = result.cohort,
                         type = "line",
                         yAxisId = yAxisId,
                         hidden = true
