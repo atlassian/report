@@ -24,7 +24,10 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://github.com/atlassian/report/compare/release-3.1.1...master
+[Unreleased]: https://github.com/atlassian/report/compare/release-3.1.2...master
+
+## [3.1.2] - 2019-03-15
+[3.1.2]: https://github.com/atlassian/report/compare/release-3.1.1...release-3.1.2
 
 ### Fixed
 - Do not throw negative phase exception in `WaterfallChart` when `responseEnd` is before `responseStart`. Fix [JPERF-416].
