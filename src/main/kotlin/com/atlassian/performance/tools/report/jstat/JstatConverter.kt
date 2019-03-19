@@ -2,6 +2,12 @@ package com.atlassian.performance.tools.report.jstat
 
 import java.nio.file.Path
 
+/**
+ * NOTE: You are advised not to write scripts to parse jstat's output since the format may change in future releases.
+ * If you choose to write scripts that parse jstat output, expect to modify them for future releases of this tool.
+ *
+ * @see <a href="https://docs.oracle.com/javase/7/docs/technotes/tools/share/jstat.html">jstat docs</a>
+ */
 internal class JstatConverter {
 
     internal fun convertToCsv(
@@ -19,7 +25,8 @@ internal class JstatConverter {
                 it.lines()
                     .skip(1)
                     .map { it.replace(Regex(" +"), ",") }
-                    .forEach { jstatCsv.toFile().appendText(it + "\n") }
+                    .map { it.replace(",-" ,",0") }
+                    .forEach { jstatCsv.toFile().appendText("$it\n") }
             }
 
         return jstatCsv

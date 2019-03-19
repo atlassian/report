@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.1.2...master
 
+### Fixed
+- Replace '-' character to prevent java.lang.NumberFormatException. Resolve [JPERF-426].
+
+[JPERF-426]: https://ecosystem.atlassian.net/browse/JPERF-426
+
 ## [3.1.2] - 2019-03-15
 [3.1.2]: https://github.com/atlassian/report/compare/release-3.1.1...release-3.1.2
 
