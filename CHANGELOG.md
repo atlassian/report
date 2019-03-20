@@ -24,7 +24,10 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://github.com/atlassian/report/compare/release-3.1.2...master
+[Unreleased]: https://github.com/atlassian/report/compare/release-3.1.3...master
+
+## [3.1.3] - 2019-03-20
+[3.1.3]: https://github.com/atlassian/report/compare/release-3.1.2...release-3.1.3
 
 ### Fixed
 - Replace '-' character to prevent java.lang.NumberFormatException. Resolve [JPERF-426].
