@@ -42,6 +42,11 @@ class FullReport {
             results = results
         )
 
+        val jdkBenchmarkTest = results.any { result -> result.cohort.contains("jdk") }
+        if (jdkBenchmarkTest) {
+            generateJdkComparisonReport(results)
+        }
+
         return results.forEach { result ->
             val actionMetrics = result.actionMetrics
             val cohortWorkspace = workspace.directory.resolve(result.cohort)
@@ -52,7 +57,7 @@ class FullReport {
             )
 
             val report = PlaintextReport(
-                ActionMetricStatistics(result.actionMetrics)
+                ActionMetricStatistics(actionMetrics)
             ).generate()
 
             logger.info("Plain text report:\n$report")
@@ -65,5 +70,17 @@ class FullReport {
                 workspace = TestWorkspace(cohortWorkspace.resolve("WaterfallHighlight").ensureDirectory())
             )
         }
+    }
+
+    private fun generateJdkComparisonReport(results: List<EdibleResult>) {
+        val jdk8Result = results.first { result -> result.cohort == "jdk8" }
+        val jdk11Result = results.first { result -> result.cohort == "jdk11" }
+
+        val report = JdkComparisonPlaintextReport(
+            ActionMetricStatistics(jdk8Result.actionMetrics),
+            ActionMetricStatistics(jdk11Result.actionMetrics)
+        ).generate()
+
+        logger.info("JDK 11 vs JDK 8 report:\n$report")
     }
 }
