@@ -15,7 +15,7 @@ internal class JstatGcutilParser {
     ): List<SystemMetric> {
         val parser = CSVParser(
             inputStream.bufferedReader(),
-            CSVFormat.DEFAULT.withHeader(JstatGcutilHeader::class.java)
+            CSVFormat.DEFAULT.withFirstRecordAsHeader()
         )
         val sortedJstatMetrics = parser
             .toList()
