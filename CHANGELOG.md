@@ -31,6 +31,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 - Expose detailed performance stats. Resolve [JPERF-455].
 
 ### Fixed
+- Read `jstat` logs in any order. Fix [JPERF-462].
 - Include HTML table report in `FullReport`. 
 - Make `Jstat Converter` idempotent. Fix [JPERF-464].
 
@@ -44,6 +45,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 - Deprecate `StatsMeter.measure` in favour of `StatsMeter.measurePerformance`
 - Deprecate `DataReporter` in favour of `CohortsSummaryTable`
 
+[JPERF-462]: https://ecosystem.atlassian.net/browse/JPERF-462
 [JPERF-452]: https://ecosystem.atlassian.net/browse/JPERF-452
 [JPERF-464]: https://ecosystem.atlassian.net/browse/JPERF-464
 [JPERF-455]: https://ecosystem.atlassian.net/browse/JPERF-455

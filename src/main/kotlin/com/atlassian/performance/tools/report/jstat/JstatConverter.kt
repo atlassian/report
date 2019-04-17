@@ -24,13 +24,27 @@ internal class JstatConverter {
             .inputStream()
             .bufferedReader()
             .use {
+                val header = extractHeader(it.readLine())
+                jstatCsv.toFile().appendText("$header\n")
                 it.lines()
-                    .skip(1)
-                    .map { it.replace(Regex(" +"), ",") }
-                    .map { it.replace(",-" ,",0") }
+                    .map { toCsvLine(it) }
                     .forEach { jstatCsv.toFile().appendText("$it\n") }
             }
 
         return jstatCsv
     }
+
+    private fun toCsvLine(logLine: String): String {
+        return logLine.replace(Regex(" +"), ",")
+            .replace(",-", ",0")
+    }
+
+    private fun extractHeader(line: String): String {
+        val columns = toCsvLine(line).split(",")
+        val header = listOf(JstatGcutilHeader.DATE.toString()) + columns.subList(1, columns.size)
+        return header
+            .filter { it.isNotEmpty() }
+            .joinToString(",").toUpperCase()
+    }
+
 }
