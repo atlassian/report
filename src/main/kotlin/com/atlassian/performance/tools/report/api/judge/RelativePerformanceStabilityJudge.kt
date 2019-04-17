@@ -5,23 +5,30 @@ import com.atlassian.performance.tools.report.api.result.InteractionStats
 import com.atlassian.performance.tools.report.api.junit.FailedAssertionJUnitReport
 import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
+import com.atlassian.performance.tools.report.api.result.Stats
+import com.atlassian.performance.tools.report.result.PerformanceStats
 import java.time.Duration
 
 class RelativePerformanceStabilityJudge {
 
+    @Deprecated("Use the other judge method")
     internal fun judge(
         maxDispersionDifferences: Map<ActionType<*>, Duration>,
         baselineStats: InteractionStats,
         experimentStats: InteractionStats
+    ): Verdict = this.judge(
+        maxDispersionDifferences = maxDispersionDifferences,
+        baselineStats = PerformanceStats.adapt(baselineStats),
+        experimentStats = PerformanceStats.adapt(experimentStats)
+    )
+
+    internal fun judge(
+        maxDispersionDifferences: Map<ActionType<*>, Duration>,
+        baselineStats: Stats,
+        experimentStats: Stats
     ): Verdict {
         val baselineDispersions = baselineStats.dispersions
         val experimentDispersions = experimentStats.dispersions
-        if (baselineDispersions == null || experimentDispersions == null) {
-            return Verdict(listOfNotNull(
-                judgeMissingResults(baselineStats),
-                judgeMissingResults(experimentStats)
-            ))
-        }
         return Verdict(
             maxDispersionDifferences.map { (action, maxDispersionDifference) ->
                 val label = action.label
@@ -35,18 +42,5 @@ class RelativePerformanceStabilityJudge {
                 }
             }
         )
-    }
-
-    private fun judgeMissingResults(
-        stats: InteractionStats
-    ): JUnitReport? {
-        return if (stats.dispersions == null) {
-            FailedAssertionJUnitReport(
-                testName = "Stability: ${stats.cohort}",
-                assertion = "Stability results are missing"
-            )
-        } else {
-            null
-        }
     }
 }

@@ -2,8 +2,8 @@ package com.atlassian.performance.tools.report.api
 
 import com.atlassian.performance.tools.jiraactions.api.*
 import com.atlassian.performance.tools.report.api.result.EdibleResult
-import com.atlassian.performance.tools.report.api.result.InteractionStats
 import com.atlassian.performance.tools.report.api.result.RawCohortResult
+import com.atlassian.performance.tools.report.api.result.Stats
 import com.atlassian.performance.tools.report.chart.MeanLatencyChart
 import com.atlassian.performance.tools.workspace.api.RootWorkspace
 import com.atlassian.performance.tools.workspace.api.TaskWorkspace
@@ -34,7 +34,7 @@ class HistoricalCohortsReporter(
         val stats = getStats()
         val labels = actionTypes.map { it.label }
         val report = workspace.directory.resolve("results.csv")
-        DataReporter(
+        CohortStatsSummary(
             output = report.toFile(),
             labels = labels
         ).report(stats)
@@ -47,11 +47,11 @@ class HistoricalCohortsReporter(
         )
     }
 
-    private fun getStats(): Collection<InteractionStats> {
+    private fun getStats(): Collection<Stats> {
         return workspace
             .listTasks()
             .mapNotNull { extractResults(it) }
-            .map { it.actionStats }
+            .map { it.stats }
     }
 
     private fun extractResults(

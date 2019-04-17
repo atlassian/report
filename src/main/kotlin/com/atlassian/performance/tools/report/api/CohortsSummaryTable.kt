@@ -2,6 +2,8 @@ package com.atlassian.performance.tools.report.api
 
 import com.atlassian.performance.tools.io.api.ensureParentDirectory
 import com.atlassian.performance.tools.report.api.result.InteractionStats
+import com.atlassian.performance.tools.report.api.result.Stats
+import com.atlassian.performance.tools.report.result.PerformanceStats
 import com.atlassian.performance.tools.report.result.PrintableInteractionStats
 import com.atlassian.performance.tools.report.table.AuiTabbedTableFactory
 import com.atlassian.performance.tools.report.table.AuiTableFactory
@@ -18,24 +20,31 @@ class CohortsSummaryTable(
     fun report(
         data: Collection<InteractionStats>
     ) {
-        output.ensureParentDirectory().bufferedWriter().use {
-            reportHtml(data, it)
+        output.ensureParentDirectory().bufferedWriter().use { target ->
+            reportHtml(data.map { PrintableInteractionStats(PerformanceStats.adapt(it), labels) }, target)
+        }
+        logger.info("Performance results summary available at ${output.toURI()}")
+    }
+
+    fun report(
+        data: List<Stats>
+    ) {
+        output.ensureParentDirectory().bufferedWriter().use { target ->
+            reportHtml(data.map { PrintableInteractionStats(it, labels) }, target)
         }
         logger.info("Performance results summary available at ${output.toURI()}")
     }
 
     private fun reportHtml(
-        data: Collection<InteractionStats>,
+        printableStats: Collection<PrintableInteractionStats>,
         target: Appendable
     ) {
-        val printableStats = data.map { PrintableInteractionStats(it, labels) }
-
         val responseTimes = AuiTableFactory(
             headers = listOf("cohort") + labels + "mean",
             rows = printableStats.map { stats ->
                 stats.centers.toMutableMap()
                     .apply { put("cohort", stats.cohort) }
-                    .apply { put("mean", stats.mean)}
+                    .apply { put("mean", stats.mean) }
             }
         ).create()
         val standardDeviation = AuiTableFactory(
@@ -47,7 +56,7 @@ class CohortsSummaryTable(
         ).create()
         val requestCount = AuiTableFactory(
             headers = listOf("cohort") + labels + "sum",
-            rows = printableStats.map {stats ->
+            rows = printableStats.map { stats ->
                 stats.sampleSizes.toMutableMap()
                     .apply { put("cohort", stats.cohort) }
                     .apply { put("sum", stats.requestCount) }

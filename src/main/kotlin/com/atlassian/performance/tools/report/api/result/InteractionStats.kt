@@ -2,6 +2,7 @@ package com.atlassian.performance.tools.report.api.result
 
 import java.time.Duration
 
+@Deprecated("Use Stats instead.")
 class InteractionStats(
     internal val cohort: String,
     internal val sampleSizes: Map<String, Long>?,

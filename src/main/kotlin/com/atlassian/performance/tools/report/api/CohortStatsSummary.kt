@@ -2,8 +2,7 @@ package com.atlassian.performance.tools.report.api
 
 import com.atlassian.performance.tools.io.api.ensureParentDirectory
 import com.atlassian.performance.tools.report.MeanAggregator
-import com.atlassian.performance.tools.report.api.result.InteractionStats
-import com.atlassian.performance.tools.report.result.PerformanceStats
+import com.atlassian.performance.tools.report.api.result.Stats
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVPrinter
 import org.apache.logging.log4j.LogManager
@@ -13,15 +12,14 @@ import java.time.Duration
 /**
  * Summarizes per cohort statistical results.
  */
-@Deprecated(message = "Use CohortsReporter instead.")
-class DataReporter(
+class CohortStatsSummary(
     private val output: File,
     private val labels: List<String>
 ) {
     private val logger = LogManager.getLogger(this::class.java)
 
     fun report(
-        data: Collection<InteractionStats>
+        data: Collection<Stats>
     ) {
         output.ensureParentDirectory().bufferedWriter().use {
             reportCsv(data, it)
@@ -30,7 +28,7 @@ class DataReporter(
     }
 
     private fun reportCsv(
-        data: Collection<InteractionStats>,
+        data: Collection<Stats>,
         target: Appendable
     ) {
         val headers = arrayOf("cohort", "metric") + labels + "AGGREGATE"
@@ -41,22 +39,19 @@ class DataReporter(
             listOf(
                 stats.cohort,
                 "response time average"
-            ) + labels.map { stats.centers?.get(it) }.map { it?.serialize() } + MeanAggregator().aggregateCenters(
-                labels,
-                PerformanceStats.adapt(stats)
-            )
+            ) + labels.map { stats.locations[it] }.map { it?.serialize() } + MeanAggregator().aggregateCenters(labels, stats)
         })
         printer.printRecords(data.map { stats ->
-            listOf(stats.cohort, "request count") + labels.map { stats.sampleSizes?.get(it) }
+            listOf(stats.cohort, "request count") + labels.map { stats.sampleSizes[it] }
         })
         printer.printRecords(data.map { stats ->
             listOf(
                 stats.cohort,
                 "response time standard deviation"
-            ) + labels.map { stats.dispersions?.get(it) }.map { it?.serialize() }
+            ) + labels.map { stats.dispersions[it] }.map { it?.serialize() }
         })
         printer.printRecords(data.map { stats ->
-            listOf(stats.cohort, "error count") + labels.map { stats.errors?.get(it) }
+            listOf(stats.cohort, "error count") + labels.map { stats.errors[it] }
         })
         printer.flush()
     }

@@ -26,15 +26,26 @@ class EdibleResult private constructor(
         }
     }
 
+    private val outlierTrimming = OutlierTrimming(
+        lowerTrim = 0.01,
+        upperTrim = 0.99
+    )
+
     val actionStats: InteractionStats by lazy {
         StatsMeter().measure(
             result = this,
             centralTendencyMetric = Mean(),
             dispersionMetric = StandardDeviation(),
-            outlierTrimming = OutlierTrimming(
-                lowerTrim = 0.01,
-                upperTrim = 0.99
-            )
+            outlierTrimming = outlierTrimming
+        )
+    }
+
+    val stats: Stats by lazy {
+        StatsMeter().measurePerformance(
+            result = this,
+            centralTendencyMetric = Mean(),
+            dispersionMetric = StandardDeviation(),
+            outlierTrimming = outlierTrimming
         )
     }
 

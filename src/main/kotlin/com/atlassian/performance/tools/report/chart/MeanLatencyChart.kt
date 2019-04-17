@@ -3,7 +3,7 @@ package com.atlassian.performance.tools.report.chart
 import com.atlassian.performance.tools.io.api.ensureParentDirectory
 import com.atlassian.performance.tools.report.JsonStyle
 import com.atlassian.performance.tools.report.MeanAggregator
-import com.atlassian.performance.tools.report.api.result.InteractionStats
+import com.atlassian.performance.tools.report.api.result.Stats
 import org.apache.logging.log4j.LogManager
 import java.io.File
 import java.time.LocalDateTime
@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 import java.time.format.DateTimeFormatter.ofLocalizedDateTime
 import java.time.format.DateTimeFormatterBuilder
 import java.time.format.FormatStyle
-import java.time.temporal.ChronoField.NANO_OF_SECOND;
+import java.time.temporal.ChronoField.NANO_OF_SECOND
 import javax.json.Json
 import javax.json.JsonArray
 import javax.json.JsonObject
@@ -23,7 +23,7 @@ internal class MeanLatencyChart {
     private val logger = LogManager.getLogger(this::class.java)
 
     fun plot(
-        stats: Collection<InteractionStats>,
+        stats: Collection<Stats>,
         labels: List<String>,
         output: File
     ) {

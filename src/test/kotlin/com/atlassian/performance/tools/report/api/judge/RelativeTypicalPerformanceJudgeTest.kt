@@ -2,7 +2,7 @@ package com.atlassian.performance.tools.report.api.judge
 
 import com.atlassian.performance.tools.jiraactions.api.ActionType
 import com.atlassian.performance.tools.jiraactions.api.VIEW_ISSUE
-import com.atlassian.performance.tools.report.api.result.InteractionStats
+import com.atlassian.performance.tools.report.result.PerformanceStats
 import org.assertj.core.api.Assertions.catchThrowable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Rule
@@ -22,8 +22,8 @@ class RelativeTypicalPerformanceJudgeTest {
         val toleranceRatios = mapOf<ActionType<*>, Float>(VIEW_ISSUE to 1000F)
         val noCenters = mapOf<String, Duration>()
         val someCenters = mapOf<String, Duration>("View Issue" to Duration.ofMillis(1000))
-        val baselineStats = InteractionStats("baselineCohort", null, noCenters, null, null)
-        val experimentStats = InteractionStats("experimentCohort", null, someCenters, null, null)
+        val baselineStats = PerformanceStats("baselineCohort", emptyMap(), noCenters, emptyMap(), emptyMap())
+        val experimentStats = PerformanceStats("experimentCohort", emptyMap(), someCenters, emptyMap(), emptyMap())
 
         // when
         val thrown = catchThrowable {
@@ -43,8 +43,8 @@ class RelativeTypicalPerformanceJudgeTest {
         val toleranceRatios = mapOf<ActionType<*>, Float>(VIEW_ISSUE to 1000F)
         val noCenters = mapOf<String, Duration>()
         val someCenters = mapOf<String, Duration>("View Issue" to Duration.ofMillis(1000))
-        val baselineStats = InteractionStats("baselineCohort", null, someCenters, null, null)
-        val experimentStats = InteractionStats("experimentCohort", null, noCenters, null, null)
+        val baselineStats = PerformanceStats("baselineCohort", emptyMap(), someCenters, emptyMap(), emptyMap())
+        val experimentStats = PerformanceStats("experimentCohort", emptyMap(), noCenters, emptyMap(), emptyMap())
 
         // when
         val thrown = catchThrowable {
