@@ -6,24 +6,29 @@ import com.atlassian.performance.tools.report.api.result.InteractionStats
 import com.atlassian.performance.tools.report.api.junit.FailedAssertionJUnitReport
 import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
+import com.atlassian.performance.tools.report.api.result.Stats
+import com.atlassian.performance.tools.report.result.PerformanceStats
 
 class ErrorsJudge {
 
+    @Deprecated(message = "Use the other judge method.")
     fun judge(
         stats: InteractionStats,
         criteria: Map<ActionType<*>, ErrorCriteria>
+    ): Verdict = this.judge(
+        stats = PerformanceStats.adapt(stats),
+        criteria = criteria
+    )
+
+    fun judge(
+        stats: Stats,
+        criteria: Map<ActionType<*>, ErrorCriteria>
     ): Verdict {
-        val errors = stats.errors ?: return Verdict(listOf(
-            FailedAssertionJUnitReport(
-                testName = "Error count of ${stats.cohort}",
-                assertion = "Error count results are missing"
-            )
-        ))
         val testReports = mutableListOf<JUnitReport>()
 
         for ((action, errorCriteria) in criteria) {
             val acceptableErrorCount = errorCriteria.acceptableErrorCount
-            val errorCount = errors[action.label] ?: 0
+            val errorCount = stats.errors[action.label] ?: 0
 
             if (errorCount > acceptableErrorCount) {
                 testReports.add(

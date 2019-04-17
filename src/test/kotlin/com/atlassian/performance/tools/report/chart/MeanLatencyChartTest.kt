@@ -35,7 +35,7 @@ class MeanLatencyChartTest {
                 LocalRealResult(Paths.get("JIRA-JPT760-JOB1-8/alpha")).loadEdible(),
                 LocalRealResult(Paths.get("JIRA-JPT760-JOB1-8/beta")).loadEdible()
         )
-        val stats = results.map { it.actionStats }
+        val stats = results.map { it.stats }
 
         // when
         MeanLatencyChart().plot(

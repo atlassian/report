@@ -1,11 +1,11 @@
 package com.atlassian.performance.tools.report
 
-import com.atlassian.performance.tools.report.api.result.InteractionStats
+import com.atlassian.performance.tools.report.api.result.Stats
 import org.apache.commons.math3.stat.descriptive.moment.Mean
 
 internal class MeanAggregator {
 
-    fun aggregateCenters(labels: List<String>, stats: InteractionStats): Long? {
+    fun aggregateCenters(labels: List<String>, stats: Stats): Long? {
         val aggregate = Mean()
         val samples = labels.mapNotNull { sampleFor(it, stats) }
         val centers = samples.map { it.center }.toDoubleArray()
@@ -19,10 +19,10 @@ internal class MeanAggregator {
 
     private fun sampleFor(
         action: String,
-        stats: InteractionStats
+        stats: Stats
     ): Sample? {
-        val center = stats.centers?.get(action)?.toMillis()?.toDouble()
-        val sampleSize = stats.sampleSizes?.get(action)
+        val center = stats.locations[action]?.toMillis()?.toDouble()
+        val sampleSize = stats.sampleSizes[action]
 
         return if (center != null && sampleSize != null) {
             Sample(center, sampleSize)

@@ -40,7 +40,7 @@ class IndependentCohortsJudge {
         criteria: PerformanceCriteria
     ): Verdict {
         val cohort = result.cohort
-        val stats = result.actionStats
+        val stats = result.stats
         val nodeDistribution = result.nodeDistribution
         val failureVerdict = FailureJudge().judge(result.failure)
         return if (failureVerdict.positive) {

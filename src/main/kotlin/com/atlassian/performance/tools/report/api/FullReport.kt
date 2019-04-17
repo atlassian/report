@@ -21,8 +21,8 @@ class FullReport {
         workspace: TestWorkspace,
         labels: List<String> = results.flatMap { it.actionLabels }.toSet().sorted()
     ) {
-        val stats = results.map { it.actionStats }
-        DataReporter(
+        val stats = results.map { it.stats }
+        CohortStatsSummary(
             output = workspace.directory.resolve("summary-per-cohort.csv").toFile(),
             labels = labels
         ).report(stats)

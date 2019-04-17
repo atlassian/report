@@ -28,11 +28,23 @@ Dropping a requirement of a major version of a dependency is a new contract.
 
 ### Added
 - Add `TableReporter` for HTML table reports. Resolve [JPERF-452].
+- Expose detailed performance stats. Resolve [JPERF-455].
 
 ### Fixed
 - Include HTML table report in `FullReport`. 
 
+### Deprecated
+- Deprecate `BaselineComparingJuge.judge` in favour of an overloaded method.
+- Deprecate `ErrorsJudge.judge` in favour of an overloaded method.
+- Deprecate `IndependentCohortsJudge.judge` in favour of an overloaded method.
+- Deprecate `RelativeTypicalPerformanceJudge.judge` in favour of an overloaded method.
+- Deprecate `SampleSizeJudge.judge` in favour of an overloaded method.
+- Deprecate `InteractionStats` in favour of `Stats`.
+- Deprecate `StatsMeter.measure` in favour of `StatsMeter.measurePerformance`
+- Deprecate `DataReporter` in favour of `CohortsSummaryTable`
+
 [JPERF-452]: https://ecosystem.atlassian.net/browse/JPERF-452
+[JPERF-455]: https://ecosystem.atlassian.net/browse/JPERF-455
 
 ## [3.1.3] - 2019-03-20
 [3.1.3]: https://github.com/atlassian/report/compare/release-3.1.2...release-3.1.3

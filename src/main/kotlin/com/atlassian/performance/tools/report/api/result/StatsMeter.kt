@@ -4,11 +4,46 @@ import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.jiraactions.api.ActionMetricStatistics
 import com.atlassian.performance.tools.report.ActionMetricsReader
 import com.atlassian.performance.tools.report.api.OutlierTrimming
+import com.atlassian.performance.tools.report.result.PerformanceStats
 import org.apache.commons.math3.stat.descriptive.UnivariateStatistic
 import java.time.Duration
 
 class StatsMeter {
 
+    fun measurePerformance(
+        result: EdibleResult,
+        centralTendencyMetric: UnivariateStatistic,
+        dispersionMetric: UnivariateStatistic,
+        outlierTrimming: OutlierTrimming
+    ): Stats {
+        if (result.failure != null) {
+            return PerformanceStats(
+                cohort = result.cohort,
+                sampleSizes = emptyMap(),
+                locations = emptyMap(),
+                dispersions = emptyMap(),
+                errors = emptyMap()
+            )
+        }
+        val metrics = result.actionMetrics
+        val statistics = ActionMetricStatistics(metrics)
+        val centers = calculate(metrics, centralTendencyMetric, outlierTrimming)
+        val dispersions = calculate(metrics, dispersionMetric, outlierTrimming)
+        val sampleSizes = mutableMapOf<String, Long>()
+        val errors = mutableMapOf<String, Int>()
+        for (label in result.actionLabels) {
+            sampleSizes[label] = statistics.sampleSize.getOrDefault(label, 0).toLong()
+            errors[label] = statistics.errors.getOrDefault(label, 0)
+        }
+        return PerformanceStats(result.cohort, sampleSizes, centers, dispersions, errors)
+    }
+
+    @Deprecated(
+        message = "Use measurePerformance instead.",
+        replaceWith = ReplaceWith(
+            expression = "measurePerformance(result, centralTendencyMetric, dispersionMetric, outlierTrimming)"
+        )
+    )
     fun measure(
         result: EdibleResult,
         centralTendencyMetric: UnivariateStatistic,
