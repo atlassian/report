@@ -28,7 +28,7 @@ class EditedIssuesReportTest {
             output = output
         )
 
-        val rows = output.toFile().bufferedReader().readLines()
+        val rows = output.toFile().bufferedReader().use { it.readLines() }
         assertThat(rows[0], equalTo("issue key,JIRA-JPT760-JOB1-8/alpha,JIRA-JPT760-JOB1-8/beta"))
         assertThat(rows, hasItem("SP-688,1,0"))
         assertThat(rows, hasItem("AABA-615,1,3"))

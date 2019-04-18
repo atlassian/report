@@ -19,9 +19,9 @@ class JstatConverterTest {
     fun shouldConvertVmstatLog() {
         val logFile = folder.newFile("jstat.log")
         this::class.java.getResourceAsStream("./jstat.log").copyTo(logFile.outputStream())
-        val expectedCsv = this::class.java.getResourceAsStream("./jstat.csv").bufferedReader().readText()
+        val expectedCsv = this::class.java.getResourceAsStream("./jstat.csv").bufferedReader().use { it.readText() }
 
-        val actualCsv = jstatConverter.convertToCsv(logFile.toPath()).toFile().bufferedReader().readText()
+        val actualCsv = jstatConverter.convertToCsv(logFile.toPath()).toFile().bufferedReader().use { it.readText() }
 
         assertThat(actualCsv, equalTo(expectedCsv))
     }
