@@ -1,5 +1,6 @@
 package com.atlassian.performance.tools.report.jstat
 
+import java.nio.file.Files
 import java.nio.file.Path
 
 /**
@@ -15,8 +16,9 @@ internal class JstatConverter {
     ): Path {
         val jstatCsvName = "${jstat.fileName.toString().substringBeforeLast(".")}.csv"
         val jstatCsv = jstat.parent.resolve(jstatCsvName)
-        jstatCsv.toFile().createNewFile()
-
+        if (jstatCsv.toFile().exists()) {
+            Files.delete(jstatCsv)
+        }
         jstat
             .toFile()
             .inputStream()

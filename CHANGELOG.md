@@ -32,6 +32,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 
 ### Fixed
 - Include HTML table report in `FullReport`. 
+- Make `Jstat Converter` idempotent. Fix [JPERF-464].
 
 ### Deprecated
 - Deprecate `BaselineComparingJuge.judge` in favour of an overloaded method.
@@ -44,6 +45,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 - Deprecate `DataReporter` in favour of `CohortsSummaryTable`
 
 [JPERF-452]: https://ecosystem.atlassian.net/browse/JPERF-452
+[JPERF-464]: https://ecosystem.atlassian.net/browse/JPERF-464
 [JPERF-455]: https://ecosystem.atlassian.net/browse/JPERF-455
 
 ## [3.1.3] - 2019-03-20
