@@ -34,6 +34,9 @@ Dropping a requirement of a major version of a dependency is a new contract.
 - Read `jstat` logs in any order. Fix [JPERF-462].
 - Include HTML table report in `FullReport`. 
 - Make `Jstat Converter` idempotent. Fix [JPERF-464].
+- Fix intensive logging in `WaterfallChart`. Resolve [JPREF-369].
+
+[JPREF-369]: https://ecosystem.atlassian.net/browse/JPERF-369
 
 ### Deprecated
 - Deprecate `BaselineComparingJuge.judge` in favour of an overloaded method.
