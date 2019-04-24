@@ -23,7 +23,7 @@ internal class WaterfallChart {
     ) {
         val performance = metric.drilldown
         if (performance == null) {
-            logger.info("Performance metrics for action ${metric.label} are not available. Waterfall chart will not be built.")
+            logger.debug("Drilldown for ${metric.label} is missing, so waterfall chart is skipped.")
             return
         }
         val requests = performance.navigations.map { toProcessingModel(it) }.toMutableList()
