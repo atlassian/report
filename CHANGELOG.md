@@ -24,7 +24,10 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://github.com/atlassian/report/compare/release-3.1.3...master
+[Unreleased]: https://github.com/atlassian/report/compare/release-3.2.0...master
+
+## [3.2.0] - 2019-04-30
+[3.2.0]: https://github.com/atlassian/report/compare/release-3.1.3...release-3.2.0
 
 ### Added
 - Add `TableReporter` for HTML table reports. Resolve [JPERF-452].
