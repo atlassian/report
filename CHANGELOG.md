@@ -56,6 +56,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 [JPERF-464]: https://ecosystem.atlassian.net/browse/JPERF-464
 [JPERF-455]: https://ecosystem.atlassian.net/browse/JPERF-455
 
+## [3.1.4] - 2019-04-30
+[3.1.4]: https://github.com/atlassian/report/compare/release-3.1.3...release-3.1.4
+
+It was a botched 3.2.0 release. Don't use new APIs from this version, switch to 3.2.0 instead.
+
 ## [3.1.3] - 2019-03-20
 [3.1.3]: https://github.com/atlassian/report/compare/release-3.1.2...release-3.1.3
 
