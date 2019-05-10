@@ -78,4 +78,26 @@ class WaterfallChartTest {
             .`as`("should not throw when responseEnd is before responseStart")
             .doesNotThrowAnyException()
     }
+
+    @Test
+    fun shouldNotThrowWhenResourceContainsDataUriScheme() {
+        //given
+        val output = Paths.get("build/actual-waterfall-chart-with-data-uri-scheme.html")
+        val inputMetricsResource = "action-metrics-with-data-uri-scheme.jpt"
+        val actionMetrics: List<ActionMetric> = ActionMetricsParser().parse(javaClass.getResourceAsStream(inputMetricsResource))
+        val metric = actionMetrics[0]
+
+        // when
+        val noExceptions = Assertions.catchThrowable {
+            WaterfallChart().plot(
+                metric = metric,
+                output = output.toFile()
+            )
+        }
+
+        // then
+        assertThat(noExceptions)
+            .`as`("should not throw when resource URL contains data URI scheme")
+            .doesNotThrowAnyException()
+    }
 }
