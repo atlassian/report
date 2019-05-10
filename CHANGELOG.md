@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.2.0...master
 
+### Fixed
+- Do not fail Waterfall chart creation when resource URL contains data URI scheme. Fix [JPERF-481].
+
+[JPREF-481]: https://ecosystem.atlassian.net/browse/JPERF-481
+
 ## [3.2.0] - 2019-04-30
 [3.2.0]: https://github.com/atlassian/report/compare/release-3.1.3...release-3.2.0
 
