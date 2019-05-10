@@ -7,7 +7,6 @@ import com.atlassian.performance.tools.jiraactions.api.w3c.PerformanceResourceTi
 import com.atlassian.performance.tools.report.chart.waterfall.Phase.*
 import org.apache.logging.log4j.LogManager
 import java.io.File
-import java.net.URI
 import java.time.Duration
 import javax.json.Json
 import javax.json.JsonArray
@@ -104,7 +103,7 @@ internal class WaterfallChart {
             .build()
 
         return ProcessingModel(
-            address = URI(resource.entry.name),
+            address = resource.entry.name,
             phases = phases,
             initiatorType = resource.initiatorType,
             transferSize = resource.transferSize,
@@ -130,7 +129,7 @@ internal class WaterfallChart {
             .build()
 
         return ProcessingModel(
-            address = URI(resource.entry.name),
+            address = resource.entry.name,
             phases = phases,
             initiatorType = resource.initiatorType,
             transferSize = resource.transferSize,
@@ -237,7 +236,7 @@ internal class WaterfallChart {
         requests: Collection<ProcessingModel>
     ): JsonObject = Json.createObjectBuilder()
         .add("labels", Json.createArrayBuilder(requests.map { Utils().prettyPrint(it.address) }).build())
-        .add("fullLabels", Json.createArrayBuilder(requests.map { it.address.toString() }).build())
+        .add("fullLabels", Json.createArrayBuilder(requests.map { it.address }).build())
         .add("initiatorTypes", Json.createArrayBuilder(requests.map { it.initiatorType }).build())
         .add("transferSizes", Json.createArrayBuilder(requests.map { it.transferSize }).build())
         .add("decodedBodySizes", Json.createArrayBuilder(requests.map { it.decodedBodySize }).build())

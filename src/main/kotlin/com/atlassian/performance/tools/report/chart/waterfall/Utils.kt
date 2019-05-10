@@ -1,7 +1,6 @@
 package com.atlassian.performance.tools.report.chart.waterfall
 
 import com.atlassian.performance.tools.report.JsonStyle
-import java.net.URI
 import java.text.DecimalFormat
 import javax.json.JsonObject
 
@@ -18,9 +17,8 @@ internal class Utils {
 
     fun prettyPrint(json: JsonObject): String = JsonStyle().prettyPrint(json)
 
-    fun prettyPrint(address: URI): String {
-        val path = address.path ?: address.schemeSpecificPart ?: "unknown"
-        val label = path.substring(path.lastIndexOf('/') + 1) + (address.query ?: "")
+    fun prettyPrint(address: String): String {
+        val label = address.substringAfterLast('/')
         val maxLength = 30
         return if (label.length > maxLength) {
             label.substring(0, maxLength - 3) + "..."
