@@ -14,6 +14,7 @@ class OutlierTrimming(
     ): Double {
         val lowerBound = Math.floor(data.n * lowerTrim).toInt()
         val upperBound = Math.ceil(data.n * upperTrim).toInt()
-        return metric.evaluate(data.values, lowerBound, upperBound)
+        val length = upperBound - lowerBound
+        return metric.evaluate(data.sortedValues, lowerBound, length)
     }
 }
