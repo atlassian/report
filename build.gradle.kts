@@ -24,6 +24,7 @@ configurations.all {
                 "com.jcraft:jzlib" -> useVersion("1.1.3")
                 "com.google.code.gson:gson" -> useVersion("2.8.2")
                 "org.jsoup:jsoup" -> useVersion("1.10.2")
+                "com.numericalmethod:suanshu-20120606" -> useVersion("1.0.1-atlassian-hosted")
             }
             when (requested.group) {
                 "org.jetbrains.kotlin" -> useVersion(kotlinVersion)
@@ -45,7 +46,8 @@ dependencies {
         "org.eclipse.jgit:org.eclipse.jgit:4.11.0.201803080745-r",
         "org.apache.commons:commons-csv:1.4",
         "org.apache.commons:commons-math3:3.6.1",
-        "org.apache.commons:commons-lang3:3.5"
+        "org.apache.commons:commons-lang3:3.5",
+        "com.numericalmethod:suanshu-20120606:1.0.1-atlassian-hosted"
     ).plus(
         log4jCore()
     ).forEach { implementation(it) }
