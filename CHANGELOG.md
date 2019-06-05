@@ -24,7 +24,10 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://github.com/atlassian/report/compare/release-3.2.2...master
+[Unreleased]: https://github.com/atlassian/report/compare/release-3.3.0...master
+
+## [3.3.0] - 2019-06-06
+[3.3.0]: https://github.com/atlassian/report/compare/release-3.2.2...release-3.3.0
 
 ### Added
 - Add `ShiftedDistributionRegressionTest`, `RelativeNonparametricPerformanceJudge` and `RelativePerformanceStabilityJudge` which are necessary for [JPERF-493].
