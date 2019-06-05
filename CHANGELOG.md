@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.2.2...master
 
+### Added
+- Add `ShiftedDistributionRegressionTest`, `RelativeNonparametricPerformanceJudge` and `RelativePerformanceStabilityJudge` which are necessary for [JPERF-493].
+
+[JPREF-493]: https://ecosystem.atlassian.net/browse/JPERF-493
+
 ## [3.2.2] - 2019-05-30
 [3.2.2]: https://github.com/atlassian/report/compare/release-3.2.1...release-3.2.2
 
@@ -33,11 +38,6 @@ Dropping a requirement of a major version of a dependency is a new contract.
 - Trim outliers properly. Fix [JPERF-490].
 
 [JPREF-490]: https://ecosystem.atlassian.net/browse/JPERF-490
-
-### Added
-- Add `ShiftedDistributionRegressionTest`, `RelativeNonparametricPerformanceJudge` and `RelativePerformanceStabilityJudge` which are necessary for [JPERF-493].
-
-[JPREF-493]: https://ecosystem.atlassian.net/browse/JPERF-493
 
 ## [3.2.1] - 2019-05-10
 [3.2.1]: https://github.com/atlassian/report/compare/release-3.2.0...release-3.2.1
