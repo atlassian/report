@@ -4,6 +4,7 @@ import com.atlassian.performance.tools.jiraactions.api.*
 import com.atlassian.performance.tools.report.api.FullTimeline
 import com.atlassian.performance.tools.report.api.ShiftedDistributionRegressionTest
 import com.atlassian.performance.tools.report.api.result.LocalRealResult
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.data.Percentage
 import org.junit.Test
@@ -51,6 +52,19 @@ class ShiftedDistributionRegressionTestTest {
         val test = testForAction("JIRA-JPT760-JOB1-8", EDIT_ISSUE_SUBMIT)
 
         assertThat(test.percentageShift).isCloseTo(0.018774, Percentage.withPercentage(0.01))
+    }
+
+    @Test
+    fun shouldNotThrowInKolmogorovSmirnov() {
+        val test = testForAction("KOLMOGOROV-SMIRNOV", CREATE_ISSUE_SUBMIT)
+
+        val noExceptions = Assertions.catchThrowable {
+            test.equalDistributionsAfterShift
+        }
+
+        assertThat(noExceptions)
+            .`as`("should not throw when accessing equalDistributionsAfterShift")
+            .doesNotThrowAnyException()
     }
 
     private fun testForAction(
