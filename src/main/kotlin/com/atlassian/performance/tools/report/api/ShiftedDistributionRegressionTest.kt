@@ -1,9 +1,9 @@
 package com.atlassian.performance.tools.report.api
 
+import com.numericalmethod.suanshu.stats.test.distribution.kolmogorov.KolmogorovSmirnov.Side
+import com.numericalmethod.suanshu.stats.test.distribution.kolmogorov.KolmogorovSmirnov2Samples
 import com.numericalmethod.suanshu.stats.test.rank.wilcoxon.WilcoxonRankSum
 import org.apache.commons.math3.stat.descriptive.rank.Median
-import org.apache.commons.math3.stat.inference.KolmogorovSmirnovTest
-import java.lang.Exception
 
 /**
  * Provides means for nonparametric comparison of two data sets
@@ -52,11 +52,13 @@ class ShiftedDistributionRegressionTest(
 
     /**
      * Tests for equality of probability distribution shapes ignoring location
+     * Keep in mind that due to limitation of Kolmogorov-Smirnov algorithm, this test may fail to detect difference
+     * when sample size is low (<100), but might be too sensitive when sample size is very large
      */
     val equalDistributionsAfterShift: Boolean by lazy {
         val shiftedExperiment = experiment.copyOf()
         shiftedExperiment.indices.forEach { shiftedExperiment[it] += shift }
-        return@lazy KolmogorovSmirnovTest().kolmogorovSmirnovTest(baseline, shiftedExperiment) >= ksAlpha
+        return@lazy KolmogorovSmirnov2Samples(baseline, shiftedExperiment, Side.TWO_SIDED).pValue() >= ksAlpha
     }
 
     /**
