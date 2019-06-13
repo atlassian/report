@@ -8,9 +8,11 @@ import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
 import com.atlassian.performance.tools.report.api.result.EdibleResult
 
-class RelativeNonparametricPerformanceJudge {
+class RelativeNonparametricPerformanceJudge(
+    private val significance: Double
+) {
 
-    private val significance = 0.05
+    constructor() : this(significance = 0.05)
 
     fun judge(
         toleranceRatios: Map<ActionType<*>, Float>,
@@ -55,5 +57,5 @@ class RelativeNonparametricPerformanceJudge {
         }
     }
 
-    private fun Float.toPercentage(): String = "%+.0f%%".format(this * 100)
+    private fun Float.toPercentage(): String = "%+.2f%%".format(this * 100)
 }
