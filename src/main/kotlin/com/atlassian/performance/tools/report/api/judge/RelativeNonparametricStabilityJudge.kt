@@ -7,9 +7,11 @@ import com.atlassian.performance.tools.report.api.junit.FailedAssertionJUnitRepo
 import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
 import com.atlassian.performance.tools.report.api.result.EdibleResult
 
-class RelativeNonparametricStabilityJudge {
+class RelativeNonparametricStabilityJudge(
+    private val significance: Double
+) {
 
-    private val significance = 0.05
+    constructor() : this(significance = 0.05)
 
     fun judge(
         actions: List<ActionType<*>>,

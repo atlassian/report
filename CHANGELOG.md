@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.3.0...master
 
+### Added
+- Add second constructor with significance parameter to `RelativeNonparametricStabilityJudge` and `RelativeNonparametricPerformanceJudge`. Resolve [JPERF-500].
+
+[JPREF-500]: https://ecosystem.atlassian.net/browse/JPERF-500
+
 ### Fixed
 - Use SuanShu's Kolmogorov-Smirnov implementation. Fix [JPERF-495].
 
