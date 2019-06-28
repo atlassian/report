@@ -28,10 +28,17 @@ class ColdCachesTimeline(
         val start = timeline.first().start
         val startEdge = start + coldCaches
 
-        return timeline
+        val cropped = timeline
             .asSequence()
             .filter { it.start > startEdge }
             .toList()
+        if (cropped.isEmpty()) {
+            throw Exception(
+                "The action metrics contained only cold-cache results (within $coldCaches since start)." +
+                    " Either increase the load duration or stop cold-cache cropping."
+            )
+        }
+        return cropped
     }
 }
 
