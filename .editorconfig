@@ -1,2 +1,5 @@
-[*.{kt,kts}]
+[*]
+insert_final_newline = true
+
+[*.{kt, kts}]
 indent_size = 4
