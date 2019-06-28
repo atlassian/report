@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.4.0...master
 
+### Fixed
+- Inform about over-cropping action metric timelines. Fix [JPERF-152].
+
+[JPREF-152]: https://ecosystem.atlassian.net/browse/JPERF-152
+
 ## [3.4.0] - 2019-06-13
 [3.4.0]: https://github.com/atlassian/report/compare/release-3.3.1...release-3.4.0
 

@@ -5,6 +5,7 @@ import com.atlassian.performance.tools.jiraactions.api.ActionResult
 import com.atlassian.performance.tools.jiraactions.api.BROWSE_BOARDS
 import com.atlassian.performance.tools.report.api.result.LocalRealResult
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.Test
 import java.nio.file.Paths
 import java.time.Duration
@@ -37,9 +38,16 @@ class StandardTimelineTest {
     }
 
     @Test
-    fun shouldAcceptShortMetrics() {
+    fun shouldInformAboutOvercropping() {
         val shortMetrics = loadMetrics().take(2)
 
-        StandardTimeline(Duration.ofSeconds(10)).crop(shortMetrics)
+        val thrown = catchThrowable {
+            StandardTimeline(Duration.ofSeconds(10)).crop(shortMetrics)
+        }
+
+        assertThat(thrown)
+            .hasMessageContaining("action metrics contained only cold-cache results")
+            .hasMessageContaining("increase the load duration")
+            .hasMessageContaining("stop cold-cache cropping")
     }
 }
