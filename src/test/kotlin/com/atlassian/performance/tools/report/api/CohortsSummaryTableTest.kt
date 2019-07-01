@@ -16,7 +16,7 @@ class CohortsSummaryTableTest {
         CohortsSummaryTable(
                 output = actualOutput,
                 labels = results[0].actionLabels.toList()
-        ).report(results.map { it.actionStats })
+        ).report(results.map { it.stats })
 
         val expectedOutput = File(javaClass.getResource("expected-aui-table.html").toURI())
         Assertions.assertThat(actualOutput).hasSameContentAs(expectedOutput)

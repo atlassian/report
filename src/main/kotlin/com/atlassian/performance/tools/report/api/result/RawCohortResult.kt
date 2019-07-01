@@ -2,7 +2,9 @@ package com.atlassian.performance.tools.report.api.result
 
 import com.atlassian.performance.tools.io.api.directories
 import com.atlassian.performance.tools.jiraactions.api.ActionMetric
+import com.atlassian.performance.tools.jiraactions.api.ActionType
 import com.atlassian.performance.tools.jiraactions.api.parser.MergingActionMetricsParser
+import com.atlassian.performance.tools.report.api.OutlierTrimming
 import com.atlassian.performance.tools.report.api.Timeline
 import com.atlassian.performance.tools.report.api.parser.MergingNodeCountParser
 import com.atlassian.performance.tools.report.api.parser.SystemMetricsParser
@@ -28,6 +30,14 @@ abstract class RawCohortResult private constructor() {
      */
     abstract fun prepareForJudgement(
         timeline: Timeline
+    ): EdibleResult
+
+    /**
+     * Prepares post-processed performance results.
+     */
+    abstract fun prepareForJudgement(
+        timeline: Timeline,
+        actionTypeToOutlierTrimming: Map<ActionType<*>, OutlierTrimming>
     ): EdibleResult
 
     class Factory {
@@ -67,6 +77,15 @@ abstract class RawCohortResult private constructor() {
                 .build()
         }
 
+        override fun prepareForJudgement(timeline: Timeline, actionTypeToOutlierTrimming: Map<ActionType<*>, OutlierTrimming>): EdibleResult {
+            return EdibleResult.Builder(cohort)
+                .actionMetrics(timeline.crop(parseActions(actionParser)))
+                .systemMetrics(systemParser.parse(results))
+                .nodeDistribution(nodeParser.parse(results))
+                .trimmingPerType(actionTypeToOutlierTrimming)
+                .build()
+        }
+
         private fun parseActions(
             parser: MergingActionMetricsParser
         ): List<ActionMetric> {
@@ -93,6 +112,12 @@ abstract class RawCohortResult private constructor() {
                 .failure(failure)
                 .build()
         }
+
+        override fun prepareForJudgement(timeline: Timeline, actionTypeToOutlierTrimming: Map<ActionType<*>, OutlierTrimming>): EdibleResult {
+            return EdibleResult.Builder(cohort)
+                .failure(failure)
+                .build()
+        }
     }
 
     private class LegacyRawCohortResult(
@@ -104,6 +129,12 @@ abstract class RawCohortResult private constructor() {
             get() = throw Exception("Legacy failed results don't point to partial results on disk")
 
         override fun prepareForJudgement(timeline: Timeline): EdibleResult {
+            return EdibleResult.Builder(cohort)
+                .failure(failure)
+                .build()
+        }
+
+        override fun prepareForJudgement(timeline: Timeline, actionTypeToOutlierTrimming: Map<ActionType<*>, OutlierTrimming>): EdibleResult {
             return EdibleResult.Builder(cohort)
                 .failure(failure)
                 .build()

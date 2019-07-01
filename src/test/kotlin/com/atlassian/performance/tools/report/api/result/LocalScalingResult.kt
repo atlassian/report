@@ -4,7 +4,6 @@ import com.atlassian.performance.tools.report.api.FullTimeline
 import java.io.File
 import java.io.FileFilter
 import java.nio.file.Path
-import java.nio.file.Paths
 
 internal class LocalScalingResult(
     private val path: Path
