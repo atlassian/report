@@ -28,11 +28,14 @@ class MaximumCoverageJudge {
         report: TestWorkspace,
         criteria: PerformanceCriteria
     ): Verdict {
+        val trimming = criteria.actionCriteria.mapValues { (_, actionCriteria) -> actionCriteria.outlierTrimming }
         val edibleBaseline = baseline.prepareForJudgement(
-            StandardTimeline(criteria.virtualUserLoad.total)
+            StandardTimeline(criteria.virtualUserLoad.total),
+            trimming
         )
         val edibleExperiment = experiment.prepareForJudgement(
-            StandardTimeline(criteria.virtualUserLoad.total)
+            StandardTimeline(criteria.virtualUserLoad.total),
+            trimming
         )
         val results = listOf(edibleBaseline, edibleExperiment)
         return IndependentCohortsJudge().judge(

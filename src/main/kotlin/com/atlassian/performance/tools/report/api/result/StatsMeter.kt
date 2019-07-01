@@ -2,13 +2,20 @@ package com.atlassian.performance.tools.report.api.result
 
 import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.jiraactions.api.ActionMetricStatistics
+import com.atlassian.performance.tools.jiraactions.api.ActionType
 import com.atlassian.performance.tools.report.ActionMetricsReader
 import com.atlassian.performance.tools.report.api.OutlierTrimming
+import com.atlassian.performance.tools.report.result.InternalStatsMeter
 import com.atlassian.performance.tools.report.result.PerformanceStats
 import org.apache.commons.math3.stat.descriptive.UnivariateStatistic
 import java.time.Duration
 
+@Deprecated("This class will no longer be part of API. If you need Stats meter results go to EdibleResult class")
 class StatsMeter {
+
+    private companion object {
+        private val internalStatsMeter: InternalStatsMeter = InternalStatsMeter()
+    }
 
     fun measurePerformance(
         result: EdibleResult,
@@ -38,12 +45,6 @@ class StatsMeter {
         return PerformanceStats(result.cohort, sampleSizes, centers, dispersions, errors)
     }
 
-    @Deprecated(
-        message = "Use measurePerformance instead.",
-        replaceWith = ReplaceWith(
-            expression = "measurePerformance(result, centralTendencyMetric, dispersionMetric, outlierTrimming)"
-        )
-    )
     fun measure(
         result: EdibleResult,
         centralTendencyMetric: UnivariateStatistic,
@@ -83,22 +84,7 @@ class StatsMeter {
         metric: UnivariateStatistic,
         outlierTrimming: OutlierTrimming
     ): Map<String, Duration> {
-        val labels = metrics.map { it.label }.toSet()
-        return labels
-            .asSequence()
-            .map { label -> calculate(label, metrics, metric, outlierTrimming) }
-            .toMap()
-    }
-
-    private fun calculate(
-        label: String,
-        metrics: List<ActionMetric>,
-        metric: UnivariateStatistic,
-        outlierTrimming: OutlierTrimming
-    ): Pair<String, Duration> {
-        val durationData = ActionMetricsReader().read(metrics)[label] ?: DurationData.createEmptyMilliseconds()
-        val results = measure(durationData, metric, outlierTrimming)
-        return label to results
+        return internalStatsMeter.calculate(metrics, metric, outlierTrimming)
     }
 
     fun measure(

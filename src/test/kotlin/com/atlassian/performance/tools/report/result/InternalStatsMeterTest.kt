@@ -1,21 +1,23 @@
-package com.atlassian.performance.tools.report.api.result
+package com.atlassian.performance.tools.report.result
 
 import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.jiraactions.api.ActionResult
+import com.atlassian.performance.tools.jiraactions.api.ActionType
 import com.atlassian.performance.tools.report.api.OutlierTrimming
+import com.atlassian.performance.tools.report.api.result.EdibleResult
+import com.atlassian.performance.tools.report.api.result.StatsMeter
 import org.apache.commons.math3.stat.descriptive.rank.Max
 import org.apache.commons.math3.stat.descriptive.rank.Min
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.time.Duration
 import java.time.Instant
-import java.util.*
 
-class StatsMeterTest {
+class InternalStatsMeterTest {
 
     @Test
     fun shouldMeasure() {
-        val statsMeter = StatsMeter()
+        val statsMeter = InternalStatsMeter()
         val action1 = "action1"
         val action2 = "action2"
         val edibleResult = EdibleResult.Builder("test")
@@ -32,17 +34,17 @@ class StatsMeterTest {
             )
             .build()
 
-        val stats = statsMeter.measure(
+        val stats = statsMeter.measurePerformance(
             result = edibleResult,
             centralTendencyMetric = Max(),
             dispersionMetric = Min(),
-            outlierTrimming = OutlierTrimming(
-                lowerTrim = 0.0,
-                upperTrim = 1.0
+            trimmingPerType = mapOf(
+                ActionType<Any>(action1) {Unit} to OutlierTrimming(lowerTrim = 0.0, upperTrim = 1.0),
+                ActionType<Any>(action2) {Unit} to OutlierTrimming(lowerTrim = 0.0, upperTrim = 1.0)
             )
         )
+
         val sampleSizes = stats.sampleSizes
-        val centers = stats.centers
         val dispersions = stats.dispersions
         val errors = stats.errors
 
@@ -50,10 +52,25 @@ class StatsMeterTest {
         assertThat(sampleSizes[action2]).isEqualTo(3)
         assertThat(errors!![action1]).isEqualTo(1)
         assertThat(errors[action2]).isEqualTo(0)
-        assertThat(centers).containsEntry(action1, Duration.ofSeconds(3))
         assertThat(dispersions).containsEntry(action1, Duration.ofSeconds(1))
-        assertThat(centers).containsEntry(action2, Duration.ofSeconds(6))
         assertThat(dispersions).containsEntry(action2, Duration.ofSeconds(1))
+    }
+
+    @Test
+    fun measureAccordingToProvidedOutliers() {
+        val searchWithJql = "Search with JQL"
+        val searchWithJqlType = ActionType<Any>(searchWithJql) { Unit }
+        val result = EdibleResult.Builder("test")
+            .actionMetrics(
+                listOf(
+                    createActionMetric(searchWithJql, Duration.ofSeconds(1)),
+                    createActionMetric(searchWithJql, Duration.ofSeconds(10))
+                ))
+            .trimmingPerType(
+                mapOf(searchWithJqlType to OutlierTrimming(lowerTrim = 0.0, upperTrim = 0.5)))
+            .build()
+
+        assertThat(result.stats.locations[searchWithJql]).isEqualTo(Duration.parse("PT1.0S"))
     }
 
     private fun createActionMetric(label: String, duration: Duration, result: ActionResult = ActionResult.OK): ActionMetric {

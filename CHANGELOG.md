@@ -28,8 +28,14 @@ Dropping a requirement of a major version of a dependency is a new contract.
 
 ### Fixed
 - Inform about over-cropping action metric timelines. Fix [JPERF-152].
+- Stop ignoring OutlierTrimming in MaximumCoverageJudge. Fix [JPERF-443].
+
+### Deprecated
+- Deprecate `EdibleResult.actionStats` in favour of `EdibleResult.stats` field.
+- Deprecate `StatsMeter` in favour of `EdibleResult`.
 
 [JPREF-152]: https://ecosystem.atlassian.net/browse/JPERF-152
+[JPERF-443]: https://ecosystem.atlassian.net/browse/JPERF-443
 
 ## [3.4.0] - 2019-06-13
 [3.4.0]: https://github.com/atlassian/report/compare/release-3.3.1...release-3.4.0
