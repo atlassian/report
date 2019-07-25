@@ -1,14 +1,24 @@
 package com.atlassian.performance.tools.report.api.judge
 
+import com.atlassian.performance.tools.jiraactions.api.ActionType
 import com.atlassian.performance.tools.report.api.junit.FailedAssertionJUnitReport
 import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
 
-class Verdict(
-    private val reports: List<JUnitReport>
+class Verdict internal constructor(
+    private val reports: List<JUnitReport>,
+    val failedActions: List<ActionType<*>>
 ) {
+
+    constructor(
+        reports: List<JUnitReport>
+    ) : this(
+        reports = reports,
+        failedActions = emptyList()
+    )
+
     private val logger = LogManager.getLogger(this::class.java)
     internal val positive: Boolean = reports.all { it.successful }
 
