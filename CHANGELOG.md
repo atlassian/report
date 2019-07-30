@@ -26,11 +26,18 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.6.0...master
 
+### Added
+- Add `ActionReport` interface which is necessary for [JPERF-537].
+- Add `reports` property to `Verdict`. Resolve [JPERF-537].
+
+### Deprecated
+- Deprecate `failedActions` property in `Verdict`.
+
 ## [3.6.0] - 2019-07-25
 [3.6.0]: https://github.com/atlassian/report/compare/release-3.5.0...release-3.6.0
 
 ### Added
-- Add `failedActions` property to `Verdict`. Resolve [JPERF-537].
+- Add `failedActions` property to `Verdict` which is necessary for [JPERF-537].
 
 [JPREF-537]: https://ecosystem.atlassian.net/browse/JPERF-537
 

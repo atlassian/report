@@ -7,17 +7,15 @@ import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
 
-class Verdict internal constructor(
-    private val reports: List<JUnitReport>,
-    val failedActions: List<ActionType<*>>
+class Verdict(
+    val reports: List<JUnitReport>
 ) {
 
-    constructor(
-        reports: List<JUnitReport>
-    ) : this(
-        reports = reports,
-        failedActions = emptyList()
-    )
+    @Deprecated("Use reports instead.")
+    val failedActions: List<ActionType<*>>  = reports
+        .filterIsInstance<ActionReport>()
+        .filter { !it.successful }
+        .map { it.action }
 
     private val logger = LogManager.getLogger(this::class.java)
     internal val positive: Boolean = reports.all { it.successful }
