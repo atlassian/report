@@ -6,11 +6,14 @@ import com.atlassian.performance.tools.report.api.junit.JUnitReport
 /**
  * Action aware report
  *
- * @property action Action associated with this report.
- * @property nonExceptional True if the failure in this report is expected sometimes as a part of a normal flow, false otherwise.
+ * @property action Null if no Action has been associated with this report.
+ * @property critical False if the failure in this report is expected sometimes as a part of a normal flow, True otherwise.
  */
-interface ActionReport : JUnitReport {
+class ActionReport(
+    internal val report: JUnitReport,
+    val action: ActionType<*>?,
+    val critical: Boolean
+) {
 
-    val action: ActionType<*>
-    val nonExceptional: Boolean
+    val successful = report.successful
 }

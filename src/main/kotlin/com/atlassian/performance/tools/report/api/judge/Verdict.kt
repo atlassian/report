@@ -7,26 +7,46 @@ import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
 
-class Verdict(
-    val reports: List<JUnitReport>
+class Verdict internal constructor(
+    val actionReports: Collection<ActionReport>
 ) {
 
-    @Deprecated("Use reports instead.")
-    val failedActions: List<ActionType<*>>  = reports
-        .filterIsInstance<ActionReport>()
+    constructor(
+        reports: List<JUnitReport>
+    ) : this(
+        actionReports = reports.map {
+            ActionReport(
+                report = it,
+                action = null,
+                critical = !it.successful
+            )
+        }
+    )
+
+    @Deprecated("Use actionReports instead.")
+    val failedActions: List<ActionType<*>>  = actionReports
         .filter { !it.successful }
-        .map { it.action }
+        .mapNotNull { it.action }
 
     private val logger = LogManager.getLogger(this::class.java)
-    internal val positive: Boolean = reports.all { it.successful }
+    internal val positive: Boolean = actionReports.all { it.successful }
+
+    fun dump(
+        testClassName: String,
+        testResults: Path,
+        expectedReportCount: Int? = null
+    ) {
+        val allReports = actionReports.map { it.report } + checkIfNoReportIsMissing(expectedReportCount)
+        allReports.forEach { it.dump(testClassName, testResults.resolve("dynamic-$testClassName")) }
+    }
 
     fun assertAccepted(
         testClassName: String,
         testResults: Path,
         expectedReportCount: Int? = null
     ) {
-        val allReports = reports + checkIfNoReportIsMissing(expectedReportCount)
-        allReports.forEach { it.dump(testClassName, testResults.resolve("dynamic-$testClassName")) }
+        dump(testClassName, testResults, expectedReportCount)
+        val allReports = actionReports.map { it.report } + checkIfNoReportIsMissing(expectedReportCount)
         val fails = allReports.filter { !it.successful }
         if (fails.isNotEmpty()) {
             throw Exception("Performance results are rejected, because:\n" + fails.joinToString(separator = "\n"))
@@ -35,7 +55,7 @@ class Verdict(
     }
 
     operator fun plus(other: Verdict) = Verdict(
-        reports + other.reports
+        actionReports + other.actionReports
     )
 
     private fun checkIfNoReportIsMissing(
@@ -44,8 +64,8 @@ class Verdict(
         val testName = "Report meta-check"
         return when {
             expectedReportCount == null -> SuccessfulJUnitReport(testName = testName)
-            expectedReportCount != reports.size -> FailedAssertionJUnitReport(
-                assertion = "$expectedReportCount reports were expected, but ${reports.size} reports were yielded",
+            expectedReportCount != actionReports.size -> FailedAssertionJUnitReport(
+                assertion = "$expectedReportCount reports were expected, but ${actionReports.size} reports were yielded",
                 testName = testName
             )
             else -> SuccessfulJUnitReport(testName = testName)

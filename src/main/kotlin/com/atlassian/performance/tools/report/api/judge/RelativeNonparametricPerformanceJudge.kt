@@ -36,37 +36,37 @@ class RelativeNonparametricPerformanceJudge(
         toleranceRatio: Float,
         baselineResult: EdibleResult,
         experimentResult: EdibleResult
-    ): ActionReportImpl {
+    ): ActionReport {
         val label = action.label
         val baselineCohort = baselineResult.cohort
         val experimentCohort = experimentResult.cohort
         val reportName = "Regression for $label $experimentCohort vs $baselineCohort"
         val reader = ActionMetricsReader()
         val baseline = reader.read(baselineResult.actionMetrics)[label]?.stats?.values
-            ?: return ActionReportImpl(
+            ?: return ActionReport(
                 report = FailedAssertionJUnitReport(reportName, "No action $label results for $baselineCohort"),
                 action = action,
-                nonExceptional = false
+                critical = true
             )
         val experiment = reader.read(experimentResult.actionMetrics)[label]?.stats?.values
-            ?: return ActionReportImpl(
+            ?: return ActionReport(
                 report = FailedAssertionJUnitReport(reportName, "No action $label results for $experimentCohort"),
                 action = action,
-                nonExceptional = false
+                critical = true
             )
         val test = ShiftedDistributionRegressionTest(baseline, experiment, mwAlpha = significance, ksAlpha = 0.0)
         return if (test.isExperimentRegressed(toleranceRatio.toDouble())) {
             val message = "Regression in [$label] is larger than allowed ${toleranceRatio.toPercentage()} tolerance at $significance significance level"
-            ActionReportImpl(
+            ActionReport(
                 report = FailedAssertionJUnitReport(reportName, message),
                 action = action,
-                nonExceptional = true
+                critical = false
             )
         } else {
-            ActionReportImpl(
+            ActionReport(
                 report = SuccessfulJUnitReport(reportName),
                 action = action,
-                nonExceptional = false
+                critical = false
             )
         }
     }

@@ -35,37 +35,37 @@ class RelativeNonparametricStabilityJudge(
         action: ActionType<*>,
         baselineResult: EdibleResult,
         experimentResult: EdibleResult
-    ): ActionReportImpl {
+    ): ActionReport {
         val label = action.label
         val baselineCohort = baselineResult.cohort
         val experimentCohort = experimentResult.cohort
         val reportName = "Stability regression for $label $experimentCohort vs $baselineCohort"
         val reader = ActionMetricsReader()
         val baseline = reader.read(baselineResult.actionMetrics)[label]?.stats?.values
-            ?: return ActionReportImpl(
+            ?: return ActionReport(
                 report = FailedAssertionJUnitReport(reportName, "No action $label results for $baselineCohort"),
                 action = action,
-                nonExceptional = false
+                critical = true
             )
         val experiment = reader.read(experimentResult.actionMetrics)[label]?.stats?.values
-            ?: return ActionReportImpl(
+            ?: return ActionReport(
                 report = FailedAssertionJUnitReport(reportName, "No action $label results for $experimentCohort"),
                 action = action,
-                nonExceptional = false
+                critical = true
             )
         val test = ShiftedDistributionRegressionTest(baseline, experiment, mwAlpha = 0.0, ksAlpha = significance)
         return if (!test.equalDistributionsAfterShift) {
             val message = "[$label] distribution shapes are different at $significance significance level"
-            ActionReportImpl(
+            ActionReport(
                 report = FailedAssertionJUnitReport(reportName, message),
                 action = action,
-                nonExceptional = true
+                critical = false
             )
         } else {
-            ActionReportImpl(
+            ActionReport(
                 report = SuccessfulJUnitReport(testName = reportName),
                 action = action,
-                nonExceptional = false
+                critical = false
             )
         }
     }
