@@ -7,6 +7,7 @@ import com.atlassian.performance.tools.report.api.junit.FailedAssertionJUnitRepo
 import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
 import com.atlassian.performance.tools.report.api.result.EdibleResult
+import com.atlassian.performance.tools.report.junit.FailedActionJunitReport
 
 class RelativeNonparametricPerformanceJudge(
     private val significance: Double
@@ -61,7 +62,7 @@ class RelativeNonparametricPerformanceJudge(
         return if (test.isExperimentRegressed(toleranceRatio.toDouble())) {
             val message = "Regression in [$label] is larger than allowed ${toleranceRatio.toPercentage()} tolerance at $significance significance level"
             ActionReport(
-                report = FailedAssertionJUnitReport(reportName, message),
+                report = FailedActionJunitReport(reportName, message),
                 action = action,
                 nonExceptionalFailure = true
             )

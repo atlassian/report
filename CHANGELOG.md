@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.6.0...master
 
+### Fixed
+- Make nonparametric judges more specific about the failure type. Resolves [JPERF-551].
+
+[JPERF-551]: https://ecosystem.atlassian.net/browse/JPERF-551
+
 ## [3.6.0] - 2019-07-25
 [3.6.0]: https://github.com/atlassian/report/compare/release-3.5.0...release-3.6.0
 
