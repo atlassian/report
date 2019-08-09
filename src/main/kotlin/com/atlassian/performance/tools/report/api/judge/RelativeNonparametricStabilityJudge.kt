@@ -7,6 +7,7 @@ import com.atlassian.performance.tools.report.api.junit.FailedAssertionJUnitRepo
 import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
 import com.atlassian.performance.tools.report.api.result.EdibleResult
+import com.atlassian.performance.tools.report.junit.FailedActionJunitReport
 
 class RelativeNonparametricStabilityJudge(
     private val significance: Double
@@ -63,7 +64,7 @@ class RelativeNonparametricStabilityJudge(
         return if (!test.equalDistributionsAfterShift) {
             val message = "[$label] distribution shapes are different at $significance significance level"
             ActionReport(
-                report = FailedAssertionJUnitReport(reportName, message),
+                report = FailedActionJunitReport(reportName, message),
                 action = action,
                 nonExceptionalFailure = true
             )
