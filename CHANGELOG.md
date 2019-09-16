@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.6.1...master
 
+### Added
+- Show the entire cohort latency distribution. Resolve [JPERF-575].
+
+[JPERF-575]: https://ecosystem.atlassian.net/browse/JPERF-575
+
 ## [3.6.1] - 2019-08-09
 [3.6.1]: https://github.com/atlassian/report/compare/release-3.6.0...release-3.6.1
 
