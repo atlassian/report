@@ -16,6 +16,29 @@ class FullReport {
     private val repo = GitRepo.findFromCurrentDirectory()
     private val logger = LogManager.getLogger(this::class.java)
 
+    /**
+     * Produce all known useful reports for both comparisons and individual results.
+     *
+     * ### Comparisons
+     * Compare different [results]. Each result is treated equally.
+     *
+     * #### Cohort summary
+     * Tabulate aggregated stats of all [results] in CSV and HTML formats.
+     *
+     * #### Distribution comparison
+     * Display the entire distribution of action metric durations.
+     * Break down per action type.
+     * Since 3.7.0, include the distribution of an entire result.
+     *
+     * ### Individual
+     * Report on each of the [results] in an isolated subdirectory in the [workspace].
+     *
+     * #### Timeline chart
+     * Plot action metrics, system metrics and VU stats over time.
+     *
+     * #### Waterfall highlight
+     * Chart waterfalls of characteristic action metrics, if captured.
+     */
     fun dump(
         results: List<EdibleResult>,
         workspace: TestWorkspace,
