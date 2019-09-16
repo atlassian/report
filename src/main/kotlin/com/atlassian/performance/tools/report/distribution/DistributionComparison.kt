@@ -1,7 +1,8 @@
 package com.atlassian.performance.tools.report.distribution
 
 import com.atlassian.performance.tools.io.api.ensureParentDirectory
-import com.atlassian.performance.tools.report.*
+import com.atlassian.performance.tools.report.JsonStyle
+import com.atlassian.performance.tools.report.Point
 import com.atlassian.performance.tools.report.api.result.EdibleResult
 import com.atlassian.performance.tools.report.chart.Chart
 import com.atlassian.performance.tools.report.chart.ChartLine
@@ -48,21 +49,42 @@ internal class DistributionComparison(
         summarize: (metrics: List<Int>) -> List<Point<T>>
     ): Chart<T> = Chart(
         results.flatMap { result ->
-            result
-                .actionMetrics
-                .groupBy { it.label }
-                .map { (actionType, metrics) ->
-                    ChartLine(
-                        data = summarize(metrics.map { it.duration.toMillis().toInt() }),
-                        label = "${result.cohort}: $actionType",
-                        cohort = result.cohort,
-                        type = "line",
-                        yAxisId = yAxisId,
-                        hidden = true
-                    )
-                }
+            summarizeEntireCohort(summarize, result, yAxisId) + summarizeEachActionType(result, summarize, yAxisId)
         }
     )
+
+    private fun <T : Comparable<T>> summarizeEntireCohort(
+        summarize: (metrics: List<Int>) -> List<Point<T>>,
+        result: EdibleResult,
+        yAxisId: String
+    ): List<ChartLine<T>> = listOf(
+        ChartLine(
+            data = summarize(result.actionMetrics.map { it.duration.toMillis().toInt() }),
+            label = result.cohort,
+            cohort = result.cohort,
+            type = "line",
+            yAxisId = yAxisId,
+            hidden = false
+        )
+    )
+
+    private fun <T : Comparable<T>> summarizeEachActionType(
+        result: EdibleResult,
+        summarize: (metrics: List<Int>) -> List<Point<T>>,
+        yAxisId: String
+    ): List<ChartLine<T>> = result
+        .actionMetrics
+        .groupBy { it.label }
+        .map { (actionType, metrics) ->
+            ChartLine(
+                data = summarize(metrics.map { it.duration.toMillis().toInt() }),
+                label = "${result.cohort}: $actionType",
+                cohort = result.cohort,
+                type = "line",
+                yAxisId = yAxisId,
+                hidden = true
+            )
+        }
 
     private fun print(chart: Chart<*>): String = JsonStyle().prettyPrint(chart.toJson())
 }
