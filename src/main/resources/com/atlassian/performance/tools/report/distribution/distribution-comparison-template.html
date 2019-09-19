@@ -16,11 +16,10 @@
 </head>
 <body>
 <span class="jpt-flag">JPT commit: '<%= commit =%>'</span>
-<canvas id="histogram"></canvas>
 <canvas id="quantile-chart"></canvas>
 <script>
     function groupBy(arr, fn) {
-        return arr.reduce(function(acc, e) {
+        return arr.reduce(function (acc, e) {
             var key = fn(e);
 
             if (!acc[key])
@@ -87,24 +86,6 @@
             }
         }
     }
-</script>
-<script>
-    var chart = jptChartTemplate('<%= histogram =%>');
-    chart.options.title.text = 'Histogram of latencies';
-    chart.options.scales.xAxes[0].scaleLabel.labelString = "latency range [ms]";
-    chart.options.scales.yAxes = [
-        {
-            scaleLabel: {
-                labelString: "relative frequency [%]",
-                display: true
-            },
-            id: "probability-axis",
-            ticks: {
-                min: 0
-            }
-        }
-    ];
-    new Chart(document.getElementById("histogram").getContext("2d"), chart);
 </script>
 <script>
     var chart = jptChartTemplate('<%= quantileFunction =%>');

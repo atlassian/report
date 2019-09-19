@@ -20,17 +20,12 @@ internal class DistributionComparison(
         results: List<EdibleResult>,
         output: Path
     ) {
-        val histogram = summarize(results, "probability-axis") { Histogram().plot(it) }
         val quantileFunction = summarize(results, "latency-axis") { QuantileFunction().plot(it) }
         val report = this::class
             .java
             .getResourceAsStream("distribution-comparison-template.html")
             .bufferedReader()
             .use { it.readText() }
-            .replace(
-                oldValue = "'<%= histogram =%>'",
-                newValue = print(histogram)
-            )
             .replace(
                 oldValue = "'<%= quantileFunction =%>'",
                 newValue = print(quantileFunction)
