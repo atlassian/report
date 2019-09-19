@@ -70,6 +70,8 @@ internal class DistributionComparison(
     ): List<ChartLine<T>> = result
         .actionMetrics
         .groupBy { it.label }
+        .entries
+        .sortedBy { it.key }
         .map { (actionType, metrics) ->
             ChartLine(
                 data = summarize(metrics.map { it.duration.toMillis().toInt() }),
