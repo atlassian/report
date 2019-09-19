@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.7.0...master
 
+### Fixed
+- Remove the confusing histogram from the distribution comparison in the `FullReport`. Resolve [JPERF-475].
+
+[JPERF-475]: https://ecosystem.atlassian.net/browse/JPERF-475
+
 ## [3.7.0] - 2019-09-16
 [3.7.0]: https://github.com/atlassian/report/compare/release-3.6.1...release-3.7.0
 
