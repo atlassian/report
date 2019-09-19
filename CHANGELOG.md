@@ -29,6 +29,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ### Fixed
 - Remove the confusing histogram from the distribution comparison in the `FullReport`. Resolve [JPERF-475].
 - Explain what the quantile function is.
+- Sort the action labels on the distribution comparison.
 
 [JPERF-475]: https://ecosystem.atlassian.net/browse/JPERF-475
 
