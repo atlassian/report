@@ -3,6 +3,8 @@ package com.atlassian.performance.tools.report.api.result
 import com.atlassian.performance.tools.io.api.directories
 import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.jiraactions.api.ActionType
+import com.atlassian.performance.tools.jiraactions.api.format.MetricJsonFormat
+import com.atlassian.performance.tools.jiraactions.api.format.MetricVerboseJsonFormat
 import com.atlassian.performance.tools.jiraactions.api.parser.MergingActionMetricsParser
 import com.atlassian.performance.tools.report.api.OutlierTrimming
 import com.atlassian.performance.tools.report.api.Timeline
@@ -44,7 +46,13 @@ abstract class RawCohortResult private constructor() {
         fun fullResult(
             cohort: String,
             results: Path
-        ): RawCohortResult = FullRawCohortResult(cohort, results)
+        ): RawCohortResult = fullResult(cohort, results, MetricVerboseJsonFormat())
+
+        fun fullResult(
+            cohort: String,
+            results: Path,
+            format: MetricJsonFormat
+        ): RawCohortResult = FullRawCohortResult(cohort, results, format)
 
         fun failedResult(
             cohort: String,
@@ -61,11 +69,12 @@ abstract class RawCohortResult private constructor() {
 
     private class FullRawCohortResult(
         private val cohort: String,
-        override val results: Path
+        override val results: Path,
+        format: MetricJsonFormat
     ) : RawCohortResult() {
         override val failure: Exception? = null
 
-        private val actionParser = MergingActionMetricsParser()
+        private val actionParser = MergingActionMetricsParser(format)
         private val systemParser = SystemMetricsParser()
         private val nodeParser = MergingNodeCountParser()
 
