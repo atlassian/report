@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.7.1...master
 
+### Added 
+- Parametrize `RawCohortResult.Factory` with `MetricJsonFormat` to avoid drilldown parsing. Work around [JPERF-395].
+
+[JPERF-395]: https://ecosystem.atlassian.net/browse/JPERF-395
+
 ## [3.7.1] - 2019-09-20
 [3.7.1]: https://github.com/atlassian/report/compare/release-3.7.0...release-3.7.1
 
@@ -44,16 +49,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 
 [JPERF-575]: https://ecosystem.atlassian.net/browse/JPERF-575
 
-###Added 
-- Add factory method for creating full results with specified metrics format. Workaround for [JPERF-395].
-
-[JPERF-395]: https://ecosystem.atlassian.net/browse/JPERF-395
-
 ## [3.6.1] - 2019-08-09
 [3.6.1]: https://github.com/atlassian/report/compare/release-3.6.0...release-3.6.1
 
 ### Fixed
-- Make nonparametric judges more specific about the failure type. Resolves [JPERF-551].
+- Make nonparametric judges more specific about the failure type. Resolve [JPERF-551].
 
 [JPERF-551]: https://ecosystem.atlassian.net/browse/JPERF-551
 
