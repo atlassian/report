@@ -24,7 +24,10 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://github.com/atlassian/report/compare/release-3.7.1...master
+[Unreleased]: https://github.com/atlassian/report/compare/release-3.8.0...master
+
+## [3.8.0] - 2019-09-30
+[3.8.0]: https://github.com/atlassian/report/compare/release-3.7.1...release-3.8.0
 
 ### Added 
 - Parametrize `RawCohortResult.Factory` with `MetricJsonFormat` to avoid drilldown parsing. Work around [JPERF-395].
