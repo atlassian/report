@@ -26,6 +26,9 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.8.0...master
 
+### Fixed
+- Emit useful errors from `RelativePerformanceStabilityJudge`.
+
 ## [3.8.0] - 2019-09-30
 [3.8.0]: https://github.com/atlassian/report/compare/release-3.7.1...release-3.8.0
 
