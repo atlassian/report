@@ -24,7 +24,10 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://github.com/atlassian/report/compare/release-3.8.2...master
+[Unreleased]: https://github.com/atlassian/report/compare/release-3.9.0...master
+
+## [3.9.0] - 2020-12-02
+[3.9.0]: https://github.com/atlassian/report/compare/release-3.8.2...release-3.9.0
 
 ### Added
 - Expose Verdict result.
@@ -32,6 +35,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [3.8.2] - 2020-04-06
 [3.8.2]: https://github.com/atlassian/report/compare/release-3.8.1...release-3.8.2
+
 ### Fixed
 - The tooltips shown on hover in timeline chart are now correct. Resolve [JPERF-614].
 
