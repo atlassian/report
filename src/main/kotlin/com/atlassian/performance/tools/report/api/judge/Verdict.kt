@@ -20,7 +20,11 @@ class Verdict internal constructor(
     )
 
     private val logger = LogManager.getLogger(this::class.java)
-    internal val positive: Boolean = reports.all { it.successful }
+
+    /**
+     * @since 3.9.0
+     */
+    val positive: Boolean = reports.all { it.successful }
 
     fun assertAccepted(
         testClassName: String,
