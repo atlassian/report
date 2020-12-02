@@ -35,7 +35,10 @@ class IndependentCohortsJudge {
             .reduce(Verdict::plus)
     }
 
-    private fun judge(
+    /**
+     * @since 3.9.0
+     */
+    fun judge(
         result: EdibleResult,
         criteria: PerformanceCriteria
     ): Verdict {
