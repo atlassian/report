@@ -8,7 +8,10 @@ import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
 
 class Verdict internal constructor(
-    private val reports: List<JUnitReport>,
+    /**
+     * @since 3.10.0
+     */
+    val reports: List<JUnitReport>,
     val failedActions: List<ActionType<*>>
 ) {
 

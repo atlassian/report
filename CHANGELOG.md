@@ -26,6 +26,9 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.9.0...master
 
+### Added
+- Expose Verdict reports.
+
 ## [3.9.0] - 2020-12-02
 [3.9.0]: https://github.com/atlassian/report/compare/release-3.8.2...release-3.9.0
 
