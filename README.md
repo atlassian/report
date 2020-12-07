@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/atlassian/report.svg?branch=master)](https://travis-ci.com/atlassian/report)
+[![CI status](https://github.com/atlassian/report/workflows/CI/badge.svg)](https://github.com/atlassian/report/actions?query=branch%3Amaster+workflow%3ACI)
 
 # Performance reporting
 Produces various reports out of raw performance data.
