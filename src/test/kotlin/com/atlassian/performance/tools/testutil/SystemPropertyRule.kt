@@ -4,9 +4,17 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
-
+/**
+ * Used to mark test methods as requiring a System Property available and cleaned up.
+ */
 annotation class WithSystemProperty(val key:String, val value:String)
 
+/**
+ * An instance of this Rule must be present in a test class and annotated with @Rule.
+ * It does the work of processing the WithSystemProperty annotations - setting up the
+ * desired properties for the test case and restoring them to their previous values
+ * afterwards.
+ */
 class SystemPropertyRule: TestRule {
     override fun apply(statement: Statement, description: Description): Statement {
         val annotations = description
