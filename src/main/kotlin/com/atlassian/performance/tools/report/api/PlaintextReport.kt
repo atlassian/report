@@ -7,8 +7,8 @@ import java.util.*
 
 class PlaintextReport(
     val actionMetricStatistics: ActionMetricStatistics
-) {
-    fun generate(): String {
+): Report {
+    override fun generate(): String {
         val p95 = actionMetricStatistics.percentile(95)
         val report = StringBuilder()
         val formatter = Formatter(report)

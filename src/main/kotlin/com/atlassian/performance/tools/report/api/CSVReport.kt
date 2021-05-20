@@ -5,11 +5,11 @@ import com.atlassian.performance.tools.jiraactions.api.ActionMetricStatistics
 
 class CSVReport(
     private val actionMetricStatistics: ActionMetricStatistics
-) {
+) : Report {
     private val percentileLevels = listOf(50, 95, 99, 100)
     private val percentiles = percentileLevels.map{ it to actionMetricStatistics.percentile(it) }.toMap()
 
-    fun generate(): String {
+    override fun generate(): String {
         val report = StringBuilder()
         report.append("actionName,sampleSize,errors,total,p50,p95,p99,max\n")
         actionMetricStatistics
@@ -31,6 +31,11 @@ class CSVReport(
             actionName, samples, errors, total, p[50], p[95], p[99], p[100])
     }
 
+    /**
+     * extract a map of percentile levels to values just for one action.
+     */
     private fun actionTimingPercentiles(actionName: String) =
-        percentiles.map { byNumber -> (byNumber.key to (byNumber.value[actionName]?.toMillis() ?: "")) }.toMap()
+        percentiles.map { byNumber ->
+            (byNumber.key to (byNumber.value[actionName]?.toMillis() ?: ""))
+        }.toMap()
 }
