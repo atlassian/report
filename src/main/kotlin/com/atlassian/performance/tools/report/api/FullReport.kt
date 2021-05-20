@@ -15,7 +15,6 @@ import org.apache.logging.log4j.LogManager
 class FullReport {
     private val repo = GitRepo.findFromCurrentDirectory()
     private val logger = LogManager.getLogger(this::class.java)
-    private val outputFormat = System.getProperty("FullReport.format") ?: "plain"
 
     /**
      * Produce all known useful reports for both comparisons and individual results.
@@ -81,11 +80,7 @@ class FullReport {
             )
 
             val actionStats = ActionMetricStatistics(result.actionMetrics)
-            val report = if (outputFormat == "csv") {
-                CSVReport(actionStats).generate()
-            } else {
-                PlaintextReport(actionStats).generate()
-            }
+            val report = ReportStrategy.newReport(actionStats).generate()
 
             logger.info("Plain text report:\n$report")
             SearchJqlReport(
