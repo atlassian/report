@@ -80,8 +80,8 @@ class FullReport {
             )
 
             val actionStats = ActionMetricStatistics(result.actionMetrics)
-            val plaintextReport = PlaintextReport(actionStats)
-            val csvReport = CSVReport(actionStats)
+            val plaintextReport = PlaintextReport(actionStats).generate()
+            val csvReport = CSVReport(actionStats).generate()
 
             logger.info("Plain text report:\n$plaintextReport")
             logger.info("CSV report:\n$csvReport")
