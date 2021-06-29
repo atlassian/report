@@ -24,7 +24,13 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://github.com/atlassian/report/compare/release-3.10.1...master
+[Unreleased]: https://github.com/atlassian/report/compare/release-3.11.0...master
+
+## [3.11.0] - 2021-06-08
+[3.11.0]: https://github.com/atlassian/report/compare/release-3.10.1...release-3.11.0
+
+### Added
+- Produce CSV report alongside plaintext version.
 
 ## [3.10.1] - 2020-12-09
 [3.10.1]: https://github.com/atlassian/report/compare/release-3.10.0...release-3.10.1
