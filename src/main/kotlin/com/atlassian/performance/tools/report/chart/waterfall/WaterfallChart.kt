@@ -25,6 +25,12 @@ internal class WaterfallChart {
             logger.debug("Drilldown for ${metric.label} is missing, so waterfall chart is skipped.")
             return
         }
+
+        if(performance.navigations.isEmpty() or performance.resources.isEmpty()) {
+            logger.debug("No navigations or resources data in the drilldown data, so waterfall chart is skipped.")
+            return
+        }
+
         val requests = performance.navigations.map { toProcessingModel(it) }.toMutableList()
         requests.addAll(
             performance.resources.map { toProcessingModel(it) }
