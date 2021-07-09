@@ -20,7 +20,8 @@ class WaterfallChartTest {
         //given
         val output = Paths.get("build/actual-waterfall-chart.html")
         val inputMetricsResource = "action-metrics-performance-timing.jpt"
-        val actionMetrics: List<ActionMetric> = ActionMetricsParser().parse(javaClass.getResourceAsStream(inputMetricsResource))
+        val actionMetrics: List<ActionMetric> =
+            ActionMetricsParser().parse(javaClass.getResourceAsStream(inputMetricsResource))
         val metric = actionMetrics[3]
 
         // when
@@ -41,7 +42,8 @@ class WaterfallChartTest {
         //given
         val output = Paths.get("build/actual-waterfall-chart-without-path.html")
         val inputMetricsResource = "search-with-jql.jpt"
-        val actionMetrics: List<ActionMetric> = ActionMetricsParser().parse(javaClass.getResourceAsStream(inputMetricsResource))
+        val actionMetrics: List<ActionMetric> =
+            ActionMetricsParser().parse(javaClass.getResourceAsStream(inputMetricsResource))
         val metric = actionMetrics[0]
 
         // when
@@ -62,7 +64,8 @@ class WaterfallChartTest {
         //given
         val output = Paths.get("build/actual-waterfall-chart-with-no-exceptions.html")
         val inputMetricsResource = "action-metrics-with-responseEnd-before-responseStart.jpt"
-        val actionMetrics: List<ActionMetric> = ActionMetricsParser().parse(javaClass.getResourceAsStream(inputMetricsResource))
+        val actionMetrics: List<ActionMetric> =
+            ActionMetricsParser().parse(javaClass.getResourceAsStream(inputMetricsResource))
         val metric = actionMetrics[8]
 
         // when
@@ -84,7 +87,8 @@ class WaterfallChartTest {
         //given
         val output = Paths.get("build/actual-waterfall-chart-with-data-uri-scheme.html")
         val inputMetricsResource = "action-metrics-with-data-uri-scheme.jpt"
-        val actionMetrics: List<ActionMetric> = ActionMetricsParser().parse(javaClass.getResourceAsStream(inputMetricsResource))
+        val actionMetrics: List<ActionMetric> =
+            ActionMetricsParser().parse(javaClass.getResourceAsStream(inputMetricsResource))
         val metric = actionMetrics[0]
 
         // when
@@ -99,5 +103,31 @@ class WaterfallChartTest {
         assertThat(noExceptions)
             .`as`("should not throw when resource URL contains data URI scheme")
             .doesNotThrowAnyException()
+    }
+
+    @Test
+    fun shouldDoNothingAndNotThrowWhenNavigationsAndResourcesAreEmpty() {
+        //given
+        val outputFile = Paths.get("build/i-should-not-exist.html").toFile()
+        val inputMetricsResource = "action-metrics-with-element-timing-only.jpt"
+        val actionMetrics: List<ActionMetric> =
+            ActionMetricsParser().parse(javaClass.getResourceAsStream(inputMetricsResource))
+        val metric = actionMetrics[0]
+
+        // when
+        val noExceptions = Assertions.catchThrowable {
+            WaterfallChart().plot(
+                metric = metric,
+                output = outputFile
+            )
+        }
+
+        // then
+        assertThat(noExceptions)
+            .`as`("should not throw when navigations and resources are empty")
+            .doesNotThrowAnyException()
+        assertThat(outputFile.exists())
+            .`as`("should not create any output")
+            .isFalse()
     }
 }
