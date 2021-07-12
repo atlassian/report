@@ -26,8 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.11.0...master
 
+## [3.11.1] - 2021-07-12
+[3.11.1]: https://github.com/atlassian/report/compare/release-3.11.0...release-3.11.1
+
 ### Fixed
-- Waterfall chart no longer fails when drilldown performance measurement lists are empty. Unblocks [JPERF-747].
+- Prevent waterfall chart from failing when drilldown performance measurement lists are empty. Unblock [JPERF-747].
 
 [JPERF-747]: https://ecosystem.atlassian.net/browse/JPERF-747
 
