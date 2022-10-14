@@ -61,17 +61,17 @@ class RelativeNonparametricStabilityJudge(
                 action = action
             )
         val test = ShiftedDistributionRegressionTest(baseline, experiment, mwAlpha = 0.0, ksAlpha = significance)
-        return if (!test.equalDistributionsAfterShift) {
-            val message = "[$label] distribution shapes are different at $significance significance level"
-            ActionReport(
-                report = FailedActionJunitReport(reportName, message),
-                action = action,
-                nonExceptionalFailure = true
-            )
-        } else {
+        return if (test.equalDistributionsAfterShift) {
             ActionReport(
                 report = SuccessfulJUnitReport(testName = reportName),
                 action = action
+            )
+        } else {
+            val message = "[$label] distribution shapes are different at $significance significance level"
+            ActionReport(
+                report = FailedActionJunitReport(testName = reportName, assertion = message),
+                action = action,
+                nonExceptionalFailure = true
             )
         }
     }
