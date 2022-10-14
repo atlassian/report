@@ -8,6 +8,7 @@ import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
 import com.atlassian.performance.tools.report.api.result.EdibleResult
 import com.atlassian.performance.tools.report.junit.FailedActionJunitReport
+import com.atlassian.performance.tools.report.toPercentage
 
 class RelativeNonparametricPerformanceJudge(
     private val significance: Double
