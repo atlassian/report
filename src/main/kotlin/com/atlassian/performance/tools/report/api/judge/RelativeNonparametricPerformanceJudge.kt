@@ -62,7 +62,7 @@ class RelativeNonparametricPerformanceJudge(
         val test = ShiftedDistributionRegressionTest(baseline, experiment, mwAlpha = significance, ksAlpha = 0.0)
         return if (test.isExperimentRegressed(toleranceRatio.toDouble())) {
             val confidenceLevelPercent = (1.0 - significance).toPercentage(decimalPlaces = 2)
-            val message = "There is $confidenceLevelPercent chance there is a regression. Possible regression is larger than allowed ${toleranceRatio.toPercentage(decimalPlaces = 2)} tolerance"
+            val message = "There is a regression with $confidenceLevelPercent confidence level. Regression is larger than allowed ${toleranceRatio.toPercentage(decimalPlaces = 2)} tolerance"
             ActionReport(
                 report = FailedActionJunitReport(testName = reportName, assertion = message),
                 action = action,
