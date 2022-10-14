@@ -56,8 +56,8 @@ class RelativeTypicalPerformanceJudge {
             ?: return FailedAssertionJUnitReport(reportName, "No action $label results for $experimentCohort")
         val regression = (experimentCenter.toNanos().toFloat() / baselineCenter.toNanos().toFloat()) - 1.00f
         return if (regression > toleranceRatio) {
-            val regressionDescription = "$label ${regression.toPercentage()} typical performance regression"
-            val toleranceDescription = "${toleranceRatio.toPercentage()} tolerance"
+            val regressionDescription = "$label ${regression.toPercentage(decimalPlaces = 0)} typical performance regression"
+            val toleranceDescription = "${toleranceRatio.toPercentage(decimalPlaces = 0)} tolerance"
             val message = "$regressionDescription overcame $toleranceDescription"
             FailedAssertionJUnitReport(reportName, message)
         } else {
@@ -65,5 +65,3 @@ class RelativeTypicalPerformanceJudge {
         }
     }
 }
-
-private fun Float.toPercentage(): String = "%+.0f%%".format(this * 100)
