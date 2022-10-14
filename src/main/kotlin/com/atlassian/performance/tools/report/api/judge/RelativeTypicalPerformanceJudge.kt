@@ -7,6 +7,7 @@ import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
 import com.atlassian.performance.tools.report.api.result.Stats
 import com.atlassian.performance.tools.report.result.PerformanceStats
+import com.atlassian.performance.tools.report.toPercentage
 
 class RelativeTypicalPerformanceJudge {
 
