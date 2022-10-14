@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.11.3...master
 
+### Fixed
+- Use more precise wording in `RelativeNonparametricPerformanceJudge`. Fix [JPERF-832].
+
+[JPERF-832]: https://ecosystem.atlassian.net/browse/JPERF-832
+
 ## [3.11.3] - 2022-06-23
 [3.11.3]: https://github.com/atlassian/report/compare/release-3.11.2...release-3.11.3
 
