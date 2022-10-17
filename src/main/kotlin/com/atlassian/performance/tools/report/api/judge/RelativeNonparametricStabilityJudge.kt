@@ -50,12 +50,12 @@ class RelativeNonparametricStabilityJudge(
         val experimentCohort = experimentResult.cohort
         val reportName = "Stability regression for $label $experimentCohort vs $baselineCohort"
         val reader = ActionMetricsReader()
-        val baseline = reader.read(baselineResult.actionMetrics)[label]?.stats?.values
+        val baseline = reader.read(baselineResult.actionMetrics)[label]?.statsValues()
             ?: return ActionReport(
                 report = FailedAssertionJUnitReport(reportName, "No action $label results for $baselineCohort"),
                 action = action
             )
-        val experiment = reader.read(experimentResult.actionMetrics)[label]?.stats?.values
+        val experiment = reader.read(experimentResult.actionMetrics)[label]?.statsValues()
             ?: return ActionReport(
                 report = FailedAssertionJUnitReport(reportName, "No action $label results for $experimentCohort"),
                 action = action

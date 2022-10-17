@@ -2,8 +2,6 @@ package com.atlassian.performance.tools.report.api.result
 
 import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.jiraactions.api.ActionMetricStatistics
-import com.atlassian.performance.tools.jiraactions.api.ActionType
-import com.atlassian.performance.tools.report.ActionMetricsReader
 import com.atlassian.performance.tools.report.api.OutlierTrimming
 import com.atlassian.performance.tools.report.result.InternalStatsMeter
 import com.atlassian.performance.tools.report.result.PerformanceStats

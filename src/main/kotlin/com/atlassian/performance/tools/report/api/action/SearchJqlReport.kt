@@ -79,11 +79,11 @@ class SearchJqlReport(
             .fold(DurationData.createEmptyNanoseconds(), ::accumulateMetric)
         val minTotalResults = metrics.map { it.second!!.totalResults }.min()!!
         val maxTotalResults = metrics.map { it.second!!.totalResults }.max()!!
-        val averageLatency = duration.durationMapping(duration.stats.mean)
+        val averageLatency = duration.durationMapping(duration.statsMean())
 
         return SearchJqlStats(
             jql = jql,
-            n = duration.stats.n,
+            n = duration.statsN(),
             latency = averageLatency,
             minTotalResults = minTotalResults,
             maxTotalResults = maxTotalResults
@@ -94,7 +94,7 @@ class SearchJqlReport(
         data: DurationData,
         metric: ActionMetric
     ): DurationData {
-        data.stats.addValue(metric.duration.toNanos().toDouble())
+        data.addStatsValue(metric.duration.toNanos().toDouble())
         return data
     }
 }

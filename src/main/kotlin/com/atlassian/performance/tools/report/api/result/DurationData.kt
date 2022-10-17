@@ -8,6 +8,14 @@ class DurationData(
     internal val durationMapping: (Double) -> Duration
 ) {
 
+    fun addStatsValue(value: Double) = stats.addValue(value)
+
+    fun statsValues(): DoubleArray? = stats.values
+
+    fun statsMean(): Double = stats.mean
+
+    fun statsN(): Long = stats.n
+
     internal companion object Factory {
 
         fun createEmptyMilliseconds(): DurationData {

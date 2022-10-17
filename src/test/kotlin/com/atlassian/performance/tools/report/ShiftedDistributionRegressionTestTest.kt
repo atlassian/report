@@ -84,8 +84,8 @@ class ShiftedDistributionRegressionTestTest {
             .prepareForJudgement(timeline)
         val label = action.label
         val reader = ActionMetricsReader()
-        val baseline = reader.read(edibleAlphaResults.actionMetrics)[label]?.stats!!.values
-        val experiment = reader.read(edibleBetaResults.actionMetrics)[label]?.stats!!.values
+        val baseline = reader.read(edibleAlphaResults.actionMetrics)[label]?.statsValues()!!
+        val experiment = reader.read(edibleBetaResults.actionMetrics)[label]?.statsValues()!!
         baseline.indices.forEach { baseline[it] /= nanosInSecond }
         experiment.indices.forEach { experiment[it] /= nanosInSecond }
         return ShiftedDistributionRegressionTest(baseline, experiment, mwAlpha, ksAlpha)

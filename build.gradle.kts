@@ -59,6 +59,9 @@ dependencies {
         "org.hamcrest:hamcrest-library:1.3",
         "org.assertj:assertj-core:3.10.0"
     ).forEach { testCompile(it) }
+
+    // old mockito version to use net.bytebuddy:byte-buddy:1.8.15, the same version as org.seleniumhq.selenium:selenium-chrome-driver
+    testImplementation("org.mockito:mockito-core:2.21.0")
 }
 
 fun log4jCore(): List<String> = log4j(

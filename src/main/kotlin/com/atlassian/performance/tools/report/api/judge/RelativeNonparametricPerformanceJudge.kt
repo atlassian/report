@@ -1,20 +1,38 @@
 package com.atlassian.performance.tools.report.api.judge
 
+import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.jiraactions.api.ActionType
 import com.atlassian.performance.tools.report.ActionMetricsReader
-import com.atlassian.performance.tools.report.api.ShiftedDistributionRegressionTest
 import com.atlassian.performance.tools.report.api.junit.FailedAssertionJUnitReport
 import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
+import com.atlassian.performance.tools.report.api.result.DurationData
 import com.atlassian.performance.tools.report.api.result.EdibleResult
 import com.atlassian.performance.tools.report.junit.FailedActionJunitReport
 import com.atlassian.performance.tools.report.toPercentage
 
-class RelativeNonparametricPerformanceJudge(
-    private val significance: Double
+class RelativeNonparametricPerformanceJudge private constructor(
+    private val significance: Double,
+    private val actionMetricsReader: (metrics: List<ActionMetric>) -> Map<String, DurationData>,
+    private val shiftedDistributionRegressionTestProvider: ShiftedDistributionRegressionTestProvider
 ) {
 
-    constructor() : this(significance = 0.05)
+    class Builder {
+        private var significance: Double = 0.05
+        private var actionMetricsReader: (metrics: List<ActionMetric>) -> Map<String, DurationData> = { metrics -> ActionMetricsReader().read(metrics) }
+        private var shiftedDistributionRegressionTestProvider: ShiftedDistributionRegressionTestProvider = ShiftedDistributionRegressionTestProvider()
+
+        fun significance(significance: Double) = apply { this.significance = significance }
+        fun actionMetricsReader(actionMetricsReader: (metrics: List<ActionMetric>) -> Map<String, DurationData>) = apply { this.actionMetricsReader = actionMetricsReader }
+        fun shiftedDistributionRegressionTestProvider(shiftedDistributionRegressionTestProvider: ShiftedDistributionRegressionTestProvider) =
+            apply { this.shiftedDistributionRegressionTestProvider = shiftedDistributionRegressionTestProvider }
+
+        fun build() = RelativeNonparametricPerformanceJudge(
+            significance = significance,
+            actionMetricsReader = actionMetricsReader,
+            shiftedDistributionRegressionTestProvider = shiftedDistributionRegressionTestProvider
+        )
+    }
 
     fun judge(
         toleranceRatios: Map<ActionType<*>, Float>,
@@ -48,21 +66,21 @@ class RelativeNonparametricPerformanceJudge(
         val baselineCohort = baselineResult.cohort
         val experimentCohort = experimentResult.cohort
         val reportName = "Regression for $label $experimentCohort vs $baselineCohort"
-        val reader = ActionMetricsReader()
-        val baseline = reader.read(baselineResult.actionMetrics)[label]?.stats?.values
+        val baseline = actionMetricsReader(baselineResult.actionMetrics)[label]?.statsValues()
             ?: return ActionReport(
                 report = FailedAssertionJUnitReport(reportName, "No action $label results for $baselineCohort"),
                 action = action
             )
-        val experiment = reader.read(experimentResult.actionMetrics)[label]?.stats?.values
+        val experiment = actionMetricsReader(experimentResult.actionMetrics)[label]?.statsValues()
             ?: return ActionReport(
                 report = FailedAssertionJUnitReport(reportName, "No action $label results for $experimentCohort"),
                 action = action
             )
-        val test = ShiftedDistributionRegressionTest(baseline, experiment, mwAlpha = significance, ksAlpha = 0.0)
+        val test = shiftedDistributionRegressionTestProvider.get(baseline = baseline, experiment = experiment, mwAlpha = significance, ksAlpha = 0.0)
         return if (test.isExperimentRegressed(toleranceRatio.toDouble())) {
             val confidenceLevelPercent = (1.0 - significance).toPercentage(decimalPlaces = 0, includeSign = false)
-            val message = "There is a regression in [$label] with $confidenceLevelPercent confidence level. Regression is larger than allowed ${toleranceRatio.toPercentage(decimalPlaces = 2)} tolerance"
+            val message =
+                "There is a regression in [$label] with $confidenceLevelPercent confidence level. Regression is larger than allowed ${toleranceRatio.toPercentage(decimalPlaces = 2)} tolerance"
             ActionReport(
                 report = FailedActionJunitReport(testName = reportName, assertion = message),
                 action = action,
