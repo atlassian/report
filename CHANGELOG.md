@@ -24,16 +24,23 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://github.com/atlassian/report/compare/release-3.11.4...master
+[Unreleased]: https://github.com/atlassian/report/compare/release-3.11.5...master
+
+## [3.11.5] - 2022-10-20
+[3.11.5]: https://github.com/atlassian/report/compare/release-3.11.4...release-3.11.5
 
 ### Fixed
-- Restore missing log label in failed regression test
+- Restore missing label for failed report's assertion message in `RelativeNonparametricPerformanceJudge` [JPERF-832].
+- Reword failed report's assertion message in `RelativeNonparametricPerformanceJudge` so it looks better in logs [JPERF-832].
+
 
 ## [3.11.4] - 2022-10-14
 [3.11.4]: https://github.com/atlassian/report/compare/release-3.11.3...release-3.11.4
 
-### Changed
-- Make log message for failed regression test more user friendly
+### Fixed
+- Make log message for failed regression test more user friendly [JPERF-832].
+
+[JPERF-832]: https://ecosystem.atlassian.net/browse/JPERF-832
 
 ## [3.11.3] - 2022-06-23
 [3.11.3]: https://github.com/atlassian/report/compare/release-3.11.2...release-3.11.3
