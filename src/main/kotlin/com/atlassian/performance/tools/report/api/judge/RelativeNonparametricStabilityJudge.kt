@@ -34,10 +34,10 @@ class RelativeNonparametricStabilityJudge(
             }
         }
 
-        return Verdict(
-            reports = testReports,
-            failedActions = failedActions
-        )
+        return Verdict
+            .Builder(reports = testReports)
+            .failedActions(failedActions = failedActions)
+            .build()
     }
 
     private fun judge(

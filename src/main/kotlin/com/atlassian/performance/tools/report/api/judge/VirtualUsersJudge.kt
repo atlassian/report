@@ -15,20 +15,25 @@ class VirtualUsersJudge(
         val expected = criteria.virtualUserLoad.virtualUsers
         val active = nodeCounts.values.sum()
         if (expected - active <= criteria.maxInactiveVirtualUsers) {
-            return Verdict(
-                listOf<JUnitReport>(
-                    SuccessfulJUnitReport(testMethodName(cohort)))
-            )
-        } else {
-            return Verdict(
-                listOf<JUnitReport>(
-                    FailedAssertionJUnitReport(
-                        testMethodName(cohort),
-                        "$expected virtual users were expected, but only $active "
-                            + "logged in to the JIRA. It's below maxInactiveVirtualUsers criteria (${criteria.maxInactiveVirtualUsers})"
+            return Verdict
+                .Builder(
+                    reports = listOf<JUnitReport>(
+                        SuccessfulJUnitReport(testMethodName(cohort))
                     )
                 )
-            )
+                .build()
+        } else {
+            return Verdict
+                .Builder(
+                    reports = listOf<JUnitReport>(
+                        FailedAssertionJUnitReport(
+                            testMethodName(cohort),
+                            "$expected virtual users were expected, but only $active "
+                                + "logged in to the JIRA. It's below maxInactiveVirtualUsers criteria (${criteria.maxInactiveVirtualUsers})"
+                        )
+                    )
+                )
+                .build()
         }
     }
 
