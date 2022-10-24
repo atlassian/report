@@ -26,6 +26,12 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.11.5...master
 
+### Added
+- Add Verdict.Builder to allow failedReports to be set and make it more flexible to use. Especially in unit tests in projects using this library.
+
+### Deprecated
+- Mark Verdict.Builder constructor as deprecated.
+ 
 ## [3.11.5] - 2022-10-20
 [3.11.5]: https://github.com/atlassian/report/compare/release-3.11.4...release-3.11.5
 
