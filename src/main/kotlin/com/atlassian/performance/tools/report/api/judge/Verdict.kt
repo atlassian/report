@@ -6,6 +6,7 @@ import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
+import java.util.*
 
 class Verdict internal constructor(
     /**
@@ -14,7 +15,9 @@ class Verdict internal constructor(
     val reports: List<JUnitReport>,
     val failedActions: List<ActionType<*>>
 ) {
+    private val logger = LogManager.getLogger(this::class.java)
 
+    @Deprecated(message = "Use Builder instead", replaceWith = ReplaceWith("Verdict.Builder(reports).build()"))
     constructor(
         reports: List<JUnitReport>
     ) : this(
@@ -22,7 +25,29 @@ class Verdict internal constructor(
         failedActions = emptyList()
     )
 
-    private val logger = LogManager.getLogger(this::class.java)
+    /**
+     * Since 3.12.0
+     */
+    class Builder(reports: List<JUnitReport>) {
+        private var failedActions: MutableList<ActionType<*>> = ArrayList()
+        private var reports: MutableList<JUnitReport> = ArrayList(reports)
+
+        fun failedActions(failedActions: List<ActionType<*>>): Builder = apply {
+            this.failedActions = ArrayList(failedActions)
+        }
+
+        fun addReports(reports: List<JUnitReport>): Builder = apply {
+            this.reports.addAll(reports)
+        }
+
+        fun build(): Verdict {
+            return Verdict(
+                reports = Collections.unmodifiableList(reports),
+                failedActions = Collections.unmodifiableList(failedActions)
+            )
+        }
+    }
+
 
     /**
      * @since 3.9.0
@@ -43,9 +68,7 @@ class Verdict internal constructor(
         logger.info("Performance results are accepted")
     }
 
-    operator fun plus(other: Verdict) = Verdict(
-        reports + other.reports
-    )
+    operator fun plus(other: Verdict) = Builder(reports = reports + other.reports).build()
 
     private fun checkIfNoReportIsMissing(
         expectedReportCount: Int?
