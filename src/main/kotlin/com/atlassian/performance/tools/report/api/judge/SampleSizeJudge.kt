@@ -37,7 +37,7 @@ class SampleSizeJudge {
                 testReports.add(SuccessfulJUnitReport(testMethodName(stats.cohort, action)))
             }
         }
-        return Verdict(testReports)
+        return Verdict.Builder(reports = testReports).build()
     }
 
     private fun testMethodName(

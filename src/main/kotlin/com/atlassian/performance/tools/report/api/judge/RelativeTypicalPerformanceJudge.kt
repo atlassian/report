@@ -38,7 +38,7 @@ class RelativeTypicalPerformanceJudge {
                 )
             )
         }
-        return Verdict(testReports)
+        return Verdict.Builder(reports = testReports).build()
     }
 
     private fun judge(

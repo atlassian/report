@@ -9,11 +9,15 @@ class FailureJudge {
 
     fun judge(
         failure: Exception?
-    ): Verdict = Verdict(listOf(
-        if (failure == null) {
-            SuccessfulJUnitReport(testName)
-        } else {
-            ExceptionJUnitReport(testName, failure)
-        }
-    ))
+    ): Verdict = Verdict
+        .Builder(
+            reports = listOf(
+                if (failure == null) {
+                    SuccessfulJUnitReport(testName)
+                } else {
+                    ExceptionJUnitReport(testName, failure)
+                }
+            )
+        )
+        .build()
 }

@@ -35,7 +35,7 @@ class RelativeNonparametricPerformanceJudge(
                 failedActions.add(actionReport.action)
             }
         }
-        return Verdict(testReports, failedActions)
+        return Verdict.Builder(reports = testReports).failedActions(failedActions).build()
     }
 
     private fun judge(

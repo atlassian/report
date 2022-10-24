@@ -26,21 +26,23 @@ class RelativePerformanceStabilityJudge {
         baselineStats: Stats,
         experimentStats: Stats
     ): Verdict {
-        return Verdict(
-            maxDispersionDifferences.map { (action, maxDispersionDifference) ->
-                val label = action.label
-                val experimentDispersion = dispersions(experimentStats, label)
-                val baselineDispersion = dispersions(baselineStats, label)
-                val regression = experimentDispersion - baselineDispersion
-                val reportName = "Stability regression for $label ${experimentStats.cohort} vs ${baselineStats.cohort}"
-                return@map if (regression > maxDispersionDifference) {
-                    val message = "$label $regression stability regression overcame $maxDispersionDifference threshold"
-                    FailedAssertionJUnitReport(reportName, message)
-                } else {
-                    SuccessfulJUnitReport(testName = reportName)
+        return Verdict
+            .Builder(
+                reports = maxDispersionDifferences.map { (action, maxDispersionDifference) ->
+                    val label = action.label
+                    val experimentDispersion = dispersions(experimentStats, label)
+                    val baselineDispersion = dispersions(baselineStats, label)
+                    val regression = experimentDispersion - baselineDispersion
+                    val reportName = "Stability regression for $label ${experimentStats.cohort} vs ${baselineStats.cohort}"
+                    return@map if (regression > maxDispersionDifference) {
+                        val message = "$label $regression stability regression overcame $maxDispersionDifference threshold"
+                        FailedAssertionJUnitReport(reportName, message)
+                    } else {
+                        SuccessfulJUnitReport(testName = reportName)
+                    }
                 }
-            }
-        )
+            )
+            .build()
     }
 
     private fun dispersions(stats: Stats, label: String) =
