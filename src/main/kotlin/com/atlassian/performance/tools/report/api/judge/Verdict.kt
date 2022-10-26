@@ -79,7 +79,10 @@ class Verdict internal constructor(
         logger.info("Performance results are accepted")
     }
 
-    operator fun plus(other: Verdict) = Builder(reports = reports + other.reports).build()
+    operator fun plus(other: Verdict) = Builder()
+        .addReports(reports)
+        .addReports(other.reports)
+        .build()
 
     private fun checkIfNoReportIsMissing(
         expectedReportCount: Int?
