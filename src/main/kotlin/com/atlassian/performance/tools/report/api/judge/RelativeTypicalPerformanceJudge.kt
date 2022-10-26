@@ -27,9 +27,9 @@ class RelativeTypicalPerformanceJudge {
         baselineStats: Stats,
         experimentStats: Stats
     ): Verdict {
-        val testReports = mutableListOf<JUnitReport>()
+        val verdict = Verdict.Builder()
         for ((action, toleranceRatio) in toleranceRatios) {
-            testReports.add(
+            verdict.addReport(
                 judge(
                     action,
                     toleranceRatio,
@@ -38,7 +38,7 @@ class RelativeTypicalPerformanceJudge {
                 )
             )
         }
-        return Verdict.Builder(reports = testReports).build()
+        return verdict.build()
     }
 
     private fun judge(
