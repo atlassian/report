@@ -31,6 +31,9 @@ Dropping a requirement of a major version of a dependency is a new contract.
 
 ### Deprecated
 - Mark `Verdict` constructor as deprecated.
+
+### Fixed
+- Fix `Verdict.plus` dropping the `failedActions`.
  
 ## [3.11.5] - 2022-10-20
 [3.11.5]: https://github.com/atlassian/report/compare/release-3.11.4...release-3.11.5
