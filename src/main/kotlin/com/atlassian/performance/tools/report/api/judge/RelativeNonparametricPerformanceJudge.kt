@@ -21,8 +21,7 @@ class RelativeNonparametricPerformanceJudge(
         baselineResult: EdibleResult,
         experimentResult: EdibleResult
     ): Verdict {
-        val testReports = mutableListOf<JUnitReport>()
-        val failedActions = mutableListOf<ActionType<*>>()
+        val verdict = Verdict.Builder()
         for ((action, toleranceRatio) in toleranceRatios) {
             val actionReport = judge(
                 action,
@@ -30,12 +29,12 @@ class RelativeNonparametricPerformanceJudge(
                 baselineResult,
                 experimentResult
             )
-            testReports.add(actionReport.report)
+            verdict.addReport(actionReport.report)
             if (actionReport.nonExceptionalFailure) {
-                failedActions.add(actionReport.action)
+                verdict.addFailedAction(actionReport.action)
             }
         }
-        return Verdict.Builder(reports = testReports).failedActions(failedActions).build()
+        return verdict.build()
     }
 
     private fun judge(

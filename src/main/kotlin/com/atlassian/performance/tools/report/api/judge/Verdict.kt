@@ -17,7 +17,10 @@ class Verdict internal constructor(
 ) {
     private val logger = LogManager.getLogger(this::class.java)
 
-    @Deprecated(message = "Use Builder instead", replaceWith = ReplaceWith("Verdict.Builder(reports).build()"))
+    @Deprecated(
+        message = "Use Builder instead",
+        replaceWith = ReplaceWith("Verdict.Builder().addReports(reports).build()")
+    )
     constructor(
         reports: List<JUnitReport>
     ) : this(
@@ -28,16 +31,24 @@ class Verdict internal constructor(
     /**
      * Since 3.12.0
      */
-    class Builder(reports: List<JUnitReport>) {
+    class Builder {
+        private var reports: MutableList<JUnitReport> = ArrayList()
         private var failedActions: MutableList<ActionType<*>> = ArrayList()
-        private var reports: MutableList<JUnitReport> = ArrayList(reports)
 
-        fun failedActions(failedActions: List<ActionType<*>>): Builder = apply {
-            this.failedActions = ArrayList(failedActions)
+        fun addReport(report: JUnitReport): Builder = apply {
+            reports.add(report)
         }
 
         fun addReports(reports: List<JUnitReport>): Builder = apply {
             this.reports.addAll(reports)
+        }
+
+        fun addFailedAction(failedAction: ActionType<*>): Builder = apply {
+            this.failedActions.add(failedAction)
+        }
+
+        fun addFailedActions(failedActions: List<ActionType<*>>): Builder = apply {
+            this.failedActions.addAll(failedActions)
         }
 
         fun build(): Verdict {
