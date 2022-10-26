@@ -11,15 +11,13 @@ class NodeBalanceJudge(
 ) {
     fun judge(nodeCounts: Map<String, Int>): Verdict {
         if (nodeCounts.size != criteria.nodes) {
-            return Verdict
-                .Builder(
-                    reports = listOf<JUnitReport>(
-                        FailedAssertionJUnitReport(
-                            testName = testMethodName(cohort),
-                            assertion = "Results are not available for some nodes. "
-                                + "There should be ${criteria.nodes} results but is ${nodeCounts.size}. "
-                                + "See node's distribution : $nodeCounts"
-                        )
+            return Verdict.Builder()
+                .addReport(
+                    FailedAssertionJUnitReport(
+                        testName = testMethodName(cohort),
+                        assertion = "Results are not available for some nodes. "
+                            + "There should be ${criteria.nodes} results but is ${nodeCounts.size}. "
+                            + "See node's distribution : $nodeCounts"
                     )
                 )
                 .build()
@@ -28,23 +26,17 @@ class NodeBalanceJudge(
         val maxVirtualUsers = nodeCounts.maxBy { entry -> entry.value }!!
         val minVirtualUsers = nodeCounts.minBy { entry -> entry.value }!!
         val diff = maxVirtualUsers.value - minVirtualUsers.value
-        if (diff <= criteria.maxVirtualUsersImbalance) {
-            return Verdict
-                .Builder(
-                    reports = listOf<JUnitReport>(
-                        SuccessfulJUnitReport(testMethodName(cohort))
-                    )
-                )
+        return if (diff <= criteria.maxVirtualUsersImbalance) {
+            Verdict.Builder()
+                .addReport(SuccessfulJUnitReport(testMethodName(cohort)))
                 .build()
         } else {
-            return Verdict
-                .Builder(
-                    reports = listOf<JUnitReport>(
-                        FailedAssertionJUnitReport(
-                            testName = testMethodName(cohort),
-                            assertion = "More virtual users were testing one node (${maxVirtualUsers.key}) than another (${minVirtualUsers.key}). " +
+            Verdict.Builder()
+                .addReport(
+                    FailedAssertionJUnitReport(
+                        testName = testMethodName(cohort),
+                        assertion = "More virtual users were testing one node (${maxVirtualUsers.key}) than another (${minVirtualUsers.key}). " +
                                 "See node's distribution : $nodeCounts"
-                        )
                     )
                 )
                 .build()

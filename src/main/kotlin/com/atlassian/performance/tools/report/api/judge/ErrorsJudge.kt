@@ -24,14 +24,14 @@ class ErrorsJudge {
         stats: Stats,
         criteria: Map<ActionType<*>, ErrorCriteria>
     ): Verdict {
-        val testReports = mutableListOf<JUnitReport>()
+        val verdict = Verdict.Builder()
 
         for ((action, errorCriteria) in criteria) {
             val acceptableErrorCount = errorCriteria.acceptableErrorCount
             val errorCount = stats.errors[action.label] ?: 0
 
             if (errorCount > acceptableErrorCount) {
-                testReports.add(
+                verdict.addReport(
                     FailedAssertionJUnitReport(
                         testMethodName(action, stats.cohort),
                         "The '${action.label}' action has failed $errorCount times. " +
@@ -40,11 +40,11 @@ class ErrorsJudge {
                     )
                 )
             } else {
-                testReports.add(SuccessfulJUnitReport(testMethodName(action, stats.cohort)))
+                verdict.addReport(SuccessfulJUnitReport(testMethodName(action, stats.cohort)))
             }
         }
 
-        return Verdict.Builder(reports = testReports).build()
+        return verdict.build()
     }
 
     private fun testMethodName(
