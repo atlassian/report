@@ -24,7 +24,10 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://github.com/atlassian/report/compare/release-3.11.5...master
+[Unreleased]: https://github.com/atlassian/report/compare/release-3.12.0...master
+
+## [3.12.0] - 2022-10-27
+[3.12.0]: https://github.com/atlassian/report/compare/release-3.11.5...release-3.12.0
 
 ### Added
 - Add `Verdict.Builder` for easier `Verdict` assembly and `failedActions` injection.
