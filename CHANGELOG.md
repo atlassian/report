@@ -26,6 +26,9 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.12.0...master
 
+### Deprecated
+- Mark `RelativeNonparametricStabilityJudge` as deprecated.
+
 ## [3.12.0] - 2022-10-27
 [3.12.0]: https://github.com/atlassian/report/compare/release-3.11.5...release-3.12.0
 
