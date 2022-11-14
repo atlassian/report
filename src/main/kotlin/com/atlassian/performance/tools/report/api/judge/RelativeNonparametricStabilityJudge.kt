@@ -4,11 +4,11 @@ import com.atlassian.performance.tools.jiraactions.api.ActionType
 import com.atlassian.performance.tools.report.ActionMetricsReader
 import com.atlassian.performance.tools.report.api.ShiftedDistributionRegressionTest
 import com.atlassian.performance.tools.report.api.junit.FailedAssertionJUnitReport
-import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
 import com.atlassian.performance.tools.report.api.result.EdibleResult
 import com.atlassian.performance.tools.report.junit.FailedActionJunitReport
 
+@Deprecated("The verdict is misleading when it reports data shape differences due to single big difference, e.g. on P100")
 class RelativeNonparametricStabilityJudge(
     private val significance: Double
 ) {
