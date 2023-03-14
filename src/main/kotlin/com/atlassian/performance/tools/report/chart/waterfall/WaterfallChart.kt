@@ -26,7 +26,7 @@ internal class WaterfallChart {
             return
         }
 
-        if(performance.navigations.isEmpty() or performance.resources.isEmpty()) {
+        if (performance.navigations.isEmpty() && performance.resources.isEmpty()) {
             logger.debug("No navigations or resources data in the drilldown data, so waterfall chart is skipped.")
             return
         }

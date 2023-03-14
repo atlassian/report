@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.13.0...master
 
+### Fixed
+- Fix missing waterfall highlights. Fix [JPERF-1021].
+
+[JPERF-1021]: https://ecosystem.atlassian.net/browse/JPERF-1021
+
 ## [3.13.0] - 2022-12-16
 [3.13.0]: https://github.com/atlassian/report/compare/release-3.12.0...release-3.13.0
 
