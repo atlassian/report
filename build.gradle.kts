@@ -8,6 +8,13 @@ plugins {
     kotlin("jvm").version("1.2.70")
     id("com.atlassian.performance.tools.gradle-release").version("0.7.1")
     `java-library`
+    id("com.gradle.build-scan").version("2.4.2")
+}
+
+buildScan {
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
+    publishAlways()
 }
 
 configurations.all {
