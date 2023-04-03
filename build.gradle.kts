@@ -82,11 +82,6 @@ fun log4j(
 
 tasks.getByName("test", Test::class).apply {
     maxHeapSize = "2g" // Work around https://ecosystem.atlassian.net/browse/JPERF-395
-
-    testLogging {
-        events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
-        exceptionFormat = TestExceptionFormat.FULL
-    }
 }
 
 tasks.getByName("wrapper", Wrapper::class).apply {
