@@ -24,12 +24,6 @@ jobs:
       with:
         gradle-version: wrapper
         arguments: build
-    - name: Upload test reports
-      if: always()
-      uses: actions/upload-artifact@v2
-      with:
-        name: test-reports
-        path: build/reports/tests
   release:
     runs-on: ubuntu-latest
     permissions:
