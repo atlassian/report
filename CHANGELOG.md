@@ -24,7 +24,10 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://github.com/atlassian/report/compare/release-3.13.1...master
+[Unreleased]: https://github.com/atlassian/report/compare/release-3.14.0...master
+
+## [3.14.0] - 2023-04-03
+[3.14.0]: https://github.com/atlassian/report/compare/release-3.13.1...release-3.14.0
 
 ### Added
 - Add `JqlReport`, which can handle multiple JQL `ActionType`s. Fix [JPERF-1059].
