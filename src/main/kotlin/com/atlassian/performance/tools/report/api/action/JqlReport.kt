@@ -15,12 +15,14 @@ class JqlReport private constructor(
         allMetrics: List<ActionMetric>,
         target: Path
     ) {
-        val jqlObservations: List<JqlActionMetric> = allMetrics.mapNotNull { metric ->
-            jqlTypes
-                .singleOrNull { type -> type.label == metric.label }
-                ?.deserialize(metric.observation!!)
-                ?.let { observation -> JqlActionMetric(metric, observation) }
-        }
+        val jqlObservations: List<JqlActionMetric> = allMetrics
+            .filter { metric -> metric.observation != null }
+            .mapNotNull { metric ->
+                jqlTypes
+                    .singleOrNull { type -> type.label == metric.label }
+                    ?.deserialize(metric.observation!!)
+                    ?.let { observation -> JqlActionMetric(metric, observation) }
+            }
         entries(jqlObservations, target.resolve("search-jql-entries.csv"))
         stats(jqlObservations, target.resolve("search-jql-stats.csv"))
     }
