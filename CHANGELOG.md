@@ -26,6 +26,17 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.13.1...master
 
+### Added
+- Add `JqlReport`, which can handle multiple JQL `ActionType`s. Fix [JPERF-1059].
+
+### Fixed
+- Support `SEARCH_JQL_CHANGELOG`, `SEARCH_WITH_JQL_WILDCARD`, `SEARCH_JQL_SIMPLE` in `SearchJqlReport`.
+
+### Deprecated
+- Deprecate `SearchJqlReport` in favor of more flexible `JqlReport`.
+
+[JPERF-1059]: https://ecosystem.atlassian.net/browse/JPERF-1059
+
 ## [3.13.1] - 2023-03-14
 [3.13.1]: https://github.com/atlassian/report/compare/release-3.13.0...release-3.13.1
 
