@@ -7,14 +7,16 @@ import org.junit.Test
 import java.nio.file.Files.createTempDirectory
 import java.nio.file.Paths
 
-class SearchJqlReportTest {
+class JqlReportTest {
 
     @Test
     fun shouldReportJqlsFromVariousActionTypes() {
         val results = LocalRealResult(Paths.get("JPT-JPTINT192-CHECK-2")).loadEdible()
         val workspace = TestWorkspace(createTempDirectory(javaClass.simpleName))
 
-        SearchJqlReport(results.actionMetrics).report(workspace.directory)
+        JqlReport.Builder()
+            .build()
+            .report(results.actionMetrics, workspace.directory)
 
         assertThat(
             workspace.directory.resolve("search-jql-stats.csv").toFile()
