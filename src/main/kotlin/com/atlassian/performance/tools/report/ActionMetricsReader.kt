@@ -8,10 +8,16 @@ internal class ActionMetricsReader {
 
     fun read(
         metrics: List<ActionMetric>
-    ): Map<String, DurationData> = metrics
-        .filter { it.result == ActionResult.OK }
-        .groupBy { it.label }
-        .mapValues { it.value.fold(DurationData.createEmptyNanoseconds(), this::addActionMetric) }
+    ): Map<String, DurationData> {
+        return metrics
+            .filter { it.result == ActionResult.OK }
+            .groupBy { it.label }
+            .mapValues { it.value.fold(createEmptyData(), this::addActionMetric) }
+    }
+
+    private fun createEmptyData() = DurationData.createEmptyNanoseconds()
+
+    fun convertToDuration(double: Double) = createEmptyData().durationMapping(double)
 
     private fun addActionMetric(
         durationData: DurationData,

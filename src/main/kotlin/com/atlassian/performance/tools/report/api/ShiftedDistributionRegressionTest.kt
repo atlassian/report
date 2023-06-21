@@ -35,6 +35,7 @@ class ShiftedDistributionRegressionTest(
     private val baselineMedian: Double by lazy { Median().evaluate(baseline) }
 
     /**
+     * The distribution shift from [experiment] to [baseline].
      * Make sure equalDistributionsAfterShift is TRUE before accessing this property
      */
     val locationShift: Double by lazy {
