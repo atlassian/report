@@ -4,6 +4,7 @@ import com.atlassian.performance.tools.jiraactions.api.*
 import com.atlassian.performance.tools.report.api.result.EdibleResult
 import com.atlassian.performance.tools.report.junit.FailedActionJunitReport
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.data.Offset
 import org.junit.Test
 import java.time.Duration
 import java.time.Instant
@@ -64,6 +65,36 @@ class RelativeNonparametricPerformanceJudgeTest {
             assertThat(report).isInstanceOf(FailedActionJunitReport::class.java)
             assertThat((report as FailedActionJunitReport).toXml(testClassName = "does not matter"))
                 .contains("There is a regression in [Full Edit Issue] with 95% confidence level. Regression is larger than allowed +10.00% tolerance")
+        }
+    }
+
+    @Test
+    fun shouldReportLatencyImpacts() {
+        val impacts = mutableListOf<LatencyImpact>()
+
+        RelativeNonparametricPerformanceJudge.Builder()
+            .handleLatencyImpact(impacts::add)
+            .build()
+            .judge(
+                toleranceRatios = zeroToleranceRatios,
+                baselineResult = EdibleResult.Builder("baseline mock")
+                    .actionMetrics(baselineMetrics)
+                    .build(),
+                experimentResult = EdibleResult.Builder("experiment mock")
+                    .actionMetrics(experimentMetrics)
+                    .build()
+            )
+
+        assertThat(impacts).isNotEmpty()
+        impacts.forEach { impact ->
+            assertThat(actionTypes).contains(impact.action)
+            assertThat(impact.relative).isBetween(-0.01f, 0.34f)
+            assertThat(impact.absolute).isBetween(Duration.ofMillis(-40), Duration.ofMillis(600))
+        }
+        assertThat(impacts).hasOnlyOneElementSatisfying { regression ->
+            assertThat(regression.action).isEqualTo(EDIT_ISSUE)
+            assertThat(regression.relative).isCloseTo(0.33f, Offset.offset(0.01f))
+            assertThat(regression.regressionDetected).isTrue()
         }
     }
 }
