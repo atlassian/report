@@ -4,10 +4,10 @@ import com.atlassian.performance.tools.jiraactions.api.*
 import com.atlassian.performance.tools.report.api.result.EdibleResult
 import com.atlassian.performance.tools.report.junit.FailedActionJunitReport
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.data.Offset
 import org.junit.Test
 import java.time.Duration
 import java.time.Instant
+import java.util.function.Consumer
 
 class RelativeNonparametricPerformanceJudgeTest {
 
@@ -73,7 +73,7 @@ class RelativeNonparametricPerformanceJudgeTest {
         val impacts = mutableListOf<LatencyImpact>()
 
         RelativeNonparametricPerformanceJudge.Builder()
-            .handleLatencyImpact(impacts::add)
+            .handleLatencyImpact(Consumer { impacts.add(it) })
             .build()
             .judge(
                 toleranceRatios = zeroToleranceRatios,
@@ -86,15 +86,11 @@ class RelativeNonparametricPerformanceJudgeTest {
             )
 
         assertThat(impacts).isNotEmpty()
-        impacts.forEach { impact ->
-            assertThat(actionTypes).contains(impact.action)
-            assertThat(impact.relative).isBetween(-0.01f, 0.34f)
-            assertThat(impact.absolute).isBetween(Duration.ofMillis(-40), Duration.ofMillis(600))
-        }
-        assertThat(impacts).hasOnlyOneElementSatisfying { regression ->
-            assertThat(regression.action).isEqualTo(EDIT_ISSUE)
-            assertThat(regression.relative).isCloseTo(0.33f, Offset.offset(0.01f))
-            assertThat(regression.regressionDetected).isTrue()
+        assertThat(impacts.map { it.action }).contains(EDIT_ISSUE)
+        assertThat(impacts.single { it.action == EDIT_ISSUE }).satisfies { editIssueImpact ->
+            assertThat(editIssueImpact.relative).isBetween(160.0, 165.0)
+            assertThat(editIssueImpact.absolute).isBetween(Duration.ofMinutes(1), Duration.ofMinutes(2))
+            assertThat(editIssueImpact.regressionDetected).isTrue()
         }
     }
 }

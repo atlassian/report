@@ -9,12 +9,24 @@ import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
 import com.atlassian.performance.tools.report.api.result.EdibleResult
 import com.atlassian.performance.tools.report.junit.FailedActionJunitReport
 import com.atlassian.performance.tools.report.toPercentage
+import java.util.function.Consumer
 
-class RelativeNonparametricPerformanceJudge(
-    private val significance: Double
+class RelativeNonparametricPerformanceJudge private constructor(
+    private val significance: Double,
+    private val impactHandlers: List<Consumer<LatencyImpact>>
 ) {
 
-    constructor() : this(significance = 0.05)
+    @Deprecated(
+        "Use Builder instead",
+        ReplaceWith("RelativeNonparametricPerformanceJudge.Builder().significance(significance).build()")
+    )
+    constructor(significance: Double) : this(significance, emptyList())
+
+    @Deprecated(
+        "Use Builder instead",
+        ReplaceWith("RelativeNonparametricPerformanceJudge.Builder().build()")
+    )
+    constructor() : this(0.05, emptyList())
 
     fun judge(
         toleranceRatios: Map<ActionType<*>, Float>,
@@ -59,9 +71,20 @@ class RelativeNonparametricPerformanceJudge(
                 action = action
             )
         val test = ShiftedDistributionRegressionTest(baseline, experiment, mwAlpha = significance, ksAlpha = 0.0)
-        return if (test.isExperimentRegressed(toleranceRatio.toDouble())) {
+        // shifts are negated, because ShiftedDistributionRegressionTest is relative to experiment, instead of baseline
+        val impact = LatencyImpact(
+            action,
+            -test.percentageShift,
+            reader.convertToDuration(-test.locationShift),
+            test.isExperimentRegressed(toleranceRatio.toDouble())
+        )
+        impactHandlers.forEach { it.accept(impact) }
+        return if (impact.regressionDetected) {
             val confidenceLevelPercent = (1.0 - significance).toPercentage(decimalPlaces = 0, includeSign = false)
-            val message = "There is a regression in [$label] with $confidenceLevelPercent confidence level. Regression is larger than allowed ${toleranceRatio.toPercentage(decimalPlaces = 2)} tolerance"
+            val message =
+                "There is a regression in [$label] with $confidenceLevelPercent confidence level. Regression is larger than allowed ${
+                    toleranceRatio.toPercentage(decimalPlaces = 2)
+                } tolerance"
             ActionReport(
                 report = FailedActionJunitReport(testName = reportName, assertion = message),
                 action = action,
@@ -75,6 +98,18 @@ class RelativeNonparametricPerformanceJudge(
         }
     }
 
+    class Builder {
+        private var significance: Double = 0.05
+        private val impactHandlers: MutableList<Consumer<LatencyImpact>> = mutableListOf()
+
+        fun significance(significance: Double) = apply { this.significance = significance }
+        fun handleLatencyImpact(handler: Consumer<LatencyImpact>) = apply { impactHandlers.add(handler) }
+
+        fun build() = RelativeNonparametricPerformanceJudge(
+            significance,
+            impactHandlers
+        )
+    }
 }
 
 internal data class ActionReport(
