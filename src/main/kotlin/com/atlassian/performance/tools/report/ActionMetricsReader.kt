@@ -23,7 +23,8 @@ internal class ActionMetricsReader {
         durationData: DurationData,
         actionMetric: ActionMetric
     ): DurationData {
-        durationData.stats.addValue(actionMetric.duration.toNanos().toDouble())
+        val double = actionMetric.duration.toNanos().toDouble()
+        durationData.stats.addValue(double)
         return durationData
     }
 }
