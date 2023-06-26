@@ -29,10 +29,13 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ### Added
 - Add `LatencyImpact` and `LatencyImpact.Builder`. Unblock [JPERF-1160].
 - Add `RelativeNonparametricPerformanceJudge.Builder`.
+- Add `RelativeTypicalPerformanceJudge.Builder`.
 - Emit `LatencyImpact` events from `RelativeNonparametricPerformanceJudge`. Unblock [JPERF-1160].
+- Emit `LatencyImpact` events from `RelativeTypicalPerformanceJudge`. Unblock [JPERF-1160].
 
 ### Deprecated
 - Deprecate `RelativeNonparametricPerformanceJudge` constructors in favor of its `Builder`.
+- Deprecate `RelativeTypicalPerformanceJudge` constructor in favor of its `Builder`.
 
 [JPERF-1160]: https://ecosystem.atlassian.net/browse/JPERF-1160
 
