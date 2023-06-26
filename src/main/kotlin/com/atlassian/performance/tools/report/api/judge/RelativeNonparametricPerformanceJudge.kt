@@ -72,14 +72,15 @@ class RelativeNonparametricPerformanceJudge private constructor(
             )
         val test = ShiftedDistributionRegressionTest(baseline, experiment, mwAlpha = significance, ksAlpha = 0.0)
         // shifts are negated, because ShiftedDistributionRegressionTest is relative to experiment, instead of baseline
-        val impact = LatencyImpact(
+        val impact = LatencyImpact.Builder(
             action,
             -test.percentageShift,
-            reader.convertToDuration(-test.locationShift),
-            test.isExperimentRegressed(toleranceRatio.toDouble())
+            reader.convertToDuration(-test.locationShift)
         )
+            .conclusive(test.isExperimentRegressed(toleranceRatio.toDouble()))
+            .build()
         impactHandlers.forEach { it.accept(impact) }
-        return if (impact.regressionDetected) {
+        return if (impact.regression) {
             val confidenceLevelPercent = (1.0 - significance).toPercentage(decimalPlaces = 0, includeSign = false)
             val message =
                 "There is a regression in [$label] with $confidenceLevelPercent confidence level. Regression is larger than allowed ${

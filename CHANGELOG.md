@@ -27,7 +27,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.14.0...master
 
 ### Added
-- Add `LatencyImpact`. Unblock [JPERF-1160].
+- Add `LatencyImpact` and `LatencyImpact.Builder`. Unblock [JPERF-1160].
 - Add `RelativeNonparametricPerformanceJudge.Builder`.
 - Emit `LatencyImpact` events from `RelativeNonparametricPerformanceJudge`. Unblock [JPERF-1160].
 

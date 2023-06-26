@@ -41,7 +41,7 @@ class RelativeNonparametricPerformanceJudgeTest {
     private val zeroToleranceRatios = actionTypes.associate { it to 0.1f }.toMap()
     private val baselineMetrics = generateBaseline(actionTypes)
     private val experimentMetrics = generateExperiment(actionTypes)
-    private val tested = RelativeNonparametricPerformanceJudge()
+    private val tested = RelativeNonparametricPerformanceJudge.Builder().build()
         .judge(
             toleranceRatios = zeroToleranceRatios,
             baselineResult = EdibleResult.Builder("baseline mock")
@@ -90,7 +90,8 @@ class RelativeNonparametricPerformanceJudgeTest {
         assertThat(impacts.single { it.action == EDIT_ISSUE }).satisfies { editIssueImpact ->
             assertThat(editIssueImpact.relative).isBetween(160.0, 165.0)
             assertThat(editIssueImpact.absolute).isBetween(Duration.ofMinutes(1), Duration.ofMinutes(2))
-            assertThat(editIssueImpact.regressionDetected).isTrue()
+            assertThat(editIssueImpact.regression).isTrue()
+            assertThat(editIssueImpact.conclusive).isTrue()
         }
     }
 }
