@@ -77,7 +77,7 @@ class RelativeNonparametricPerformanceJudge private constructor(
             -test.percentageShift,
             reader.convertToDuration(-test.locationShift)
         )
-            .conclusive(test.isExperimentRegressed(toleranceRatio.toDouble()))
+            .signal(test.isExperimentRegressed(toleranceRatio.toDouble()))
             .build()
         impactHandlers.forEach { it.accept(impact) }
         return if (impact.regression) {
