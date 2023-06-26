@@ -1,7 +1,9 @@
 package com.atlassian.performance.tools.report.api.judge
 
 import com.atlassian.performance.tools.jiraactions.api.ActionType
+import com.atlassian.performance.tools.jiraactions.api.EDIT_ISSUE
 import com.atlassian.performance.tools.jiraactions.api.VIEW_ISSUE
+import com.atlassian.performance.tools.report.api.result.FakeResults
 import com.atlassian.performance.tools.report.api.result.LocalRealResult
 import com.atlassian.performance.tools.report.result.PerformanceStats
 import org.assertj.core.api.Assertions.assertThat
@@ -11,7 +13,8 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.nio.file.Paths
 import java.time.Duration
-import java.time.Duration.*
+import java.time.Duration.ofMillis
+import java.time.Duration.ofSeconds
 import java.util.function.Consumer
 
 class RelativeTypicalPerformanceJudgeTest {
@@ -109,6 +112,43 @@ class RelativeTypicalPerformanceJudgeTest {
             assertThat(it.regression).isFalse()
             assertThat(it.relative).isBetween(0.013, 0.014)
             assertThat(it.absolute).isBetween(ofMillis(15), ofMillis(16))
+        }
+    }
+
+    @Test
+    fun shouldJudgeRegression() {
+        // given
+        val tolerances = FakeResults.actionTypes.associate { it to 0.02f }.toMap()
+        val baseline = FakeResults.fastResult.stats
+        val experiment = FakeResults.slowResult.stats
+        val impacts = mutableListOf<LatencyImpact>()
+        val judge = RelativeTypicalPerformanceJudge.Builder()
+            .handleLatencyImpact(Consumer { impacts.add(it) })
+            .build()
+
+        // when
+        val thrown = catchThrowable {
+            judge
+                .judge(tolerances, baseline, experiment)
+                .assertAccepted(javaClass.name, workspace.newFolder().toPath(), expectedReportCount = 2)
+        }
+
+        // then
+        assertThat(thrown).hasMessageContaining(
+            """
+            Performance results are rejected, because:
+            Full Edit Issue +16293% typical performance regression overcame +2% tolerance
+            Full Add Comment +16293% typical performance regression overcame +2% tolerance
+            """.trimIndent()
+        )
+        assertThat(impacts).hasSize(2)
+        assertThat(impacts.first()).satisfies {
+            assertThat(it.action).isEqualTo(EDIT_ISSUE)
+            assertThat(it.signal).isTrue()
+            assertThat(it.noise).isFalse()
+            assertThat(it.regression).isTrue()
+            assertThat(it.absolute).isBetween(ofSeconds(99), ofSeconds(101))
+            assertThat(it.relative).isBetween(160.0, 170.0)
         }
     }
 }
