@@ -9,6 +9,7 @@ import com.atlassian.performance.tools.report.api.result.Stats
 import com.atlassian.performance.tools.report.result.PerformanceStats
 import com.atlassian.performance.tools.report.toPercentage
 import java.util.function.Consumer
+import kotlin.math.absoluteValue
 
 class RelativeTypicalPerformanceJudge private constructor(
     private val impactHandlers: List<Consumer<LatencyImpact>>
@@ -67,7 +68,7 @@ class RelativeTypicalPerformanceJudge private constructor(
         val absoluteDiff = experimentCenter - baselineCenter
         val relativeDiff = absoluteDiff.toNanos().toDouble() / baselineCenter.toNanos().toDouble()
         val impact = LatencyImpact.Builder(action, relativeDiff, absoluteDiff)
-            .noise(relativeDiff < toleranceRatio)
+            .noise(relativeDiff.absoluteValue < toleranceRatio)
             .build()
         impactHandlers.forEach { it.accept(impact) }
         return if (impact.regression) {
