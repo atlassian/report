@@ -151,4 +151,36 @@ class RelativeTypicalPerformanceJudgeTest {
             assertThat(it.relative).isBetween(160.0, 170.0)
         }
     }
+
+    @Test
+    fun shouldJudgeImprovement() {
+        // given
+        val tolerances = FakeResults.actionTypes.associate { it to 0.02f }.toMap()
+        val baseline = FakeResults.slowResult.stats
+        val experiment = FakeResults.fastResult.stats
+        val impacts = mutableListOf<LatencyImpact>()
+        val judge = RelativeTypicalPerformanceJudge.Builder()
+            .handleLatencyImpact(Consumer { impacts.add(it) })
+            .build()
+
+        // when
+        val thrown = catchThrowable {
+            judge
+                .judge(tolerances, baseline, experiment)
+                .assertAccepted(javaClass.name, workspace.newFolder().toPath(), expectedReportCount = 2)
+        }
+
+        // then
+        assertThat(thrown).doesNotThrowAnyException()
+        assertThat(impacts).hasSize(2)
+        assertThat(impacts.first()).satisfies {
+            assertThat(it.action).isEqualTo(EDIT_ISSUE)
+            assertThat(it.signal).isTrue()
+            assertThat(it.noise).isFalse()
+            assertThat(it.improvement).isTrue()
+            assertThat(it.regression).isFalse()
+            assertThat(it.absolute).isBetween(ofSeconds(-101), ofSeconds(-99))
+            assertThat(it.relative).isBetween(-0.994, -0.993)
+        }
+    }
 }
