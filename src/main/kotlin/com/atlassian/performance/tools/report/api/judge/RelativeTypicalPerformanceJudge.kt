@@ -64,8 +64,8 @@ class RelativeTypicalPerformanceJudge private constructor(
             ?: return FailedAssertionJUnitReport(reportName, "No action $label results for $baselineCohort")
         val experimentCenter = experimentStats.locations[label]
             ?: return FailedAssertionJUnitReport(reportName, "No action $label results for $experimentCohort")
-        val relativeDiff = (experimentCenter.toNanos().toFloat() / baselineCenter.toNanos().toFloat()) - 1.00
         val absoluteDiff = experimentCenter - baselineCenter
+        val relativeDiff = absoluteDiff.toNanos().toDouble() / baselineCenter.toNanos().toDouble()
         val impact = LatencyImpact.Builder(action, relativeDiff, absoluteDiff)
             .noise(relativeDiff < toleranceRatio)
             .build()
