@@ -8,8 +8,17 @@ import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
 import com.atlassian.performance.tools.report.api.result.Stats
 import com.atlassian.performance.tools.report.result.PerformanceStats
 import com.atlassian.performance.tools.report.toPercentage
+import java.util.function.Consumer
 
-class RelativeTypicalPerformanceJudge {
+class RelativeTypicalPerformanceJudge private constructor(
+    private val impactHandlers: List<Consumer<LatencyImpact>>
+) {
+
+    @Deprecated(
+        "Use Builder instead",
+        ReplaceWith("RelativeTypicalPerformanceJudge.Builder().build()")
+    )
+    constructor() : this(emptyList())
 
     @Deprecated(message = "Use the other judge method.")
     fun judge(
@@ -55,14 +64,28 @@ class RelativeTypicalPerformanceJudge {
             ?: return FailedAssertionJUnitReport(reportName, "No action $label results for $baselineCohort")
         val experimentCenter = experimentStats.locations[label]
             ?: return FailedAssertionJUnitReport(reportName, "No action $label results for $experimentCohort")
-        val regression = (experimentCenter.toNanos().toFloat() / baselineCenter.toNanos().toFloat()) - 1.00f
-        return if (regression > toleranceRatio) {
-            val regressionDescription = "$label ${regression.toPercentage(decimalPlaces = 0)} typical performance regression"
+        val relativeDiff = (experimentCenter.toNanos().toFloat() / baselineCenter.toNanos().toFloat()) - 1.00
+        val absoluteDiff = experimentCenter - baselineCenter
+        val impact = LatencyImpact.Builder(action, relativeDiff, absoluteDiff)
+            .noise(relativeDiff < toleranceRatio)
+            .build()
+        impactHandlers.forEach { it.accept(impact) }
+        return if (impact.regression) {
+            val regressionDescription = "$label ${relativeDiff.toPercentage(decimalPlaces = 0)} typical performance regression"
             val toleranceDescription = "${toleranceRatio.toPercentage(decimalPlaces = 0)} tolerance"
             val message = "$regressionDescription overcame $toleranceDescription"
             FailedAssertionJUnitReport(reportName, message)
         } else {
             SuccessfulJUnitReport(reportName)
         }
+    }
+
+    class Builder {
+
+        private val impactHandlers: MutableList<Consumer<LatencyImpact>> = mutableListOf()
+
+        fun handleLatencyImpact(handler: Consumer<LatencyImpact>) = apply { impactHandlers.add(handler) }
+
+        fun build() = RelativeTypicalPerformanceJudge(impactHandlers)
     }
 }

@@ -46,6 +46,7 @@ class LatencyImpact private constructor(
         fun relative(relative: Double) = apply { this.relative = relative }
         fun absolute(absolute: Duration) = apply { this.absolute = absolute }
         fun signal(signal: Boolean)  = apply { this.signal = signal }
+        fun noise(noise: Boolean) = signal(!noise)
 
         fun build() = LatencyImpact(action, relative, absolute, signal)
     }
