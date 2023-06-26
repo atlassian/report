@@ -91,7 +91,7 @@ class RelativeNonparametricPerformanceJudgeTest {
             assertThat(editIssueImpact.relative).isBetween(160.0, 165.0)
             assertThat(editIssueImpact.absolute).isBetween(Duration.ofMinutes(1), Duration.ofMinutes(2))
             assertThat(editIssueImpact.regression).isTrue()
-            assertThat(editIssueImpact.conclusive).isTrue()
+            assertThat(editIssueImpact.signal).isTrue()
         }
     }
 }
