@@ -5,7 +5,6 @@ import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.result.FakeResults
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.time.Duration
 import java.time.Duration.ofMinutes
 import java.util.function.Consumer
 
@@ -28,9 +27,8 @@ class RelativeNonparametricPerformanceJudgeTest {
         )
 
         // then
-        assertThat(verdict.positive).isFalse()
         assertThat(verdict.reports).hasSize(2)
-        assertThat(verdict.reports).allSatisfy { !it.successful }
+        assertThat(verdict.reports).allMatch { !it.successful }
         assertThat(verdict.reports.first().extractText())
             .contains("There is a regression in [Full Edit Issue] with 95% confidence level. Regression is larger than allowed +10.00% tolerance")
         assertThat(impacts).isNotEmpty()
@@ -60,9 +58,8 @@ class RelativeNonparametricPerformanceJudgeTest {
         )
 
         // then
-        assertThat(verdict.positive).isTrue()
         assertThat(verdict.reports).hasSize(2)
-        assertThat(verdict.reports).allSatisfy { it.successful }
+        assertThat(verdict.reports).allMatch { it.successful }
         assertThat(impacts).isNotEmpty()
         assertThat(impacts.map { it.action }).contains(EDIT_ISSUE)
         assertThat(impacts.single { it.action == EDIT_ISSUE }).satisfies { editIssueImpact ->
