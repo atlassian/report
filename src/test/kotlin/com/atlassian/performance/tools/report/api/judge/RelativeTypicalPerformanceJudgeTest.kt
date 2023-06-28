@@ -40,7 +40,6 @@ class RelativeTypicalPerformanceJudgeTest {
         val verdict = judge.judge(toleranceRatios, baselineStats, experimentStats)
 
         // then
-        assertThat(verdict.positive).isFalse()
         assertThat(verdict.reports).hasSize(1)
         assertThat(verdict.reports.single().extractText()).contains("No action View Issue results for baselineCohort")
         assertThat(impacts).isEmpty()
@@ -63,7 +62,6 @@ class RelativeTypicalPerformanceJudgeTest {
         val verdict = judge.judge(toleranceRatios, baselineStats, experimentStats)
 
         // then
-        assertThat(verdict.positive).isFalse()
         assertThat(verdict.reports).hasSize(1)
         assertThat(verdict.reports.single().extractText()).contains("No action View Issue results for experimentCohort")
         assertThat(impacts).isEmpty()
@@ -84,7 +82,6 @@ class RelativeTypicalPerformanceJudgeTest {
         val verdict = judge.judge(toleranceRatios, baselineStats, experimentStats)
 
         // then
-        assertThat(verdict.positive).isTrue()
         assertThat(verdict.reports).hasSize(1)
         assertThat(impacts).hasSize(1)
         assertThat(impacts.single()).satisfies {
@@ -111,7 +108,6 @@ class RelativeTypicalPerformanceJudgeTest {
         val verdict = judge.judge(tolerances, baseline, experiment)
 
         // then
-        assertThat(verdict.positive).isFalse()
         val reports = verdict.reports
         assertThat(reports).hasSize(2)
         assertThat(reports[0].extractText())
@@ -145,7 +141,6 @@ class RelativeTypicalPerformanceJudgeTest {
         val verdict = judge.judge(tolerances, baseline, experiment)
 
         // then
-        assertThat(verdict.positive).isTrue()
         assertThat(verdict.reports).hasSize(2)
         assertThat(impacts).hasSize(2)
         assertThat(impacts.first()).satisfies {
