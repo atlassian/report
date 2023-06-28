@@ -62,6 +62,10 @@ class ShiftedDistributionRegressionTest(
         return@lazy KolmogorovSmirnov2Samples(baseline, shiftedExperiment, Side.TWO_SIDED).pValue() >= ksAlpha
     }
 
+    internal fun isSignal(tolerance: Double): Boolean {
+        return isExperimentRegressed(tolerance) || isExperimentImproved(tolerance)
+    }
+
     /**
      * Performs a one-tailed Mann–Whitney U test to check whether experiment is not slower than the baseline
      *
@@ -71,6 +75,11 @@ class ShiftedDistributionRegressionTest(
     fun isExperimentRegressed(tolerance: Double): Boolean {
         val mu = - tolerance * baselineMedian
         return WilcoxonRankSum(baseline, experiment, mu).pValue1SidedLess < mwAlpha
+    }
+
+    private fun isExperimentImproved(tolerance: Double): Boolean {
+        val mu = - tolerance * baselineMedian
+        return WilcoxonRankSum(experiment, baseline, mu).pValue1SidedLess < mwAlpha
     }
 
     /**

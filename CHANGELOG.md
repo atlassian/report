@@ -37,6 +37,9 @@ Dropping a requirement of a major version of a dependency is a new contract.
 - Deprecate `RelativeNonparametricPerformanceJudge` constructors in favor of its `Builder`.
 - Deprecate `RelativeTypicalPerformanceJudge` constructor in favor of its `Builder`.
 
+### Fixed
+- Fix `RelativeNonparametricPerformanceJudge` treating improvements as noise.
+
 [JPERF-1160]: https://ecosystem.atlassian.net/browse/JPERF-1160
 
 ## [3.14.0] - 2023-04-03
