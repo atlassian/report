@@ -3,11 +3,11 @@ package com.atlassian.performance.tools.report.api.judge
 import com.atlassian.performance.tools.jiraactions.api.ActionType
 import com.atlassian.performance.tools.jiraactions.api.EDIT_ISSUE
 import com.atlassian.performance.tools.jiraactions.api.VIEW_ISSUE
+import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.result.FakeResults
 import com.atlassian.performance.tools.report.api.result.LocalRealResult
 import com.atlassian.performance.tools.report.result.PerformanceStats
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -37,20 +37,12 @@ class RelativeTypicalPerformanceJudgeTest {
             .build()
 
         // when
-        val thrown = catchThrowable {
-            judge
-                .judge(toleranceRatios, baselineStats, experimentStats)
-                .assertAccepted(
-                    "RelativeTypicalPerformanceJudgeTest",
-                    workspace.newFolder().toPath(),
-                    expectedReportCount = 1
-                )
-        }
+        val verdict = judge.judge(toleranceRatios, baselineStats, experimentStats)
 
         // then
-        assertThat(thrown).hasMessageContaining(
-            "Performance results are rejected, because:\nNo action View Issue results for baselineCohort"
-        )
+        assertThat(verdict.positive).isFalse()
+        assertThat(verdict.reports).hasSize(1)
+        assertThat(verdict.reports.single().extractText()).contains("No action View Issue results for baselineCohort")
         assertThat(impacts).isEmpty()
     }
 
@@ -68,20 +60,12 @@ class RelativeTypicalPerformanceJudgeTest {
             .build()
 
         // when
-        val thrown = catchThrowable {
-            judge
-                .judge(toleranceRatios, baselineStats, experimentStats)
-                .assertAccepted(
-                    "RelativeTypicalPerformanceJudgeTest",
-                    workspace.newFolder().toPath(),
-                    expectedReportCount = 1
-                )
-        }
+        val verdict = judge.judge(toleranceRatios, baselineStats, experimentStats)
 
         // then
-        assertThat(thrown).hasMessageContaining(
-            "Performance results are rejected, because:\nNo action View Issue results for experimentCohort"
-        )
+        assertThat(verdict.positive).isFalse()
+        assertThat(verdict.reports).hasSize(1)
+        assertThat(verdict.reports.single().extractText()).contains("No action View Issue results for experimentCohort")
         assertThat(impacts).isEmpty()
     }
 
@@ -97,14 +81,11 @@ class RelativeTypicalPerformanceJudgeTest {
             .build()
 
         // when
-        val thrown = catchThrowable {
-            judge
-                .judge(toleranceRatios, baselineStats, experimentStats)
-                .assertAccepted(javaClass.name, workspace.newFolder().toPath(), expectedReportCount = 1)
-        }
+        val verdict = judge.judge(toleranceRatios, baselineStats, experimentStats)
 
         // then
-        assertThat(thrown).doesNotThrowAnyException()
+        assertThat(verdict.positive).isTrue()
+        assertThat(verdict.reports).hasSize(1)
         assertThat(impacts).hasSize(1)
         assertThat(impacts.single()).satisfies {
             assertThat(it.signal).isFalse()
@@ -127,20 +108,16 @@ class RelativeTypicalPerformanceJudgeTest {
             .build()
 
         // when
-        val thrown = catchThrowable {
-            judge
-                .judge(tolerances, baseline, experiment)
-                .assertAccepted(javaClass.name, workspace.newFolder().toPath(), expectedReportCount = 2)
-        }
+        val verdict = judge.judge(tolerances, baseline, experiment)
 
         // then
-        assertThat(thrown).hasMessageContaining(
-            """
-            Performance results are rejected, because:
-            Full Edit Issue +16293% typical performance regression overcame +2% tolerance
-            Full Add Comment +16293% typical performance regression overcame +2% tolerance
-            """.trimIndent()
-        )
+        assertThat(verdict.positive).isFalse()
+        val reports = verdict.reports
+        assertThat(reports).hasSize(2)
+        assertThat(reports[0].extractText())
+            .contains("Full Edit Issue +16293% typical performance regression overcame +2% tolerance")
+        assertThat(reports[1].extractText())
+            .contains("Full Add Comment +16293% typical performance regression overcame +2% tolerance")
         assertThat(impacts).hasSize(2)
         assertThat(impacts.first()).satisfies {
             assertThat(it.action).isEqualTo(EDIT_ISSUE)
@@ -151,6 +128,7 @@ class RelativeTypicalPerformanceJudgeTest {
             assertThat(it.relative).isBetween(160.0, 170.0)
         }
     }
+
 
     @Test
     fun shouldJudgeImprovement() {
@@ -164,14 +142,11 @@ class RelativeTypicalPerformanceJudgeTest {
             .build()
 
         // when
-        val thrown = catchThrowable {
-            judge
-                .judge(tolerances, baseline, experiment)
-                .assertAccepted(javaClass.name, workspace.newFolder().toPath(), expectedReportCount = 2)
-        }
+        val verdict = judge.judge(tolerances, baseline, experiment)
 
         // then
-        assertThat(thrown).doesNotThrowAnyException()
+        assertThat(verdict.positive).isTrue()
+        assertThat(verdict.reports).hasSize(2)
         assertThat(impacts).hasSize(2)
         assertThat(impacts.first()).satisfies {
             assertThat(it.action).isEqualTo(EDIT_ISSUE)
@@ -183,4 +158,6 @@ class RelativeTypicalPerformanceJudgeTest {
             assertThat(it.relative).isBetween(-0.994, -0.993)
         }
     }
+
+    private fun JUnitReport.extractText() = toXml(javaClass.name)
 }
