@@ -1,12 +1,16 @@
 package com.atlassian.performance.tools.report.api.judge
 
 import com.atlassian.performance.tools.jiraactions.api.EDIT_ISSUE
+import com.atlassian.performance.tools.report.api.LatencyImpactMarkdownTable
 import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.result.FakeResults
 import com.atlassian.performance.tools.report.api.result.FakeResults.addNoise
+import com.atlassian.performance.tools.workspace.api.TestWorkspace
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.SoftAssertions
 import org.junit.Test
+import java.nio.file.Files
+import java.nio.file.Files.*
 import java.time.Duration.ofMillis
 import java.time.Duration.ofMinutes
 import java.util.function.Consumer
@@ -106,6 +110,33 @@ class RelativeNonparametricPerformanceJudgeTest {
             assertThat(impact.signal).`as`("signal").isTrue()
             assertAll()
         }
+    }
+
+    @Test
+    fun shouldIntegrateWithMarkdownTable() {
+        // given
+        val zeroToleranceRatios = FakeResults.actionTypes.associate { it to 0.1f }.toMap()
+        val workspace = TestWorkspace(createTempDirectory(javaClass.simpleName))
+        val judge = RelativeNonparametricPerformanceJudge.Builder()
+            .handleLatencyImpact(LatencyImpactMarkdownTable(workspace))
+            .build()
+
+        // when
+        judge.judge(
+            toleranceRatios = zeroToleranceRatios,
+            baselineResult = FakeResults.fastResult,
+            experimentResult = FakeResults.slowResult
+        )
+
+        // then
+        assertThat(workspace.directory.resolve("latency-impact-table.md")).hasContent(
+            """
+            | Action                | Latency impact | Latency impact | Classification |
+            |-----------------------|----------------|----------------|----------------|
+            | Full Edit Issue       | +16293.44 %    | +99390 ms      | REGRESSION     |
+            | Full Add Comment      | +16293.44 %    | +99390 ms      | REGRESSION     |
+            """.trimIndent()
+        )
     }
 
     private fun JUnitReport.extractText() = toXml(javaClass.name)
