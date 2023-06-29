@@ -24,11 +24,13 @@ class LatencyImpact private constructor(
      * If false, then it's an [improvement] or [noise].
      */
     val regression: Boolean = relative > 0.0 && signal
+
     /**
      * If true, then it's a real improvement with given [relative] and [absolute] size.
      * If false, then it's an [regression] or [noise].
      */
     val improvement: Boolean = relative < 0.0 && signal
+
     /**
      * If true, then it's neither [regression] nor [improvement]. It's just noise with [relative] and [absolute] size.
      * If false, then it's either [regression] or [improvement]. It's a [signal].
@@ -45,8 +47,10 @@ class LatencyImpact private constructor(
         fun action(action: ActionType<*>) = apply { this.action = action }
         fun relative(relative: Double) = apply { this.relative = relative }
         fun absolute(absolute: Duration) = apply { this.absolute = absolute }
-        fun signal(signal: Boolean)  = apply { this.signal = signal }
+        fun signal(signal: Boolean) = apply { this.signal = signal }
+        fun signal() = signal(true)
         fun noise(noise: Boolean) = signal(!noise)
+        fun noise() = noise(true)
 
         fun build() = LatencyImpact(action, relative, absolute, signal)
     }
