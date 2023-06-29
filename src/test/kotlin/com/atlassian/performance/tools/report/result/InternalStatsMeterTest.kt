@@ -5,7 +5,6 @@ import com.atlassian.performance.tools.jiraactions.api.ActionResult
 import com.atlassian.performance.tools.jiraactions.api.ActionType
 import com.atlassian.performance.tools.report.api.OutlierTrimming
 import com.atlassian.performance.tools.report.api.result.EdibleResult
-import com.atlassian.performance.tools.report.api.result.StatsMeter
 import org.apache.commons.math3.stat.descriptive.rank.Max
 import org.apache.commons.math3.stat.descriptive.rank.Min
 import org.assertj.core.api.Assertions.assertThat

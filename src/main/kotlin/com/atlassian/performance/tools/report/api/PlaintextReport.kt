@@ -2,7 +2,6 @@ package com.atlassian.performance.tools.report.api
 
 import com.atlassian.performance.tools.jiraactions.api.ActionMetricStatistics
 import org.apache.commons.lang3.StringUtils.abbreviate
-import java.lang.StringBuilder
 import java.util.*
 
 class PlaintextReport(

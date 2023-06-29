@@ -9,8 +9,7 @@ import com.atlassian.performance.tools.workspace.api.TestWorkspace
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.SoftAssertions
 import org.junit.Test
-import java.nio.file.Files
-import java.nio.file.Files.*
+import java.nio.file.Files.createTempDirectory
 import java.time.Duration.ofMillis
 import java.time.Duration.ofMinutes
 import java.util.function.Consumer

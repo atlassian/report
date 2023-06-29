@@ -7,7 +7,6 @@ import org.junit.Assert.assertThat
 import org.junit.Test
 import java.time.Duration
 import java.time.Instant.now
-import java.util.*
 
 class ActionMetricsReaderTest {
 
