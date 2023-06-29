@@ -8,6 +8,7 @@ import com.atlassian.performance.tools.report.api.result.FakeResults
 import com.atlassian.performance.tools.report.api.result.LocalRealResult
 import com.atlassian.performance.tools.report.result.PerformanceStats
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.SoftAssertions
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -40,9 +41,13 @@ class RelativeTypicalPerformanceJudgeTest {
         val verdict = judge.judge(toleranceRatios, baselineStats, experimentStats)
 
         // then
-        assertThat(verdict.reports).hasSize(1)
-        assertThat(verdict.reports.single().extractText()).contains("No action View Issue results for baselineCohort")
-        assertThat(impacts).isEmpty()
+        with(SoftAssertions()) {
+            assertThat(verdict.reports).hasSize(1)
+            assertThat(verdict.reports.single().extractText())
+                .contains("No action View Issue results for baselineCohort")
+            assertThat(impacts).isEmpty()
+            assertAll()
+        }
     }
 
     @Test
@@ -63,8 +68,12 @@ class RelativeTypicalPerformanceJudgeTest {
 
         // then
         assertThat(verdict.reports).hasSize(1)
-        assertThat(verdict.reports.single().extractText()).contains("No action View Issue results for experimentCohort")
-        assertThat(impacts).isEmpty()
+        with(SoftAssertions()) {
+            assertThat(verdict.reports.single().extractText())
+                .contains("No action View Issue results for experimentCohort")
+            assertThat(impacts).isEmpty()
+            assertAll()
+        }
     }
 
     @Test
@@ -84,12 +93,14 @@ class RelativeTypicalPerformanceJudgeTest {
         // then
         assertThat(verdict.reports).hasSize(1)
         assertThat(impacts).hasSize(1)
-        assertThat(impacts.single()).satisfies {
-            assertThat(it.signal).isFalse()
-            assertThat(it.noise).isTrue()
-            assertThat(it.regression).isFalse()
-            assertThat(it.relative).isBetween(0.013, 0.014)
-            assertThat(it.absolute).isBetween(ofMillis(15), ofMillis(16))
+        with(SoftAssertions()) {
+            val impact = impacts.single()
+            assertThat(impact.signal).`as`("signal").isFalse()
+            assertThat(impact.noise).`as`("noise").isTrue()
+            assertThat(impact.regression).`as`("regression").isFalse()
+            assertThat(impact.relative).isBetween(0.013, 0.014)
+            assertThat(impact.absolute).isBetween(ofMillis(15), ofMillis(16))
+            assertAll()
         }
     }
 
@@ -110,18 +121,20 @@ class RelativeTypicalPerformanceJudgeTest {
         // then
         val reports = verdict.reports
         assertThat(reports).hasSize(2)
-        assertThat(reports[0].extractText())
-            .contains("Full Edit Issue +16293% typical performance regression overcame +2% tolerance")
-        assertThat(reports[1].extractText())
-            .contains("Full Add Comment +16293% typical performance regression overcame +2% tolerance")
         assertThat(impacts).hasSize(2)
-        assertThat(impacts.first()).satisfies {
-            assertThat(it.action).isEqualTo(EDIT_ISSUE)
-            assertThat(it.signal).isTrue()
-            assertThat(it.noise).isFalse()
-            assertThat(it.regression).isTrue()
-            assertThat(it.absolute).isBetween(ofSeconds(99), ofSeconds(101))
-            assertThat(it.relative).isBetween(160.0, 170.0)
+        with(SoftAssertions()) {
+            assertThat(reports[0].extractText())
+                .contains("Full Edit Issue +16293% typical performance regression overcame +2% tolerance")
+            assertThat(reports[1].extractText())
+                .contains("Full Add Comment +16293% typical performance regression overcame +2% tolerance")
+            val impact = impacts.first()
+            assertThat(impact.action).isEqualTo(EDIT_ISSUE)
+            assertThat(impact.signal).`as`("signal").isTrue()
+            assertThat(impact.noise).`as`("noise").isFalse()
+            assertThat(impact.regression).`as`("regression").isTrue()
+            assertThat(impact.absolute).isBetween(ofSeconds(99), ofSeconds(101))
+            assertThat(impact.relative).isBetween(160.0, 170.0)
+            assertAll()
         }
     }
 
@@ -143,14 +156,16 @@ class RelativeTypicalPerformanceJudgeTest {
         // then
         assertThat(verdict.reports).hasSize(2)
         assertThat(impacts).hasSize(2)
-        assertThat(impacts.first()).satisfies {
-            assertThat(it.action).isEqualTo(EDIT_ISSUE)
-            assertThat(it.signal).isTrue()
-            assertThat(it.noise).isFalse()
-            assertThat(it.improvement).isTrue()
-            assertThat(it.regression).isFalse()
-            assertThat(it.absolute).isBetween(ofSeconds(-101), ofSeconds(-99))
-            assertThat(it.relative).isBetween(-0.994, -0.993)
+        with(SoftAssertions()) {
+            val impact = impacts.first()
+            assertThat(impact.action).isEqualTo(EDIT_ISSUE)
+            assertThat(impact.signal).`as`("signal").isTrue()
+            assertThat(impact.noise).`as`("noise").isFalse()
+            assertThat(impact.improvement).`as`("improvement").isTrue()
+            assertThat(impact.regression).`as`("regression").isFalse()
+            assertThat(impact.absolute).isBetween(ofSeconds(-101), ofSeconds(-99))
+            assertThat(impact.relative).isBetween(-0.994, -0.993)
+            assertAll()
         }
     }
 
