@@ -32,7 +32,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 - Add `RelativeTypicalPerformanceJudge.Builder`.
 - Emit `LatencyImpact` events from `RelativeNonparametricPerformanceJudge`. Unblock [JPERF-1160].
 - Emit `LatencyImpact` events from `RelativeTypicalPerformanceJudge`. Unblock [JPERF-1160].
-- Add `LatencyImpactMarkdownTable`. Unblock [JPERF-1160].
+- Render `LatencyImpactMarkdownTable`. Unblock [JPERF-1160].
 
 ### Deprecated
 - Deprecate `RelativeNonparametricPerformanceJudge` constructors in favor of its `Builder`.
