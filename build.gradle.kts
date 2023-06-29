@@ -64,7 +64,8 @@ dependencies {
     listOf(
         "junit:junit:4.12",
         "org.hamcrest:hamcrest-library:1.3",
-        "org.assertj:assertj-core:3.10.0"
+        "org.assertj:assertj-core:3.10.0",
+        "com.atlassian.performance.tools:jira-software-actions:[1.1.0, 4.0.0)"
     ).forEach { testCompile(it) }
 }
 
