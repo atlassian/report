@@ -16,12 +16,15 @@ class LatencyImpactMarkdownTable(
     override fun accept(impact: LatencyImpact) {
         impacts.add(impact)
         workspace.directory.resolve("latency-impact-table.md").toFile().bufferedWriter().use { writer ->
-            writer.write("| Action                | Latency impact | Latency impact | Classification |\n")
-            writer.write("|-----------------------|----------------|----------------|----------------|\n")
             val formatter = Formatter(writer)
+            val format = "| %-21s | %-14s | %-14s | %-14s |\n"
+            formatter.format(format, "Action", "Latency impact", "Latency impact", "Classification")
+            val dashes21 = "-".repeat(21)
+            val dashes14 = "-".repeat(14)
+            writer.write("|-$dashes21-|-$dashes14-|-$dashes14-|-$dashes14-|\n")
             impacts.forEach {
                 formatter.format(
-                    "| %-21s | %-14s | %-14s | %-14s |\n",
+                    format,
                     abbreviate(it.action.label, 25),
                     format("%+.2f %%", it.relative * 100),
                     format("%+d ms", it.absolute.toMillis()),
