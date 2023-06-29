@@ -27,4 +27,26 @@ object FakeResults {
             ).build()
         }
     }.flatten()
+
+    fun EdibleResult.addNoise() = EdibleResult.Builder(this.cohort)
+        .actionMetrics(this.actionMetrics.addNoise())
+        .build()
+
+    private fun List<ActionMetric>.addNoise(): List<ActionMetric> = this.mapIndexed { index, metric ->
+        ActionMetric.Builder(
+            metric.label,
+            metric.result,
+            metric.duration.addNoise(index),
+            metric.start
+        ).build()
+    }
+
+    private fun Duration.addNoise(index: Int): Duration {
+        val noise = Duration.ofMillis((index * 11L) % 7)
+        return if (index % 2 == 0) {
+            this.plus(noise)
+        } else {
+            this.minus(noise)
+        }
+    }
 }

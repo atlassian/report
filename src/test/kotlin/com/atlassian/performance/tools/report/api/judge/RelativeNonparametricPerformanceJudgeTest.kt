@@ -3,6 +3,7 @@ package com.atlassian.performance.tools.report.api.judge
 import com.atlassian.performance.tools.jiraactions.api.EDIT_ISSUE
 import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.result.FakeResults
+import com.atlassian.performance.tools.report.api.result.FakeResults.addNoise
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.SoftAssertions
 import org.junit.Test
@@ -25,7 +26,7 @@ class RelativeNonparametricPerformanceJudgeTest {
         val verdict = judge.judge(
             toleranceRatios = zeroToleranceRatios,
             baselineResult = FakeResults.fastResult,
-            experimentResult = FakeResults.fastResult
+            experimentResult = FakeResults.fastResult.addNoise()
         )
 
         // then
@@ -35,7 +36,7 @@ class RelativeNonparametricPerformanceJudgeTest {
         assertThat(impacts.map { it.action }).contains(EDIT_ISSUE)
         assertThat(impacts.single { it.action == EDIT_ISSUE }).satisfies { editIssueImpact ->
             assertThat(editIssueImpact.relative).isBetween(-0.1, 0.1)
-            assertThat(editIssueImpact.absolute).isBetween(ofMillis(-1), ofMillis(1))
+            assertThat(editIssueImpact.absolute).isEqualTo(ofMillis(3))
             assertThat(editIssueImpact.regression).isFalse()
             assertThat(editIssueImpact.improvement).isFalse()
             assertThat(editIssueImpact.noise).isTrue()
