@@ -8,7 +8,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.Duration.ofSeconds
 import java.time.Instant.now
-import java.util.UUID.randomUUID
 
 
 class PlaintextReportTest {

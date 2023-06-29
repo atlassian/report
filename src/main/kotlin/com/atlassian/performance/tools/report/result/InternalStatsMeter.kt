@@ -7,7 +7,6 @@ import com.atlassian.performance.tools.report.ActionMetricsReader
 import com.atlassian.performance.tools.report.api.OutlierTrimming
 import com.atlassian.performance.tools.report.api.result.DurationData
 import com.atlassian.performance.tools.report.api.result.EdibleResult
-import com.atlassian.performance.tools.report.api.result.InteractionStats
 import com.atlassian.performance.tools.report.api.result.Stats
 import org.apache.commons.math3.stat.descriptive.UnivariateStatistic
 import java.time.Duration

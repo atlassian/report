@@ -2,7 +2,6 @@ package com.atlassian.performance.tools.report.api.judge
 
 import com.atlassian.performance.tools.report.api.PerformanceCriteria
 import com.atlassian.performance.tools.report.api.junit.FailedAssertionJUnitReport
-import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
 
 class NodeBalanceJudge(
