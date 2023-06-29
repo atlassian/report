@@ -3,6 +3,7 @@ package com.atlassian.performance.tools.report.api
 import com.atlassian.performance.tools.report.api.judge.LatencyImpact
 import com.atlassian.performance.tools.workspace.api.TestWorkspace
 import org.apache.commons.lang3.StringUtils.abbreviate
+import java.lang.String.format
 import java.util.*
 import java.util.function.Consumer
 
@@ -22,16 +23,12 @@ class LatencyImpactMarkdownTable(
                 formatter.format(
                     "| %-21s | %-14s | %-14s | %-14s |\n",
                     abbreviate(it.action.label, 25),
-                    String.format("%+.2f %%", it.relative * 100),
-                    String.format("%+d ms", it.absolute.toMillis()),
-                    if (it.noise) {
-                        "NOISE"
-                    } else {
-                        if (it.regression) {
-                            "REGRESSION"
-                        } else {
-                            "IMPROVEMENT"
-                        }
+                    format("%+.2f %%", it.relative * 100),
+                    format("%+d ms", it.absolute.toMillis()),
+                    when {
+                        it.regression -> "REGRESSION"
+                        it.improvement -> "IMPROVEMENT"
+                        else -> "NOISE"
                     }
                 )
             }
