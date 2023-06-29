@@ -23,17 +23,15 @@ class LatencyImpactMarkdownTable(
             val dashes14 = "-".repeat(14)
             writer.write("|-$dashes21-|-$dashes14-|-$dashes14-|-$dashes14-|\n")
             impacts.forEach {
-                formatter.format(
-                    format,
-                    abbreviate(it.action.label, 25),
-                    format("%+.2f %%", it.relative * 100),
-                    format("%+d ms", it.absolute.toMillis()),
-                    when {
-                        it.regression -> "REGRESSION"
-                        it.improvement -> "IMPROVEMENT"
-                        else -> "NOISE"
-                    }
-                )
+                val action = abbreviate(it.action.label, 25)
+                val relativeImpact = format("%+.2f %%", it.relative * 100)
+                val absoluteImpact = format("%+d ms", it.absolute.toMillis())
+                val classification = when {
+                    it.regression -> "REGRESSION"
+                    it.improvement -> "IMPROVEMENT"
+                    else -> "NOISE"
+                }
+                formatter.format(format, action, relativeImpact, absoluteImpact, classification)
             }
         }
     }
