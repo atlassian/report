@@ -2,11 +2,11 @@ package com.atlassian.performance.tools.report.api
 
 import com.atlassian.performance.tools.jiraactions.api.*
 import com.atlassian.performance.tools.jirasoftwareactions.api.actions.WorkOnBacklog.Companion.VIEW_BACKLOG
-import com.atlassian.performance.tools.report.api.judge.LatencyImpact
+import com.atlassian.performance.tools.report.api.judge.LatencyImpact.Builder
 import com.atlassian.performance.tools.workspace.api.TestWorkspace
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.nio.file.Files
+import java.nio.file.Files.createTempDirectory
 import java.time.Duration.ofMillis
 
 class LatencyImpactMarkdownTableTest {
@@ -18,24 +18,24 @@ class LatencyImpactMarkdownTableTest {
     fun shouldRenderReportFromApril2023() {
         // given
         val impacts = listOf(
-            LatencyImpact.Builder(BROWSE_BOARDS, -0.0091, ofMillis(-3)).noise(true).build(),
-            LatencyImpact.Builder(VIEW_BOARD, -0.0156, ofMillis(-10)).noise(true).build(),
-            LatencyImpact.Builder(VIEW_BACKLOG, -0.0121, ofMillis(-7)).noise(true).build(),
-            LatencyImpact.Builder(CREATE_ISSUE_SUBMIT, -0.0308, ofMillis(-14)).signal(true).build(),
-            LatencyImpact.Builder(EDIT_ISSUE_SUBMIT, -0.0206, ofMillis(-13)).signal(true).build(),
-            LatencyImpact.Builder(ADD_COMMENT_SUBMIT, -0.0359, ofMillis(-23)).signal(true).build(),
-            LatencyImpact.Builder(CREATE_ISSUE, -0.1781, ofMillis(-711)).signal(true).build(),
-            LatencyImpact.Builder(EDIT_ISSUE, -0.1460, ofMillis(-263)).signal(true).build(),
-            LatencyImpact.Builder(ADD_COMMENT, -0.1393, ofMillis(-165)).signal(true).build(),
-            LatencyImpact.Builder(SEARCH_JQL_SIMPLE, -0.1152, ofMillis(-124)).signal(true).build(),
-            LatencyImpact.Builder(VIEW_ISSUE, -0.0099, ofMillis(-5)).noise(true).build(),
-            LatencyImpact.Builder(VIEW_DASHBOARD, +0.0367, ofMillis(+11)).signal(true).build(),
-            LatencyImpact.Builder(SEARCH_JQL_CHANGELOG, -0.0238, ofMillis(-48)).signal(true).build(),
-            LatencyImpact.Builder(PROJECT_SUMMARY, -0.0204, ofMillis(-5)).signal(true).build(),
-            LatencyImpact.Builder(BROWSE_PROJECTS, -0.0156, ofMillis(-6)).noise(true).build(),
-            LatencyImpact.Builder(ActionType("Switch issue nav view") { }, -0.0633, ofMillis(-8)).signal(true).build()
+            Builder(BROWSE_BOARDS, -0.0091, ofMillis(-3)).noise(true).build(),
+            Builder(VIEW_BOARD, -0.0156, ofMillis(-10)).noise(true).build(),
+            Builder(VIEW_BACKLOG, -0.0121, ofMillis(-7)).noise(true).build(),
+            Builder(CREATE_ISSUE_SUBMIT, -0.0308, ofMillis(-14)).signal(true).build(),
+            Builder(EDIT_ISSUE_SUBMIT, -0.0206, ofMillis(-13)).signal(true).build(),
+            Builder(ADD_COMMENT_SUBMIT, -0.0359, ofMillis(-23)).signal(true).build(),
+            Builder(CREATE_ISSUE, -0.1781, ofMillis(-711)).signal(true).build(),
+            Builder(EDIT_ISSUE, -0.1460, ofMillis(-263)).signal(true).build(),
+            Builder(ADD_COMMENT, -0.1393, ofMillis(-165)).signal(true).build(),
+            Builder(SEARCH_JQL_SIMPLE, -0.1152, ofMillis(-124)).signal(true).build(),
+            Builder(VIEW_ISSUE, -0.0099, ofMillis(-5)).noise(true).build(),
+            Builder(VIEW_DASHBOARD, +0.0367, ofMillis(+11)).signal(true).build(),
+            Builder(SEARCH_JQL_CHANGELOG, -0.0238, ofMillis(-48)).signal(true).build(),
+            Builder(PROJECT_SUMMARY, -0.0204, ofMillis(-5)).signal(true).build(),
+            Builder(BROWSE_PROJECTS, -0.0156, ofMillis(-6)).noise(true).build(),
+            Builder(ActionType("Switch issue nav view") { }, -0.0633, ofMillis(-8)).signal(true).build()
         )
-        val workspace = TestWorkspace(Files.createTempDirectory(javaClass.simpleName))
+        val workspace = TestWorkspace(createTempDirectory(javaClass.simpleName))
         val table = LatencyImpactMarkdownTable(workspace)
 
         // when
