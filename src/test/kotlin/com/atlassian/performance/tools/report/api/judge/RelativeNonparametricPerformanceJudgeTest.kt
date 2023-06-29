@@ -34,12 +34,13 @@ class RelativeNonparametricPerformanceJudgeTest {
         assertThat(verdict.reports).allMatch { it.successful }
         assertThat(impacts).isNotEmpty()
         assertThat(impacts.map { it.action }).contains(EDIT_ISSUE)
-        assertThat(impacts.single { it.action == EDIT_ISSUE }).satisfies { editIssueImpact ->
-            assertThat(editIssueImpact.relative).isBetween(-0.1, 0.1)
-            assertThat(editIssueImpact.absolute).isEqualTo(ofMillis(3))
-            assertThat(editIssueImpact.regression).isFalse()
-            assertThat(editIssueImpact.improvement).isFalse()
-            assertThat(editIssueImpact.noise).isTrue()
+        with(SoftAssertions()) {
+            val impact = impacts.single { it.action == EDIT_ISSUE }
+            assertThat(impact.relative).isBetween(-0.1, 0.1)
+            assertThat(impact.absolute).isEqualTo(ofMillis(3))
+            assertThat(impact.regression).isFalse()
+            assertThat(impact.improvement).isFalse()
+            assertThat(impact.noise).isTrue()
         }
     }
 
@@ -61,11 +62,11 @@ class RelativeNonparametricPerformanceJudgeTest {
 
         // then
         assertThat(verdict.reports).hasSize(2)
+        assertThat(impacts).isNotEmpty()
         with(SoftAssertions()) {
             assertThat(verdict.reports).allMatch { !it.successful }
             assertThat(verdict.reports.first().extractText())
                 .contains("There is a regression in [Full Edit Issue] with 95% confidence level. Regression is larger than allowed +10.00% tolerance")
-            assertThat(impacts).isNotEmpty()
             assertThat(impacts.map { it.action }).contains(EDIT_ISSUE)
             val impact = impacts.single { it.action == EDIT_ISSUE }
             assertThat(impact.relative).isBetween(160.0, 165.0)
