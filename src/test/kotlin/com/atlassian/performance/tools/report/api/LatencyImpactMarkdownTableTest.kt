@@ -2,6 +2,7 @@ package com.atlassian.performance.tools.report.api
 
 import com.atlassian.performance.tools.jiraactions.api.*
 import com.atlassian.performance.tools.jirasoftwareactions.api.actions.WorkOnBacklog.Companion.VIEW_BACKLOG
+import com.atlassian.performance.tools.report.api.judge.LatencyImpact
 import com.atlassian.performance.tools.report.api.judge.LatencyImpact.Builder
 import com.atlassian.performance.tools.workspace.api.TestWorkspace
 import org.assertj.core.api.Assertions.assertThat
@@ -64,5 +65,58 @@ class LatencyImpactMarkdownTableTest {
             | Switch issue nav view | -6.33 %        | -8 ms          | IMPROVEMENT    | 68 %       |
             """.trimIndent()
         )
+    }
+
+    @Test
+    fun shouldShowConfidenceForRepeatedTests() {
+        // given
+        val impacts = listOf(
+            impacts(BROWSE_BOARDS, green = 4, red = 0),
+            impacts(VIEW_BOARD, green = 1, red = 3),
+            impacts(VIEW_BACKLOG, green = 5, red = 8),
+            impacts(SEARCH_JQL_SIMPLE, green = 10, red = 2),
+            impacts(ADD_COMMENT, green = 26, red = 14),
+            impacts(BROWSE_PROJECTS, green = 10, red = 13),
+            impacts(CREATE_ISSUE, green = 2, red = 2, grey = 1),
+            impacts(VIEW_ISSUE, green = 3, red = 1, grey = 1),
+            impacts(VIEW_DASHBOARD, green = 0, red = 0, grey = 5),
+            impacts(PROJECT_SUMMARY, green = 1, red = 1, grey = 8)
+        ).flatten()
+        val workspace = TestWorkspace(createTempDirectory(javaClass.simpleName))
+        val table = LatencyImpactMarkdownTable(workspace)
+
+        // when
+        impacts.forEach { table.accept(it) }
+
+        // then
+        assertThat(workspace.directory.resolve("latency-impact-table.md")).hasContent(
+            """
+            | Action                | Latency impact | Latency impact | Classification | Confidence |
+            |-----------------------|----------------|----------------|----------------|------------|
+            | Browse Boards         | -10 %          | -30 ms         | IMPROVEMENT    | 95.45 %    |
+            | View Board            | -10 % to +20 % | -30 to +60 ms  | REGRESSION     | 68.27 %    |
+            | View Backlog          | -10 % to +20 % | -30 to +60 ms  | REGRESSION     | 59.46 %    |
+            | Simple searches       | -10 % to +20 % | -30 to +60 ms  | IMPROVEMENT    | 97.91 %    |
+            | Full Add Comment      | -10 % to +20 % | -30 to +60 ms  | IMPROVEMENT    | 94.22 %    |
+            | Browse Projects       | -10 % to +20 % | -30 to +60 ms  | REGRESSION     | 46.84 %    |
+            | Full Create Issue     | -10 % to +20 % | -30 to +60 ms  | NO IMPACT      | -          |
+            | View Issue            | -10 % to +20 % | -30 to +60 ms  | IMPROVEMENT    | 34.53 %    |
+            | View Dashboard        | +1 %           | +3 ms          | NO IMPACT      | -          |
+            | Project Summary       | -10 % to +20 % | -30 to +60 ms  | NO IMPACT      | -          |
+            """.trimIndent()
+        )
+    }
+
+    private fun impacts(action: ActionType<*>, green: Int, red: Int, grey: Int = 0): List<LatencyImpact> {
+        val greens = List(green) {
+            Builder(action, -0.10, ofMillis(-30)).relevant().build()
+        }
+        val reds = List(red) {
+            Builder(action, +0.20, ofMillis(+60)).relevant().build()
+        }
+        val greys = List(grey) {
+            Builder(action, +0.01, ofMillis(+3)).irrelevant().build()
+        }
+        return greens + reds + greys
     }
 }
