@@ -130,10 +130,10 @@ class RelativeNonparametricPerformanceJudgeTest {
         // then
         assertThat(workspace.directory.resolve("latency-impact-table.md")).hasContent(
             """
-            | Action                | Latency impact | Latency impact | Classification |
-            |-----------------------|----------------|----------------|----------------|
-            | Full Edit Issue       | +16293.44 %    | +99390 ms      | REGRESSION     |
-            | Full Add Comment      | +16293.44 %    | +99390 ms      | REGRESSION     |
+            | Action                | Latency impact | Latency impact | Classification | Confidence |
+            |-----------------------|----------------|----------------|----------------|------------|
+            | Full Edit Issue       | +16293.44 %    | +99390 ms      | REGRESSION     | 68 %       |
+            | Full Add Comment      | +16293.44 %    | +99390 ms      | REGRESSION     | 68 %       |
             """.trimIndent()
         )
     }

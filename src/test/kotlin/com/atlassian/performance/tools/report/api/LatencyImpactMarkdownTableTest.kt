@@ -44,24 +44,24 @@ class LatencyImpactMarkdownTableTest {
         // then
         assertThat(workspace.directory.resolve("latency-impact-table.md")).hasContent(
             """
-            | Action                | Latency impact | Latency impact | Classification |
-            |-----------------------|----------------|----------------|----------------|
-            | Browse Boards         | -0.91 %        | -3 ms          | NOISE          |
-            | View Board            | -1.56 %        | -10 ms         | NOISE          |
-            | View Backlog          | -1.21 %        | -7 ms          | NOISE          |
-            | Create Issue          | -3.08 %        | -14 ms         | IMPROVEMENT    |
-            | Edit Issue            | -2.06 %        | -13 ms         | IMPROVEMENT    |
-            | Add Comment           | -3.59 %        | -23 ms         | IMPROVEMENT    |
-            | Full Create Issue     | -17.81 %       | -711 ms        | IMPROVEMENT    |
-            | Full Edit Issue       | -14.60 %       | -263 ms        | IMPROVEMENT    |
-            | Full Add Comment      | -13.93 %       | -165 ms        | IMPROVEMENT    |
-            | Simple searches       | -11.52 %       | -124 ms        | IMPROVEMENT    |
-            | View Issue            | -0.99 %        | -5 ms          | NOISE          |
-            | View Dashboard        | +3.67 %        | +11 ms         | REGRESSION     |
-            | Changelog searches    | -2.38 %        | -48 ms         | IMPROVEMENT    |
-            | Project Summary       | -2.04 %        | -5 ms          | IMPROVEMENT    |
-            | Browse Projects       | -1.56 %        | -6 ms          | NOISE          |
-            | Switch issue nav view | -6.33 %        | -8 ms          | IMPROVEMENT    |
+            | Action                | Latency impact | Latency impact | Classification | Confidence |
+            |-----------------------|----------------|----------------|----------------|------------|
+            | Browse Boards         | -0.91 %        | -3 ms          | NOISE          | 0 %        |
+            | View Board            | -1.56 %        | -10 ms         | NOISE          | 0 %        |
+            | View Backlog          | -1.21 %        | -7 ms          | NOISE          | 0 %        |
+            | Create Issue          | -3.08 %        | -14 ms         | IMPROVEMENT    | 68 %       |
+            | Edit Issue            | -2.06 %        | -13 ms         | IMPROVEMENT    | 68 %       |
+            | Add Comment           | -3.59 %        | -23 ms         | IMPROVEMENT    | 68 %       |
+            | Full Create Issue     | -17.81 %       | -711 ms        | IMPROVEMENT    | 68 %       |
+            | Full Edit Issue       | -14.60 %       | -263 ms        | IMPROVEMENT    | 68 %       |
+            | Full Add Comment      | -13.93 %       | -165 ms        | IMPROVEMENT    | 68 %       |
+            | Simple searches       | -11.52 %       | -124 ms        | IMPROVEMENT    | 68 %       |
+            | View Issue            | -0.99 %        | -5 ms          | NOISE          | 0 %        |
+            | View Dashboard        | +3.67 %        | +11 ms         | REGRESSION     | 68 %       |
+            | Changelog searches    | -2.38 %        | -48 ms         | IMPROVEMENT    | 68 %       |
+            | Project Summary       | -2.04 %        | -5 ms          | IMPROVEMENT    | 68 %       |
+            | Browse Projects       | -1.56 %        | -6 ms          | NOISE          | 0 %        |
+            | Switch issue nav view | -6.33 %        | -8 ms          | IMPROVEMENT    | 68 %       |
             """.trimIndent()
         )
     }
