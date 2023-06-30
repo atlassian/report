@@ -62,7 +62,7 @@ class ShiftedDistributionRegressionTest(
         return@lazy KolmogorovSmirnov2Samples(baseline, shiftedExperiment, Side.TWO_SIDED).pValue() >= ksAlpha
     }
 
-    internal fun isSignal(tolerance: Double): Boolean {
+    internal fun overcomesTolerance(tolerance: Double): Boolean {
         return isExperimentRegressed(tolerance) || isExperimentImproved(tolerance)
     }
 

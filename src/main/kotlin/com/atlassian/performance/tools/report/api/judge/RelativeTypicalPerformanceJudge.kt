@@ -68,7 +68,7 @@ class RelativeTypicalPerformanceJudge private constructor(
         val absoluteDiff = experimentCenter - baselineCenter
         val relativeDiff = absoluteDiff.toNanos().toDouble() / baselineCenter.toNanos().toDouble()
         val impact = LatencyImpact.Builder(action, relativeDiff, absoluteDiff)
-            .noise(relativeDiff.absoluteValue < toleranceRatio)
+            .relevant(relativeDiff.absoluteValue >= toleranceRatio)
             .build()
         impactHandlers.forEach { it.accept(impact) }
         return if (impact.regression) {

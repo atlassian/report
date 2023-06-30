@@ -39,11 +39,11 @@ class RelativeNonparametricPerformanceJudgeTest {
         assertThat(impacts.map { it.action }).contains(EDIT_ISSUE)
         with(SoftAssertions()) {
             val impact = impacts.single { it.action == EDIT_ISSUE }
-            assertThat(impact.relative).isBetween(-0.1, 0.1)
-            assertThat(impact.absolute).isEqualTo(ofMillis(3))
+            assertThat(impact.relativeDiff).isBetween(-0.1, 0.1)
+            assertThat(impact.absoluteDiff).isEqualTo(ofMillis(3))
             assertThat(impact.regression).isFalse()
             assertThat(impact.improvement).isFalse()
-            assertThat(impact.noise).isTrue()
+            assertThat(impact.irrelevant).isTrue()
         }
     }
 
@@ -72,10 +72,10 @@ class RelativeNonparametricPerformanceJudgeTest {
                 .contains("There is a regression in [Full Edit Issue] with 95% confidence level. Regression is larger than allowed +10.00% tolerance")
             assertThat(impacts.map { it.action }).contains(EDIT_ISSUE)
             val impact = impacts.single { it.action == EDIT_ISSUE }
-            assertThat(impact.relative).isBetween(160.0, 165.0)
-            assertThat(impact.absolute).isBetween(ofMinutes(1), ofMinutes(2))
+            assertThat(impact.relativeDiff).isBetween(160.0, 165.0)
+            assertThat(impact.absoluteDiff).isBetween(ofMinutes(1), ofMinutes(2))
             assertThat(impact.regression).`as`("regression").isTrue()
-            assertThat(impact.signal).`as`("signal").isTrue()
+            assertThat(impact.relevant).`as`("impact").isTrue()
             assertAll()
         }
     }
@@ -103,10 +103,10 @@ class RelativeNonparametricPerformanceJudgeTest {
             assertThat(verdict.reports).allMatch { it.successful }
             assertThat(impacts.map { it.action }).contains(EDIT_ISSUE)
             val impact = impacts.single { it.action == EDIT_ISSUE }
-            assertThat(impact.relative).isBetween(-0.994, -0.993)
-            assertThat(impact.absolute).isBetween(ofMinutes(-2), ofMinutes(-1))
+            assertThat(impact.relativeDiff).isBetween(-0.994, -0.993)
+            assertThat(impact.absoluteDiff).isBetween(ofMinutes(-2), ofMinutes(-1))
             assertThat(impact.improvement).`as`("improvement").isTrue()
-            assertThat(impact.signal).`as`("signal").isTrue()
+            assertThat(impact.relevant).`as`("impact").isTrue()
             assertAll()
         }
     }

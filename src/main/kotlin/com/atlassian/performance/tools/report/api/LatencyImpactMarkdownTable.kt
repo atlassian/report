@@ -25,14 +25,14 @@ class LatencyImpactMarkdownTable(
             writer.write("|-$dashes21-|-$dashes14-|-$dashes14-|-$dashes14-|-$dashes10-|\n")
             impacts.forEach {
                 val action = abbreviate(it.action.label, 25)
-                val relativeImpact = format("%+.2f %%", it.relative * 100)
-                val absoluteImpact = format("%+d ms", it.absolute.toMillis())
+                val relativeImpact = format("%+.2f %%", it.relativeDiff * 100)
+                val absoluteImpact = format("%+d ms", it.absoluteDiff.toMillis())
                 val classification = when {
                     it.regression -> "REGRESSION"
                     it.improvement -> "IMPROVEMENT"
                     else -> "NO IMPACT"
                 }
-                val confidence = if (it.noise) "-" else "68 %"
+                val confidence = if (it.irrelevant) "-" else "68 %"
                 formatter.format(format, action, relativeImpact, absoluteImpact, classification, confidence)
             }
         }
