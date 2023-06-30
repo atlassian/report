@@ -5,6 +5,7 @@ import com.atlassian.performance.tools.workspace.api.TestWorkspace
 import org.apache.commons.lang3.StringUtils.abbreviate
 import org.apache.commons.math3.distribution.NormalDistribution
 import java.lang.String.format
+import java.time.Duration
 import java.util.*
 import java.util.function.Consumer
 import kotlin.math.absoluteValue
@@ -31,14 +32,13 @@ class LatencyImpactMarkdownTable(
                 val improvements = impacts.count { it.improvement }
                 val irrelevants = impacts.count { it.irrelevant }
                 val action = abbreviate(actionGroup.label, 25)
-                val absoluteImpact = format("%+d ms", newestImpact.absoluteDiff.toMillis())
                 val classification = classify(regressions, improvements, irrelevants)
                 val confidence = format("%.2f %%", classification.confidence() * 100)
                 formatter.format(
                     format,
                     action,
                     relativeImpact(impacts),
-                    absoluteImpact,
+                    absoluteImpact(impacts),
                     classification.label,
                     confidence
                 )
@@ -57,6 +57,18 @@ class LatencyImpactMarkdownTable(
     }
 
     private fun relativeImpact(diff: Double) = format("%+.0f %%", diff * 100)
+
+    private fun absoluteImpact(impacts: List<LatencyImpact>): String {
+        val diffs = impacts.map { it.absoluteDiff }.toSet()
+        if (diffs.size == 1) {
+            return absoluteImpact(diffs.single()) + " ms"
+        }
+        val min = absoluteImpact(diffs.min()!!)
+        val max = absoluteImpact(diffs.max()!!) + " ms"
+        return "$min to $max"
+    }
+
+    private fun absoluteImpact(diff: Duration) = format("%+d", diff.toMillis())
 
     private fun classify(regressions: Int, improvements: Int, irrelevants: Int): ImpactClassification {
         return if (regressions > (improvements + irrelevants)) {
