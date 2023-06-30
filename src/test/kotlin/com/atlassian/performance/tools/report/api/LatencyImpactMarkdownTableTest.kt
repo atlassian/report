@@ -101,8 +101,8 @@ class LatencyImpactMarkdownTableTest {
             | Browse Projects       | -10 % to +20 % | -30 to +60 ms  | REGRESSION     | 46.84 %    |
             | Full Create Issue     | -10 % to +20 % | -30 to +60 ms  | NO IMPACT      | -          |
             | View Issue            | -10 % to +20 % | -30 to +60 ms  | IMPROVEMENT    | 34.53 %    |
-            | View Dashboard        | +1 %           | +3 ms          | NO IMPACT      | -          |
-            | Project Summary       | -10 % to +20 % | -30 to +60 ms  | NO IMPACT      | -          |
+            | View Dashboard        | +1 %           | +3 ms          | NO IMPACT      | 97.47 %    |
+            | Project Summary       | -10 % to +20 % | -30 to +60 ms  | NO IMPACT      | 94.22 %    |
             """.trimIndent()
         )
     }
