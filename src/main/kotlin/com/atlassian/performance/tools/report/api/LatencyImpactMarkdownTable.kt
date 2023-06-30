@@ -40,7 +40,7 @@ class LatencyImpactMarkdownTable(
                     relativeImpact(impacts),
                     absoluteImpact(impacts),
                     classification.label,
-                    confidence
+                    renderConfidence(classification)
                 )
             }
         }
@@ -78,7 +78,7 @@ class LatencyImpactMarkdownTable(
         } else if (irrelevants > (improvements + regressions)) {
             ImpactClassification("NO IMPACT", irrelevants, improvements + regressions)
         } else {
-            ImpactClassification("INCONCLUSIVE", 0, improvements + regressions + irrelevants)
+            ImpactClassification("INCONCLUSIVE", 0, 0)
         }
     }
 
@@ -98,5 +98,13 @@ class LatencyImpactMarkdownTable(
             val leftEdge = samplingDistribution.cumulativeProbability(-sampleMean)
             return (rightEdge - leftEdge).absoluteValue
         }
+    }
+
+    private fun renderConfidence(classification: ImpactClassification): String {
+        val confidence = classification.confidence()
+        if (confidence.isNaN()) {
+            return "-"
+        }
+        return format("%.2f %%", confidence * 100)
     }
 }
