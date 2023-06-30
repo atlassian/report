@@ -132,8 +132,8 @@ class RelativeNonparametricPerformanceJudgeTest {
             """
             | Action                | Latency impact | Latency impact | Classification | Confidence |
             |-----------------------|----------------|----------------|----------------|------------|
-            | Full Edit Issue       | +16293.44 %    | +99390 ms      | REGRESSION     | 68 %       |
-            | Full Add Comment      | +16293.44 %    | +99390 ms      | REGRESSION     | 68 %       |
+            | Full Edit Issue       | +16293 %       | +99390 ms      | REGRESSION     | 68.27 %    |
+            | Full Add Comment      | +16293 %       | +99390 ms      | REGRESSION     | 68.27 %    |
             """.trimIndent()
         )
     }
