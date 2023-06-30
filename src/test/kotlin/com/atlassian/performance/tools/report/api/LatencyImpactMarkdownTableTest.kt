@@ -46,9 +46,9 @@ class LatencyImpactMarkdownTableTest {
             """
             | Action                | Latency impact | Latency impact | Classification | Confidence |
             |-----------------------|----------------|----------------|----------------|------------|
-            | Browse Boards         | -0.91 %        | -3 ms          | NOISE          | 0 %        |
-            | View Board            | -1.56 %        | -10 ms         | NOISE          | 0 %        |
-            | View Backlog          | -1.21 %        | -7 ms          | NOISE          | 0 %        |
+            | Browse Boards         | -0.91 %        | -3 ms          | NO IMPACT      | -          |
+            | View Board            | -1.56 %        | -10 ms         | NO IMPACT      | -          |
+            | View Backlog          | -1.21 %        | -7 ms          | NO IMPACT      | -          |
             | Create Issue          | -3.08 %        | -14 ms         | IMPROVEMENT    | 68 %       |
             | Edit Issue            | -2.06 %        | -13 ms         | IMPROVEMENT    | 68 %       |
             | Add Comment           | -3.59 %        | -23 ms         | IMPROVEMENT    | 68 %       |
@@ -56,11 +56,11 @@ class LatencyImpactMarkdownTableTest {
             | Full Edit Issue       | -14.60 %       | -263 ms        | IMPROVEMENT    | 68 %       |
             | Full Add Comment      | -13.93 %       | -165 ms        | IMPROVEMENT    | 68 %       |
             | Simple searches       | -11.52 %       | -124 ms        | IMPROVEMENT    | 68 %       |
-            | View Issue            | -0.99 %        | -5 ms          | NOISE          | 0 %        |
+            | View Issue            | -0.99 %        | -5 ms          | NO IMPACT      | -          |
             | View Dashboard        | +3.67 %        | +11 ms         | REGRESSION     | 68 %       |
             | Changelog searches    | -2.38 %        | -48 ms         | IMPROVEMENT    | 68 %       |
             | Project Summary       | -2.04 %        | -5 ms          | IMPROVEMENT    | 68 %       |
-            | Browse Projects       | -1.56 %        | -6 ms          | NOISE          | 0 %        |
+            | Browse Projects       | -1.56 %        | -6 ms          | NO IMPACT      | -          |
             | Switch issue nav view | -6.33 %        | -8 ms          | IMPROVEMENT    | 68 %       |
             """.trimIndent()
         )
