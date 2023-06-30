@@ -30,9 +30,9 @@ class LatencyImpactMarkdownTable(
                 val classification = when {
                     it.regression -> "REGRESSION"
                     it.improvement -> "IMPROVEMENT"
-                    else -> "NOISE"
+                    else -> "NO IMPACT"
                 }
-                val confidence = if (it.noise) "0 %" else "68 %"
+                val confidence = if (it.noise) "-" else "68 %"
                 formatter.format(format, action, relativeImpact, absoluteImpact, classification, confidence)
             }
         }
