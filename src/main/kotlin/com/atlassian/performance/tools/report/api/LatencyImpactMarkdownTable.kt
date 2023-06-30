@@ -31,14 +31,32 @@ class LatencyImpactMarkdownTable(
                 val improvements = impacts.count { it.improvement }
                 val irrelevants = impacts.count { it.irrelevant }
                 val action = abbreviate(actionGroup.label, 25)
-                val relativeImpact = format("%+.2f %%", newestImpact.relativeDiff * 100)
                 val absoluteImpact = format("%+d ms", newestImpact.absoluteDiff.toMillis())
                 val classification = classify(regressions, improvements, irrelevants)
                 val confidence = format("%.2f %%", classification.confidence() * 100)
-                formatter.format(format, action, relativeImpact, absoluteImpact, classification.label, confidence)
+                formatter.format(
+                    format,
+                    action,
+                    relativeImpact(impacts),
+                    absoluteImpact,
+                    classification.label,
+                    confidence
+                )
             }
         }
     }
+
+    private fun relativeImpact(impacts: List<LatencyImpact>): String {
+        val diffs = impacts.map { it.relativeDiff }.toSet()
+        if (diffs.size == 1) {
+            return relativeImpact(diffs.single())
+        }
+        val min = relativeImpact(diffs.min()!!)
+        val max = relativeImpact(diffs.max()!!)
+        return "$min to $max"
+    }
+
+    private fun relativeImpact(diff: Double) = format("%+.0f %%", diff * 100)
 
     private fun classify(regressions: Int, improvements: Int, irrelevants: Int): ImpactClassification {
         return if (regressions > (improvements + irrelevants)) {
