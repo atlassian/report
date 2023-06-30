@@ -17,11 +17,12 @@ class LatencyImpactMarkdownTable(
         impacts.add(impact)
         workspace.directory.resolve("latency-impact-table.md").toFile().bufferedWriter().use { writer ->
             val formatter = Formatter(writer)
-            val format = "| %-21s | %-14s | %-14s | %-14s |\n"
-            formatter.format(format, "Action", "Latency impact", "Latency impact", "Classification")
+            val format = "| %-21s | %-14s | %-14s | %-14s | %-10s |\n"
+            formatter.format(format, "Action", "Latency impact", "Latency impact", "Classification", "Confidence")
             val dashes21 = "-".repeat(21)
             val dashes14 = "-".repeat(14)
-            writer.write("|-$dashes21-|-$dashes14-|-$dashes14-|-$dashes14-|\n")
+            val dashes10 = "-".repeat(10)
+            writer.write("|-$dashes21-|-$dashes14-|-$dashes14-|-$dashes14-|-$dashes10-|\n")
             impacts.forEach {
                 val action = abbreviate(it.action.label, 25)
                 val relativeImpact = format("%+.2f %%", it.relative * 100)
@@ -31,7 +32,8 @@ class LatencyImpactMarkdownTable(
                     it.improvement -> "IMPROVEMENT"
                     else -> "NOISE"
                 }
-                formatter.format(format, action, relativeImpact, absoluteImpact, classification)
+                val confidence = if (it.noise) "0 %" else "68 %"
+                formatter.format(format, action, relativeImpact, absoluteImpact, classification, confidence)
             }
         }
     }
