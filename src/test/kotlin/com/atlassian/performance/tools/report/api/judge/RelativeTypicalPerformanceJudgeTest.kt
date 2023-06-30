@@ -95,11 +95,11 @@ class RelativeTypicalPerformanceJudgeTest {
         assertThat(impacts).hasSize(1)
         with(SoftAssertions()) {
             val impact = impacts.single()
-            assertThat(impact.signal).`as`("signal").isFalse()
-            assertThat(impact.noise).`as`("noise").isTrue()
+            assertThat(impact.relevant).`as`("impact").isFalse()
+            assertThat(impact.irrelevant).`as`("noise").isTrue()
             assertThat(impact.regression).`as`("regression").isFalse()
-            assertThat(impact.relative).isBetween(0.013, 0.014)
-            assertThat(impact.absolute).isBetween(ofMillis(15), ofMillis(16))
+            assertThat(impact.relativeDiff).isBetween(0.013, 0.014)
+            assertThat(impact.absoluteDiff).isBetween(ofMillis(15), ofMillis(16))
             assertAll()
         }
     }
@@ -129,11 +129,11 @@ class RelativeTypicalPerformanceJudgeTest {
                 .contains("Full Add Comment +16293% typical performance regression overcame +2% tolerance")
             val impact = impacts.first()
             assertThat(impact.action).isEqualTo(EDIT_ISSUE)
-            assertThat(impact.signal).`as`("signal").isTrue()
-            assertThat(impact.noise).`as`("noise").isFalse()
+            assertThat(impact.relevant).`as`("impact").isTrue()
+            assertThat(impact.irrelevant).`as`("noise").isFalse()
             assertThat(impact.regression).`as`("regression").isTrue()
-            assertThat(impact.absolute).isBetween(ofSeconds(99), ofSeconds(101))
-            assertThat(impact.relative).isBetween(160.0, 170.0)
+            assertThat(impact.absoluteDiff).isBetween(ofSeconds(99), ofSeconds(101))
+            assertThat(impact.relativeDiff).isBetween(160.0, 170.0)
             assertAll()
         }
     }
@@ -159,12 +159,12 @@ class RelativeTypicalPerformanceJudgeTest {
         with(SoftAssertions()) {
             val impact = impacts.first()
             assertThat(impact.action).isEqualTo(EDIT_ISSUE)
-            assertThat(impact.signal).`as`("signal").isTrue()
-            assertThat(impact.noise).`as`("noise").isFalse()
+            assertThat(impact.relevant).`as`("impact").isTrue()
+            assertThat(impact.irrelevant).`as`("noise").isFalse()
             assertThat(impact.improvement).`as`("improvement").isTrue()
             assertThat(impact.regression).`as`("regression").isFalse()
-            assertThat(impact.absolute).isBetween(ofSeconds(-101), ofSeconds(-99))
-            assertThat(impact.relative).isBetween(-0.994, -0.993)
+            assertThat(impact.absoluteDiff).isBetween(ofSeconds(-101), ofSeconds(-99))
+            assertThat(impact.relativeDiff).isBetween(-0.994, -0.993)
             assertAll()
         }
     }
