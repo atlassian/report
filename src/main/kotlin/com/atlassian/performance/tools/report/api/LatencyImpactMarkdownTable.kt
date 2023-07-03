@@ -31,7 +31,7 @@ class LatencyImpactMarkdownTable(
                 val classification = classify(impacts)
                 formatter.format(
                     format,
-                    abbreviate(actionGroup.label, 25),
+                    abbreviate(actionGroup.label, 21),
                     relativeImpact(impacts),
                     absoluteImpact(impacts),
                     classification.label,
