@@ -99,7 +99,7 @@ class LatencyImpactMarkdownTableTest {
             | Simple searches       | IMPROVEMENT    | 97.91 %    | -10 %          | -30 ms         |
             | Full Add Comment      | IMPROVEMENT    | 94.22 %    | -10 %          | -30 ms         |
             | Browse Projects       | REGRESSION     | 46.84 %    | +20 %          | +60 ms         |
-            | Full Create Issue     | INCONCLUSIVE   | -          | -              | -              |
+            | Full Create Issue     | INCONCLUSIVE   | N/A        | N/A            | N/A            |
             | View Issue            | IMPROVEMENT    | 34.53 %    | -10 %          | -30 ms         |
             | View Dashboard        | NO IMPACT      | 97.47 %    | +1 %           | +3 ms          |
             | Project Summary       | NO IMPACT      | 94.22 %    | +1 %           | +3 ms          |
