@@ -18,17 +18,17 @@ class LatencyImpactMarkdownTable(
 ) : Consumer<LatencyImpact> {
 
     private val allImpacts = mutableListOf<LatencyImpact>()
-    private val format = "| %-21s | %-14s | %-14s | %-14s | %-10s |\n"
+    private val format = "| %-21s | %-14s | %-10s | %-14s | %-14s |\n"
 
     override fun accept(newestImpact: LatencyImpact) {
         allImpacts.add(newestImpact)
         workspace.directory.resolve("latency-impact-table.md").toFile().bufferedWriter().use { writer ->
             val formatter = Formatter(writer)
-            formatter.format(format, "Action", "Latency impact", "Latency impact", "Classification", "Confidence")
+            formatter.format(format, "Action", "Classification", "Confidence", "Latency impact", "Latency impact")
             val dashes21 = "-".repeat(21)
             val dashes14 = "-".repeat(14)
             val dashes10 = "-".repeat(10)
-            writer.write("|-$dashes21-|-$dashes14-|-$dashes14-|-$dashes14-|-$dashes10-|\n")
+            writer.write("|-$dashes21-|-$dashes14-|-$dashes10-|-$dashes14-|-$dashes14-|\n")
             allImpacts.groupBy { it.action }.forEach { (actionGroup, impacts) ->
                 renderRow(actionGroup, impacts, formatter)
             }
@@ -46,19 +46,19 @@ class LatencyImpactMarkdownTable(
             formatter.format(
                 format,
                 action,
-                "-",
-                "-",
                 classification,
+                "-",
+                "-",
                 "-"
             )
         } else {
             formatter.format(
                 format,
                 action,
-                relativeImpact(impacts),
-                absoluteImpact(impacts),
                 classification,
-                format("%.2f", classification.confidence() * 100) + " %"
+                format("%.2f", classification.confidence() * 100) + " %",
+                relativeImpact(impacts),
+                absoluteImpact(impacts)
             )
         }
     }
