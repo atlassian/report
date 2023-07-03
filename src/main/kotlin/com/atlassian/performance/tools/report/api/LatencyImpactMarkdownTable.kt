@@ -28,15 +28,10 @@ class LatencyImpactMarkdownTable(
             val dashes10 = "-".repeat(10)
             writer.write("|-$dashes21-|-$dashes14-|-$dashes14-|-$dashes14-|-$dashes10-|\n")
             allImpacts.groupBy { it.action }.forEach { (actionGroup, impacts) ->
-                val regressions = impacts.count { it.regression }
-                val improvements = impacts.count { it.improvement }
-                val irrelevants = impacts.count { it.irrelevant }
-                val action = abbreviate(actionGroup.label, 25)
-                val classification = classify(regressions, improvements, irrelevants)
-                val confidence = format("%.2f %%", classification.confidence() * 100)
+                val classification = classify(impacts)
                 formatter.format(
                     format,
-                    action,
+                    abbreviate(actionGroup.label, 25),
                     relativeImpact(impacts),
                     absoluteImpact(impacts),
                     classification.label,
@@ -70,7 +65,10 @@ class LatencyImpactMarkdownTable(
 
     private fun absoluteImpact(diff: Duration) = format("%+d", diff.toMillis())
 
-    private fun classify(regressions: Int, improvements: Int, irrelevants: Int): ImpactClassification {
+    private fun classify(impacts: List<LatencyImpact>): ImpactClassification {
+        val regressions = impacts.count { it.regression }
+        val improvements = impacts.count { it.improvement }
+        val irrelevants = impacts.count { it.irrelevant }
         return if (regressions > (improvements + irrelevants)) {
             ImpactClassification("REGRESSION", regressions, improvements + irrelevants)
         } else if (improvements > (regressions + irrelevants)) {
@@ -94,9 +92,8 @@ class LatencyImpactMarkdownTable(
             val samplingDistribution = NormalDistribution(mu, sigma)
             val sampleSum = (favorableOutcomes - unfavorableOutcomes).toDouble()
             val sampleMean = sampleSum / n
-            val rightEdge = samplingDistribution.cumulativeProbability(sampleMean)
-            val leftEdge = samplingDistribution.cumulativeProbability(-sampleMean)
-            return (rightEdge - leftEdge).absoluteValue
+            val sampleMeanAbs = sampleMean.absoluteValue
+            return samplingDistribution.probability(-sampleMeanAbs, sampleMeanAbs)
         }
     }
 
