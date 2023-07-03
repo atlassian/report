@@ -47,9 +47,9 @@ class LatencyImpactMarkdownTable(
                 format,
                 action,
                 classification,
-                "-",
-                "-",
-                "-"
+                "N/A",
+                "N/A",
+                "N/A"
             )
         } else {
             formatter.format(
