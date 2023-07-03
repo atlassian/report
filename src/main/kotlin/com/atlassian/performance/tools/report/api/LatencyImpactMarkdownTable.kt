@@ -47,7 +47,7 @@ class LatencyImpactMarkdownTable(
                         relativeImpact(impacts),
                         absoluteImpact(impacts),
                         classification,
-                        format("%.2f %%", classification.confidence() * 100)
+                        format("%.2f", classification.confidence() * 100) + " %"
                     )
                 }
             }
@@ -58,14 +58,14 @@ class LatencyImpactMarkdownTable(
         val median = Median()
             .also { median -> median.data = impacts.map { it.relativeDiff }.toDoubleArray() }
             .evaluate()
-        return format("%+.0f %%", median * 100)
+        return format("%+.0f", median * 100) + " %"
     }
 
     private fun absoluteImpact(impacts: List<LatencyImpact>): String {
         val median = Median()
             .also { median -> median.data = impacts.map { it.absoluteDiff.toMillis().toDouble() }.toDoubleArray() }
             .evaluate()
-        return format("%+.0f ms", median)
+        return format("%+.0f", median) + " ms"
     }
 
     private fun classify(impacts: List<LatencyImpact>): ImpactClassification {
