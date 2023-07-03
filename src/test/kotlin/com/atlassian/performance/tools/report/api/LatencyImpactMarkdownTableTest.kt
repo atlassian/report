@@ -94,15 +94,15 @@ class LatencyImpactMarkdownTableTest {
             | Action                | Latency impact | Latency impact | Classification | Confidence |
             |-----------------------|----------------|----------------|----------------|------------|
             | Browse Boards         | -10 %          | -30 ms         | IMPROVEMENT    | 95.45 %    |
-            | View Board            | -10 % to +20 % | -30 to +60 ms  | REGRESSION     | 68.27 %    |
-            | View Backlog          | -10 % to +20 % | -30 to +60 ms  | REGRESSION     | 59.46 %    |
-            | Simple searches       | -10 % to +20 % | -30 to +60 ms  | IMPROVEMENT    | 97.91 %    |
-            | Full Add Comment      | -10 % to +20 % | -30 to +60 ms  | IMPROVEMENT    | 94.22 %    |
-            | Browse Projects       | -10 % to +20 % | -30 to +60 ms  | REGRESSION     | 46.84 %    |
-            | Full Create Issue     | -10 % to +20 % | -30 to +60 ms  | INCONCLUSIVE   | -          |
-            | View Issue            | -10 % to +20 % | -30 to +60 ms  | IMPROVEMENT    | 34.53 %    |
+            | View Board            | +20 %          | +60 ms         | REGRESSION     | 68.27 %    |
+            | View Backlog          | +20 %          | +60 ms         | REGRESSION     | 59.46 %    |
+            | Simple searches       | -10 %          | -30 ms         | IMPROVEMENT    | 97.91 %    |
+            | Full Add Comment      | -10 %          | -30 ms         | IMPROVEMENT    | 94.22 %    |
+            | Browse Projects       | +20 %          | +60 ms         | REGRESSION     | 46.84 %    |
+            | Full Create Issue     | -              | -              | INCONCLUSIVE   | -          |
+            | View Issue            | -10 %          | -30 ms         | IMPROVEMENT    | 34.53 %    |
             | View Dashboard        | +1 %           | +3 ms          | NO IMPACT      | 97.47 %    |
-            | Project Summary       | -10 % to +20 % | -30 to +60 ms  | NO IMPACT      | 94.22 %    |
+            | Project Summary       | +1 %           | +3 ms          | NO IMPACT      | 94.22 %    |
             """.trimIndent()
         )
     }
