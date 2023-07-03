@@ -1,5 +1,6 @@
 package com.atlassian.performance.tools.report.api
 
+import com.atlassian.performance.tools.report.api.LatencyImpactMarkdownTable.ImpactClassification.Label.*
 import com.atlassian.performance.tools.report.api.judge.LatencyImpact
 import com.atlassian.performance.tools.workspace.api.TestWorkspace
 import org.apache.commons.lang3.StringUtils.abbreviate
@@ -30,13 +31,13 @@ class LatencyImpactMarkdownTable(
             allImpacts.groupBy { it.action }.forEach { (actionGroup, impacts) ->
                 val action = abbreviate(actionGroup.label, 21)
                 val classification = classify(impacts)
-                if (classification.label == "INCONCLUSIVE") {
+                if (classification.label == INCONCLUSIVE) {
                     formatter.format(
                         format,
                         action,
                         "-",
                         "-",
-                        classification.label,
+                        classification,
                         "-"
                     )
                 } else {
@@ -45,7 +46,7 @@ class LatencyImpactMarkdownTable(
                         action,
                         relativeImpact(impacts),
                         absoluteImpact(impacts),
-                        classification.label,
+                        classification,
                         format("%.2f %%", classification.confidence() * 100)
                     )
                 }
@@ -72,21 +73,30 @@ class LatencyImpactMarkdownTable(
         val improvements = impacts.count { it.improvement }
         val irrelevants = impacts.count { it.irrelevant }
         return if (regressions > (improvements + irrelevants)) {
-            ImpactClassification("REGRESSION", regressions, improvements + irrelevants)
+            ImpactClassification(REGRESSION, regressions, improvements + irrelevants)
         } else if (improvements > (regressions + irrelevants)) {
-            ImpactClassification("IMPROVEMENT", improvements, regressions + irrelevants)
+            ImpactClassification(IMPROVEMENT, improvements, regressions + irrelevants)
         } else if (irrelevants > (improvements + regressions)) {
-            ImpactClassification("NO IMPACT", irrelevants, improvements + regressions)
+            ImpactClassification(NO_IMPACT, irrelevants, improvements + regressions)
         } else {
-            ImpactClassification("INCONCLUSIVE", 0, 0)
+            ImpactClassification(INCONCLUSIVE, 0, 0)
         }
     }
 
     private class ImpactClassification(
-        val label: String,
+        val label: Label,
         private val favorableOutcomes: Int,
         private val unfavorableOutcomes: Int
     ) {
+        enum class Label(
+            val display: String
+        ) {
+            REGRESSION("REGRESSION"),
+            IMPROVEMENT("IMPROVEMENT"),
+            NO_IMPACT("NO IMPACT"),
+            INCONCLUSIVE("INCONCLUSIVE")
+        }
+
         fun confidence(): Double {
             val n = favorableOutcomes + unfavorableOutcomes
             val mu = 0.0
@@ -97,6 +107,8 @@ class LatencyImpactMarkdownTable(
             val sampleMeanAbs = sampleMean.absoluteValue
             return samplingDistribution.probability(-sampleMeanAbs, sampleMeanAbs)
         }
+
+        override fun toString() = label.display
     }
 
 }
