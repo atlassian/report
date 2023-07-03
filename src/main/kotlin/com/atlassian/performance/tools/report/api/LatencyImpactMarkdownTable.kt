@@ -4,8 +4,8 @@ import com.atlassian.performance.tools.report.api.judge.LatencyImpact
 import com.atlassian.performance.tools.workspace.api.TestWorkspace
 import org.apache.commons.lang3.StringUtils.abbreviate
 import org.apache.commons.math3.distribution.NormalDistribution
+import org.apache.commons.math3.stat.descriptive.rank.Median
 import java.lang.String.format
-import java.time.Duration
 import java.util.*
 import java.util.function.Consumer
 import kotlin.math.absoluteValue
@@ -28,42 +28,44 @@ class LatencyImpactMarkdownTable(
             val dashes10 = "-".repeat(10)
             writer.write("|-$dashes21-|-$dashes14-|-$dashes14-|-$dashes14-|-$dashes10-|\n")
             allImpacts.groupBy { it.action }.forEach { (actionGroup, impacts) ->
+                val action = abbreviate(actionGroup.label, 21)
                 val classification = classify(impacts)
-                formatter.format(
-                    format,
-                    abbreviate(actionGroup.label, 21),
-                    relativeImpact(impacts),
-                    absoluteImpact(impacts),
-                    classification.label,
-                    renderConfidence(classification)
-                )
+                if (classification.label == "INCONCLUSIVE") {
+                    formatter.format(
+                        format,
+                        action,
+                        "-",
+                        "-",
+                        classification.label,
+                        "-"
+                    )
+                } else {
+                    formatter.format(
+                        format,
+                        action,
+                        relativeImpact(impacts),
+                        absoluteImpact(impacts),
+                        classification.label,
+                        format("%.2f %%", classification.confidence() * 100)
+                    )
+                }
             }
         }
     }
 
     private fun relativeImpact(impacts: List<LatencyImpact>): String {
-        val diffs = impacts.map { it.relativeDiff }.toSet()
-        if (diffs.size == 1) {
-            return relativeImpact(diffs.single())
-        }
-        val min = relativeImpact(diffs.min()!!)
-        val max = relativeImpact(diffs.max()!!)
-        return "$min to $max"
+        val median = Median()
+            .also { median -> median.data = impacts.map { it.relativeDiff }.toDoubleArray() }
+            .evaluate()
+        return format("%+.0f %%", median * 100)
     }
-
-    private fun relativeImpact(diff: Double) = format("%+.0f %%", diff * 100)
 
     private fun absoluteImpact(impacts: List<LatencyImpact>): String {
-        val diffs = impacts.map { it.absoluteDiff }.toSet()
-        if (diffs.size == 1) {
-            return absoluteImpact(diffs.single()) + " ms"
-        }
-        val min = absoluteImpact(diffs.min()!!)
-        val max = absoluteImpact(diffs.max()!!) + " ms"
-        return "$min to $max"
+        val median = Median()
+            .also { median -> median.data = impacts.map { it.absoluteDiff.toMillis().toDouble() }.toDoubleArray() }
+            .evaluate()
+        return format("%+.0f ms", median)
     }
-
-    private fun absoluteImpact(diff: Duration) = format("%+d", diff.toMillis())
 
     private fun classify(impacts: List<LatencyImpact>): ImpactClassification {
         val regressions = impacts.count { it.regression }
@@ -97,11 +99,4 @@ class LatencyImpactMarkdownTable(
         }
     }
 
-    private fun renderConfidence(classification: ImpactClassification): String {
-        val confidence = classification.confidence()
-        if (confidence.isNaN()) {
-            return "-"
-        }
-        return format("%.2f %%", confidence * 100)
-    }
 }
