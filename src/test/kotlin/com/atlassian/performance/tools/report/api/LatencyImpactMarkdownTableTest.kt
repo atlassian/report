@@ -45,24 +45,24 @@ class LatencyImpactMarkdownTableTest {
         // then
         assertThat(workspace.directory.resolve("latency-impact-table.md")).hasContent(
             """
-            | Action                | Latency impact | Latency impact | Classification | Confidence |
-            |-----------------------|----------------|----------------|----------------|------------|
-            | Browse Boards         | -1 %           | -3 ms          | NO IMPACT      | 68.27 %    |
-            | View Board            | -2 %           | -10 ms         | NO IMPACT      | 68.27 %    |
-            | View Backlog          | -1 %           | -7 ms          | NO IMPACT      | 68.27 %    |
-            | Create Issue          | -3 %           | -14 ms         | IMPROVEMENT    | 68.27 %    |
-            | Edit Issue            | -2 %           | -13 ms         | IMPROVEMENT    | 68.27 %    |
-            | Add Comment           | -4 %           | -23 ms         | IMPROVEMENT    | 68.27 %    |
-            | Full Create Issue     | -18 %          | -711 ms        | IMPROVEMENT    | 68.27 %    |
-            | Full Edit Issue       | -15 %          | -263 ms        | IMPROVEMENT    | 68.27 %    |
-            | Full Add Comment      | -14 %          | -165 ms        | IMPROVEMENT    | 68.27 %    |
-            | Simple searches       | -12 %          | -124 ms        | IMPROVEMENT    | 68.27 %    |
-            | View Issue            | -1 %           | -5 ms          | NO IMPACT      | 68.27 %    |
-            | View Dashboard        | +4 %           | +11 ms         | REGRESSION     | 68.27 %    |
-            | Changelog searches    | -2 %           | -48 ms         | IMPROVEMENT    | 68.27 %    |
-            | Project Summary       | -2 %           | -5 ms          | IMPROVEMENT    | 68.27 %    |
-            | Browse Projects       | -2 %           | -6 ms          | NO IMPACT      | 68.27 %    |
-            | Switch issue nav view | -6 %           | -8 ms          | IMPROVEMENT    | 68.27 %    |
+            | Action                | Classification | Confidence | Latency impact | Latency impact |
+            |-----------------------|----------------|------------|----------------|----------------|
+            | Browse Boards         | NO IMPACT      | 68.27 %    | -1 %           | -3 ms          |
+            | View Board            | NO IMPACT      | 68.27 %    | -2 %           | -10 ms         |
+            | View Backlog          | NO IMPACT      | 68.27 %    | -1 %           | -7 ms          |
+            | Create Issue          | IMPROVEMENT    | 68.27 %    | -3 %           | -14 ms         |
+            | Edit Issue            | IMPROVEMENT    | 68.27 %    | -2 %           | -13 ms         |
+            | Add Comment           | IMPROVEMENT    | 68.27 %    | -4 %           | -23 ms         |
+            | Full Create Issue     | IMPROVEMENT    | 68.27 %    | -18 %          | -711 ms        |
+            | Full Edit Issue       | IMPROVEMENT    | 68.27 %    | -15 %          | -263 ms        |
+            | Full Add Comment      | IMPROVEMENT    | 68.27 %    | -14 %          | -165 ms        |
+            | Simple searches       | IMPROVEMENT    | 68.27 %    | -12 %          | -124 ms        |
+            | View Issue            | NO IMPACT      | 68.27 %    | -1 %           | -5 ms          |
+            | View Dashboard        | REGRESSION     | 68.27 %    | +4 %           | +11 ms         |
+            | Changelog searches    | IMPROVEMENT    | 68.27 %    | -2 %           | -48 ms         |
+            | Project Summary       | IMPROVEMENT    | 68.27 %    | -2 %           | -5 ms          |
+            | Browse Projects       | NO IMPACT      | 68.27 %    | -2 %           | -6 ms          |
+            | Switch issue nav view | IMPROVEMENT    | 68.27 %    | -6 %           | -8 ms          |
             """.trimIndent()
         )
     }
@@ -91,18 +91,18 @@ class LatencyImpactMarkdownTableTest {
         // then
         assertThat(workspace.directory.resolve("latency-impact-table.md")).hasContent(
             """
-            | Action                | Latency impact | Latency impact | Classification | Confidence |
-            |-----------------------|----------------|----------------|----------------|------------|
-            | Browse Boards         | -10 %          | -30 ms         | IMPROVEMENT    | 95.45 %    |
-            | View Board            | +20 %          | +60 ms         | REGRESSION     | 68.27 %    |
-            | View Backlog          | +20 %          | +60 ms         | REGRESSION     | 59.46 %    |
-            | Simple searches       | -10 %          | -30 ms         | IMPROVEMENT    | 97.91 %    |
-            | Full Add Comment      | -10 %          | -30 ms         | IMPROVEMENT    | 94.22 %    |
-            | Browse Projects       | +20 %          | +60 ms         | REGRESSION     | 46.84 %    |
-            | Full Create Issue     | -              | -              | INCONCLUSIVE   | -          |
-            | View Issue            | -10 %          | -30 ms         | IMPROVEMENT    | 34.53 %    |
-            | View Dashboard        | +1 %           | +3 ms          | NO IMPACT      | 97.47 %    |
-            | Project Summary       | +1 %           | +3 ms          | NO IMPACT      | 94.22 %    |
+            | Action                | Classification | Confidence | Latency impact | Latency impact |
+            |-----------------------|----------------|------------|----------------|----------------|
+            | Browse Boards         | IMPROVEMENT    | 95.45 %    | -10 %          | -30 ms         |
+            | View Board            | REGRESSION     | 68.27 %    | +20 %          | +60 ms         |
+            | View Backlog          | REGRESSION     | 59.46 %    | +20 %          | +60 ms         |
+            | Simple searches       | IMPROVEMENT    | 97.91 %    | -10 %          | -30 ms         |
+            | Full Add Comment      | IMPROVEMENT    | 94.22 %    | -10 %          | -30 ms         |
+            | Browse Projects       | REGRESSION     | 46.84 %    | +20 %          | +60 ms         |
+            | Full Create Issue     | INCONCLUSIVE   | -          | -              | -              |
+            | View Issue            | IMPROVEMENT    | 34.53 %    | -10 %          | -30 ms         |
+            | View Dashboard        | NO IMPACT      | 97.47 %    | +1 %           | +3 ms          |
+            | Project Summary       | NO IMPACT      | 94.22 %    | +1 %           | +3 ms          |
             """.trimIndent()
         )
     }
