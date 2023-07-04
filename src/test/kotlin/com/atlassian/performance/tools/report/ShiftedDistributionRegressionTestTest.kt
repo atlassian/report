@@ -3,10 +3,12 @@ package com.atlassian.performance.tools.report
 import com.atlassian.performance.tools.jiraactions.api.*
 import com.atlassian.performance.tools.report.api.FullTimeline
 import com.atlassian.performance.tools.report.api.ShiftedDistributionRegressionTest
+import com.atlassian.performance.tools.report.api.result.FakeResults
 import com.atlassian.performance.tools.report.api.result.LocalRealResult
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.data.Percentage
+import org.junit.Ignore
 import org.junit.Test
 import java.nio.file.Paths
 
@@ -65,6 +67,18 @@ class ShiftedDistributionRegressionTestTest {
         assertThat(noExceptions)
             .`as`("should not throw when accessing equalDistributionsAfterShift")
             .doesNotThrowAnyException()
+    }
+
+    @Ignore("Known bug: https://ecosystem.atlassian.net/browse/JPERF-1188")
+    @Test
+    fun shouldSeeNoShiftAcrossTheSameResult() {
+        val result = FakeResults.fastResult
+            .actionMetrics.map { it.duration.toMillis() }
+            .map { it.toDouble() }.toDoubleArray()
+
+        val percentageShift = ShiftedDistributionRegressionTest(result, result).percentageShift
+
+        assertThat(percentageShift).isEqualTo(0.0)
     }
 
     private fun testForAction(
