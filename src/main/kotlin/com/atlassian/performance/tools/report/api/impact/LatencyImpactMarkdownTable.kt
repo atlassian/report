@@ -17,7 +17,7 @@ class LatencyImpactMarkdownTable(
     private val workspace: TestWorkspace
 ) : Consumer<ClassifiedLatencyImpact> {
 
-    private val allImpacts = LinkedHashMap<ActionType<*>, ClassifiedLatencyImpact>()
+    private val allImpacts = TreeMap<ActionType<*>, ClassifiedLatencyImpact>(compareBy { it.label })
     private val format = "| %-21s | %-14s | %-10s | %-14s | %-14s |\n"
 
     override fun accept(newestImpact: ClassifiedLatencyImpact) {
