@@ -134,8 +134,8 @@ class RelativeNonparametricPerformanceJudgeTest {
             """
             | Action                | Classification | Confidence | Latency impact | Latency impact |
             |-----------------------|----------------|------------|----------------|----------------|
-            | Full Edit Issue       | REGRESSION     | 68.27 %    | +16293 %       | +99390 ms      |
             | Full Add Comment      | REGRESSION     | 68.27 %    | +16293 %       | +99390 ms      |
+            | Full Edit Issue       | REGRESSION     | 68.27 %    | +16293 %       | +99390 ms      |
             """.trimIndent()
         )
     }
@@ -164,8 +164,8 @@ class RelativeNonparametricPerformanceJudgeTest {
             """
             | Action                | Classification | Confidence | Latency impact | Latency impact |
             |-----------------------|----------------|------------|----------------|----------------|
-            | Full Edit Issue       | REGRESSION     | 68.27 %    | +16293 %       | +99390 ms      |
             | Full Add Comment      | REGRESSION     | 68.27 %    | +16293 %       | +99390 ms      |
+            | Full Edit Issue       | REGRESSION     | 68.27 %    | +16293 %       | +99390 ms      |
             """.trimIndent()
         )
     }
