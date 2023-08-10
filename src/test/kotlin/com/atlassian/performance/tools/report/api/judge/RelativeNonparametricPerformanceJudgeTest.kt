@@ -1,7 +1,9 @@
 package com.atlassian.performance.tools.report.api.judge
 
 import com.atlassian.performance.tools.jiraactions.api.EDIT_ISSUE
-import com.atlassian.performance.tools.report.api.LatencyImpactMarkdownTable
+import com.atlassian.performance.tools.report.api.LatencyImpactMarkdownTable as DeprecatedLatencyImpactMarkdownTable
+import com.atlassian.performance.tools.report.api.impact.LatencyImpactClassifier
+import com.atlassian.performance.tools.report.api.impact.LatencyImpactMarkdownTable
 import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.result.FakeResults
 import com.atlassian.performance.tools.report.api.result.FakeResults.addNoise
@@ -112,12 +114,42 @@ class RelativeNonparametricPerformanceJudgeTest {
     }
 
     @Test
-    fun shouldIntegrateWithMarkdownTable() {
+    fun shouldIntegrateWithDeprecatedTable() {
         // given
         val zeroToleranceRatios = FakeResults.actionTypes.associate { it to 0.1f }.toMap()
         val workspace = TestWorkspace(createTempDirectory(javaClass.simpleName))
-        val judge = RelativeNonparametricPerformanceJudge.Builder()
+        @Suppress("DEPRECATION") val judge = RelativeNonparametricPerformanceJudge.Builder()
+            .handleLatencyImpact(DeprecatedLatencyImpactMarkdownTable(workspace))
+            .build()
+
+        // when
+        judge.judge(
+            toleranceRatios = zeroToleranceRatios,
+            baselineResult = FakeResults.fastResult,
+            experimentResult = FakeResults.slowResult
+        )
+
+        // then
+        assertThat(workspace.directory.resolve("latency-impact-table.md")).hasContent(
+            """
+            | Action                | Classification | Confidence | Latency impact | Latency impact |
+            |-----------------------|----------------|------------|----------------|----------------|
+            | Full Edit Issue       | REGRESSION     | 68.27 %    | +16293 %       | +99390 ms      |
+            | Full Add Comment      | REGRESSION     | 68.27 %    | +16293 %       | +99390 ms      |
+            """.trimIndent()
+        )
+    }
+
+    @Test
+    fun shouldIntegrateWithTable() {
+        // given
+        val zeroToleranceRatios = FakeResults.actionTypes.associate { it to 0.1f }.toMap()
+        val workspace = TestWorkspace(createTempDirectory(javaClass.simpleName))
+        val classifier = LatencyImpactClassifier.Builder()
             .handleLatencyImpact(LatencyImpactMarkdownTable(workspace))
+            .build()
+        val judge = RelativeNonparametricPerformanceJudge.Builder()
+            .handleLatencyImpact(classifier)
             .build()
 
         // when

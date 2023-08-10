@@ -26,6 +26,13 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.15.0...master
 
+### Added
+- Add `LatencyImpactClassifier` to offer `ClassifiedLatencyImpact` with `ImpactClassification`s and confidence without having to parse markdown files.
+- Add `api.impact.LatencyImpactMarkdownTable`, a replacement for `api.LatencyImpactMarkdownTable`, which can integrate with the new `LatencyImpactClassifier`.
+
+### Deprecated
+- Deprecate `api.LatencyImpactMarkdownTable` in favor of `api.impact.LatencyImpactMarkdownTable`.
+
 ## [3.15.0] - 2023-07-03
 [3.15.0]: https://github.com/atlassian/report/compare/release-3.14.0...release-3.15.0
 
