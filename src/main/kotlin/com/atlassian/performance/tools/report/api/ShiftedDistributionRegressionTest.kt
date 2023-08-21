@@ -31,6 +31,9 @@ class ShiftedDistributionRegressionTest(
         ksAlpha = 0.05
     )
 
+    /**
+     * @return robust distance between [baseline] and [experiment]
+     */
     private val shift: Double by lazy { hodgesLehmannDistance(baseline, experiment) }
     private val baselineMedian: Double by lazy { Median().evaluate(baseline) }
 
