@@ -21,6 +21,10 @@ internal class DistributionComparison(
         output: Path
     ) {
         val quantileFunction = summarize(results, "latency-axis") { QuantileFunction().plot(it) }
+        render(quantileFunction, output)
+    }
+
+    internal fun render(chart: Chart<*>, output: Path) {
         val report = this::class
             .java
             .getResourceAsStream("distribution-comparison-template.html")
@@ -28,7 +32,7 @@ internal class DistributionComparison(
             .use { it.readText() }
             .replace(
                 oldValue = "'<%= quantileFunction =%>'",
-                newValue = print(quantileFunction)
+                newValue = print(chart)
             )
             .replace(
                 oldValue = "'<%= commit =%>'",
