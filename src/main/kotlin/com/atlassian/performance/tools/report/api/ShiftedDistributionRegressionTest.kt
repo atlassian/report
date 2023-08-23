@@ -41,12 +41,7 @@ class ShiftedDistributionRegressionTest(
      * The distribution shift from [experiment] to [baseline].
      * Make sure equalDistributionsAfterShift is TRUE before accessing this property
      */
-    val locationShift: Double by lazy {
-        if (!equalDistributionsAfterShift) {
-            throw Exception("Distribution shapes are different at $ksAlpha significance level. Location shift is meaningless.")
-        }
-        return@lazy shift
-    }
+    val locationShift: Double by lazy { shift }
 
     /**
      * Location shift as a percentage of baseline's median
