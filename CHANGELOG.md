@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.16.0...master
 
+### Fixed
+- Don't throw when asking for shifts in `ShiftedDistributionRegressionTest`. Fix [JPERF-1256].
+
+[JPERF-1256]: https://ecosystem.atlassian.net/browse/JPERF-1256
+
 ## [3.16.0] - 2023-08-10
 [3.16.0]: https://github.com/atlassian/report/compare/release-3.15.0...release-3.16.0
 
