@@ -31,17 +31,13 @@ class ShiftedDistributionRegressionTest(
         ksAlpha = 0.05
     )
 
-    /**
-     * @return robust distance between [baseline] and [experiment]
-     */
-    private val shift: Double by lazy { hodgesLehmannDistance(baseline, experiment) }
     private val baselineMedian: Double by lazy { Median().evaluate(baseline) }
 
     /**
      * The distribution shift from [experiment] to [baseline].
      * Make sure equalDistributionsAfterShift is TRUE before accessing this property
      */
-    val locationShift: Double by lazy { shift }
+    val locationShift: Double by lazy { hodgesLehmannDistance(baseline, experiment) }
 
     /**
      * Location shift as a percentage of baseline's median
@@ -56,7 +52,7 @@ class ShiftedDistributionRegressionTest(
      */
     val equalDistributionsAfterShift: Boolean by lazy {
         val shiftedExperiment = experiment.copyOf()
-        shiftedExperiment.indices.forEach { shiftedExperiment[it] += shift }
+        shiftedExperiment.indices.forEach { shiftedExperiment[it] += locationShift }
         return@lazy KolmogorovSmirnov2Samples(baseline, shiftedExperiment, Side.TWO_SIDED).pValue() >= ksAlpha
     }
 
