@@ -9,6 +9,9 @@ import com.atlassian.performance.tools.report.api.judge.LatencyImpact.Builder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.time.Duration.ofMillis
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executors
+
 
 class LatencyImpactClassifierTest {
 
@@ -119,6 +122,52 @@ class LatencyImpactClassifierTest {
             0.9422204288764027
         )
         assertThat(actualSummary.map { it.classification.confidence }).containsExactlyElementsOf(expectedConfidences)
+    }
+
+    @Test
+    fun shouldBeConcurrent() {
+        //given
+        val impacts = listOf(
+            impacts(BROWSE_BOARDS, green = 4, red = 0),
+            impacts(VIEW_BOARD, green = 1, red = 3),
+            impacts(VIEW_BACKLOG, green = 5, red = 8),
+            impacts(SEARCH_JQL_SIMPLE, green = 10, red = 2),
+            impacts(ADD_COMMENT, green = 26, red = 14),
+            impacts(BROWSE_PROJECTS, green = 10, red = 13),
+            impacts(CREATE_ISSUE, green = 2, red = 2, grey = 1),
+            impacts(VIEW_ISSUE, green = 3, red = 1, grey = 1),
+            impacts(VIEW_DASHBOARD, green = 0, red = 0, grey = 5),
+            impacts(PROJECT_SUMMARY, green = 1, red = 1, grey = 8)
+        ).flatten()
+        val summary = LatencyImpactClassifier.Builder().build()
+
+        //when
+        val executorService = Executors.newCachedThreadPool()
+        val futures = impacts.map {
+            CompletableFuture.runAsync(Runnable {
+                summary.accept(it)
+            }, executorService)
+        }
+        CompletableFuture.allOf(*futures.toTypedArray()).join()
+        executorService.shutdown()
+        val actualSummary = summary.classify()
+
+        //then
+        val expectedSummary = listOf(
+            ClassifiedLatencyImpact(BROWSE_BOARDS, ImpactClassification(IMPROVEMENT, 4, 0), -0.10, ofMillis(-30)),
+            ClassifiedLatencyImpact(VIEW_BOARD, ImpactClassification(REGRESSION, 3, 1), +0.20, ofMillis(+60)),
+            ClassifiedLatencyImpact(VIEW_BACKLOG, ImpactClassification(REGRESSION, 8, 5), +0.20, ofMillis(+60)),
+            ClassifiedLatencyImpact(SEARCH_JQL_SIMPLE, ImpactClassification(IMPROVEMENT, 10, 2), -0.10, ofMillis(-30)),
+            ClassifiedLatencyImpact(ADD_COMMENT, ImpactClassification(IMPROVEMENT, 26, 14), -0.10, ofMillis(-30)),
+            ClassifiedLatencyImpact(BROWSE_PROJECTS, ImpactClassification(REGRESSION, 13, 10), +0.20, ofMillis(+60)),
+            ClassifiedLatencyImpact(CREATE_ISSUE, ImpactClassification(INCONCLUSIVE, 0, 0), +0.01, ofMillis(+3)),
+            ClassifiedLatencyImpact(VIEW_ISSUE, ImpactClassification(IMPROVEMENT, 3, 2), -0.10, ofMillis(-30)),
+            ClassifiedLatencyImpact(VIEW_DASHBOARD, ImpactClassification(NO_IMPACT, 5, 0), +0.01, ofMillis(+3)),
+            ClassifiedLatencyImpact(PROJECT_SUMMARY, ImpactClassification(NO_IMPACT, 8, 2), +0.01, ofMillis(+3))
+        )
+        assertThat(actualSummary).containsExactlyInAnyOrderElementsOf(
+            expectedSummary
+        )
     }
 
     private fun impacts(action: ActionType<*>, green: Int, red: Int, grey: Int = 0): List<LatencyImpact> {
