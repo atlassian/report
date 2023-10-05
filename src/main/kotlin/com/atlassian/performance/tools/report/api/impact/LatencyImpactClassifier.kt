@@ -6,10 +6,13 @@ import com.atlassian.performance.tools.report.api.judge.LatencyImpact
 import org.apache.commons.math3.stat.descriptive.rank.Median
 import java.time.Duration
 import java.util.function.Consumer
+import javax.annotation.concurrent.GuardedBy
+import javax.annotation.concurrent.ThreadSafe
 
 /**
  * Turns a bunch of [LatencyImpact]s to [ClassifiedLatencyImpact]s.
  */
+@ThreadSafe
 class LatencyImpactClassifier private constructor(
     private val handlers: List<Consumer<ClassifiedLatencyImpact>>
 ) : Consumer<LatencyImpact> {
@@ -17,12 +20,15 @@ class LatencyImpactClassifier private constructor(
     private val unclassifiedImpacts = mutableListOf<LatencyImpact>()
     private val classifiedImpacts = mutableMapOf<ActionType<*>, ClassifiedLatencyImpact>()
 
+    @GuardedBy("unclassifiedImpacts")
     override fun accept(newestImpact: LatencyImpact) {
-        unclassifiedImpacts.add(newestImpact)
-        unclassifiedImpacts.groupBy { it.action }.map { (actionGroup, impacts) ->
-            val element = element(actionGroup, impacts)
-            classifiedImpacts[actionGroup] = element
-            handlers.forEach { it.accept(element) }
+        synchronized(unclassifiedImpacts) {
+            unclassifiedImpacts.add(newestImpact)
+            unclassifiedImpacts.groupBy { it.action }.map { (actionGroup, impacts) ->
+                val element = element(actionGroup, impacts)
+                classifiedImpacts[actionGroup] = element
+                handlers.forEach { it.accept(element) }
+            }
         }
     }
 

@@ -28,8 +28,10 @@ Dropping a requirement of a major version of a dependency is a new contract.
 
 ### Fixed
 - Don't throw when asking for shifts in `ShiftedDistributionRegressionTest`. Fix [JPERF-1256].
+- Make `LatencyImpactClassifier` thread safe. Unblock [JPERF-1263].
 
 [JPERF-1256]: https://ecosystem.atlassian.net/browse/JPERF-1256
+[JPERF-1263]: https://ecosystem.atlassian.net/browse/JPERF-1263
 
 ## [3.16.0] - 2023-08-10
 [3.16.0]: https://github.com/atlassian/report/compare/release-3.15.0...release-3.16.0
