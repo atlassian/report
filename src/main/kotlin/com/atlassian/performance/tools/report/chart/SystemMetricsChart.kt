@@ -2,9 +2,9 @@ package com.atlassian.performance.tools.report.chart
 
 import com.atlassian.performance.tools.infrastructure.api.metric.Dimension
 import com.atlassian.performance.tools.infrastructure.api.metric.SystemMetric
+import com.atlassian.performance.tools.report.JsonProviderSingleton.JSON
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import javax.json.Json
 import javax.json.JsonObject
 
 internal class SystemMetricsChart(
@@ -32,7 +32,7 @@ internal class SystemMetricsChart(
             .filter { it.dimension == dimension }
             .sortedBy { it.start }
         val chartData = Chart(plotValuesPerSystem(metrics))
-        return Json.createObjectBuilder()
+        return JSON.createObjectBuilder()
             .add("title", title)
             .add("axis", axis.toJson())
             .add("data", chartData.toJson())
