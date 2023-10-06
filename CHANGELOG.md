@@ -26,6 +26,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-3.16.2...master
 
+### Fixed
+- Use `JsonProvider` instead of `Json` to make `ChartLine` faster. Fix [JPERF-1401]
+
+[JPERF-1401]: https://ecosystem.atlassian.net/browse/JPERF-1401
+
 ## [3.16.2] - 2023-10-06
 [3.16.2]: https://github.com/atlassian/report/compare/release-3.16.1...release-3.16.2
 

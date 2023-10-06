@@ -2,8 +2,8 @@ package com.atlassian.performance.tools.report.chart
 
 import com.atlassian.performance.tools.report.Point
 import java.util.*
-import javax.json.Json
 import javax.json.JsonObject
+import javax.json.spi.JsonProvider
 
 internal class ChartLine<X>(
     val data: List<Point<X>>,
@@ -14,20 +14,21 @@ internal class ChartLine<X>(
     private val cohort: String = ""
 ) where X : Comparable<X> {
     fun toJson(): JsonObject {
-        val dataBuilder = Json.createArrayBuilder()
+        val json = JsonProvider.provider()
+        val dataBuilder = json.createArrayBuilder()
         data.forEach { point ->
             dataBuilder.add(
-                Json.createObjectBuilder()
+                json.createObjectBuilder()
                     .add("x", point.labelX())
                     .add("y", point.y)
                     .build()
             )
         }
-        val chartDataBuilder = Json.createObjectBuilder()
+        val chartDataBuilder = json.createObjectBuilder()
         chartDataBuilder.add("type", type)
         chartDataBuilder.add("label", label)
 
-        if (!cohort.isBlank()) {
+        if (cohort.isNotBlank()) {
             chartDataBuilder.add("cohort", cohort)
         }
 
