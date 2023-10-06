@@ -1,6 +1,6 @@
 package com.atlassian.performance.tools.report.chart
 
-import javax.json.Json
+import com.atlassian.performance.tools.report.JsonProviderSingleton.JSON
 import javax.json.JsonArrayBuilder
 import javax.json.JsonObject
 
@@ -9,14 +9,14 @@ internal class Chart<X>(
 ) where X : Comparable<X> {
 
     fun toJson(): JsonObject {
-        val dataBuilder = Json.createObjectBuilder()
-        dataBuilder.add("labels", Json.createArrayBuilder(getLabels()).build())
+        val dataBuilder = JSON.createObjectBuilder()
+        dataBuilder.add("labels", JSON.createArrayBuilder(getLabels()).build())
         dataBuilder.add("datasets", getLines())
         return dataBuilder.build()
     }
 
     private fun getLines(): JsonArrayBuilder {
-        val linesBuilder = Json.createArrayBuilder()
+        val linesBuilder = JSON.createArrayBuilder()
         lines.forEach {
             linesBuilder.add(it.toJson())
         }

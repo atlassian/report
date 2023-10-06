@@ -4,11 +4,11 @@ import com.atlassian.performance.tools.io.api.ensureParentDirectory
 import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.jiraactions.api.w3c.PerformanceNavigationTiming
 import com.atlassian.performance.tools.jiraactions.api.w3c.PerformanceResourceTiming
+import com.atlassian.performance.tools.report.JsonProviderSingleton.JSON
 import com.atlassian.performance.tools.report.chart.waterfall.Phase.*
 import org.apache.logging.log4j.LogManager
 import java.io.File
 import java.time.Duration
-import javax.json.Json
 import javax.json.JsonArray
 import javax.json.JsonObject
 
@@ -229,9 +229,9 @@ internal class WaterfallChart {
         duration: Duration
     ): JsonObject {
         val size = Utils().toHumanReadableSize(requests.map { it.transferSize }.sum())
-        return Json.createObjectBuilder()
+        return JSON.createObjectBuilder()
             .add("display", true)
-            .add("text", Json.createArrayBuilder(listOf(
+            .add("text", JSON.createArrayBuilder(listOf(
                 "\"$actionLabel\" action requests waterfall chart",
                 "requests: ${requests.size}, total duration: ${duration.toMillis()} ms, total transfer: $size"
             )).build())
@@ -240,20 +240,20 @@ internal class WaterfallChart {
 
     private fun toJson(
         requests: Collection<ProcessingModel>
-    ): JsonObject = Json.createObjectBuilder()
-        .add("labels", Json.createArrayBuilder(requests.map { Utils().prettyPrint(it.address) }).build())
-        .add("fullLabels", Json.createArrayBuilder(requests.map { it.address }).build())
-        .add("initiatorTypes", Json.createArrayBuilder(requests.map { it.initiatorType }).build())
-        .add("transferSizes", Json.createArrayBuilder(requests.map { it.transferSize }).build())
-        .add("decodedBodySizes", Json.createArrayBuilder(requests.map { it.decodedBodySize }).build())
-        .add("totalDurations", Json.createArrayBuilder(requests.map { it.totalDuration.toMillis() }).build())
+    ): JsonObject = JSON.createObjectBuilder()
+        .add("labels", JSON.createArrayBuilder(requests.map { Utils().prettyPrint(it.address) }).build())
+        .add("fullLabels", JSON.createArrayBuilder(requests.map { it.address }).build())
+        .add("initiatorTypes", JSON.createArrayBuilder(requests.map { it.initiatorType }).build())
+        .add("transferSizes", JSON.createArrayBuilder(requests.map { it.transferSize }).build())
+        .add("decodedBodySizes", JSON.createArrayBuilder(requests.map { it.decodedBodySize }).build())
+        .add("totalDurations", JSON.createArrayBuilder(requests.map { it.totalDuration.toMillis() }).build())
         .add("datasets", getDatasets(requests))
         .build()
 
     private fun getDatasets(
         requests: Collection<ProcessingModel>
     ): JsonArray {
-        val datasetBuilder = Json.createArrayBuilder()
+        val datasetBuilder = JSON.createArrayBuilder()
         enumValues<Phase>().forEach {
             datasetBuilder.add(getDataset(it, requests))
         }
@@ -263,9 +263,9 @@ internal class WaterfallChart {
     private fun getDataset(
         phase: Phase,
         requests: Collection<ProcessingModel>
-    ): JsonObject = Json.createObjectBuilder()
+    ): JsonObject = JSON.createObjectBuilder()
         .add("label", phase.label)
         .add("backgroundColor", phase.color)
-        .add("data", Json.createArrayBuilder(requests.map { it.phases[phase]!!.toMillis() }).build())
+        .add("data", JSON.createArrayBuilder(requests.map { it.phases[phase]!!.toMillis() }).build())
         .build()
 }
