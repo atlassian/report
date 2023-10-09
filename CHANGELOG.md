@@ -24,7 +24,10 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://github.com/atlassian/report/compare/release-3.16.2...master
+[Unreleased]: https://github.com/atlassian/report/compare/release-3.16.3...master
+
+## [3.16.3] - 2023-10-09
+[3.16.3]: https://github.com/atlassian/report/compare/release-3.16.2...release-3.16.3
 
 ### Fixed
 - Speed up all JSON code, by reusing a `JsonProvider` instance. Fix [JPERF-1401].
