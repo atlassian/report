@@ -1,6 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 val kotlinVersion = "1.2.70"
 val log4jVersion = "2.17.2"
 
@@ -48,6 +45,10 @@ dependencies {
     api("com.atlassian.performance.tools:infrastructure:[2.0.0,5.0.0)")
     api("com.atlassian.performance.tools:workspace:[2.0.0,3.0.0)")
     api("com.atlassian.performance.tools:virtual-users:[1.0.0,4.0.0)")
+    implementation("org.openjdk.jmc:flightrecorder:8.3.1")
+    implementation("org.openjdk.jmc:flightrecorder.writer:8.3.1")
+
+
 
     listOf(
         "com.atlassian.performance.tools:io:[1.0.0,2.0.0)",
