@@ -35,6 +35,7 @@ package org.openjdk.jmc.flightrecorder.testutils.parser;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,6 +66,10 @@ public final class MetadataEvent {
 		metadataId = stream.readVarint();
 		readElements(stream, readStringTable(stream));
 		eventTypeMap = eventTypeNameMapBacking::get;
+	}
+
+	public Map<Long, String> getEventTypeNameMapBacking() {
+		return Collections.unmodifiableMap(eventTypeNameMapBacking);
 	}
 
 	/**
