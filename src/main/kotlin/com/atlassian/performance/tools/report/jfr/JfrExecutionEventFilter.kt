@@ -43,10 +43,38 @@ class JfrExecutionEventFilter {
             return true
         }
 
+        private fun writeStringTable(metadata: MetadataEvent) {
+            val eventTypeNameMap = metadata.eventTypeNameMapBacking
+            VarInt.write(eventTypeNameMap.size.toLong(), output)
+            eventTypeNameMap.forEach { (id, name) ->
+                VarInt.write(id, output)
+                if (id == 3L) {
+                    VarInt.write(name.length.toLong(), output)
+                    output.writeBytes(name)
+                }
+                if (id == 4L) {
+                    VarInt.write(name.length.toLong(), output)
+                    for (character in name) {
+                        VarInt.write(character.toLong(), output)
+                    }
+                }
+            }
+        }
+
+        private fun writeElements(metadata: MetadataEvent) {
+
+        }
+
         override fun onMetadata(metadata: MetadataEvent): Boolean {
-//            with(metadata) {
-//
-//            }
+            with(metadata) {
+                VarInt.write(size.toLong(), output)
+                VarInt.write(0, output)
+                VarInt.write(startTime, output)
+                VarInt.write(duration, output)
+                VarInt.write(metadataId, output)
+                writeStringTable(this)
+                writeElements(this)
+            }
             return true
         }
 
