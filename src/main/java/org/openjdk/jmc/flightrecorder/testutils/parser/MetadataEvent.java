@@ -33,10 +33,10 @@
  */
 package org.openjdk.jmc.flightrecorder.testutils.parser;
 
-import org.jctools.maps.NonBlockingHashMapLong;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * JFR Chunk metadata
@@ -51,7 +51,7 @@ public final class MetadataEvent {
 	public final long duration;
 	public final long metadataId;
 
-	private final NonBlockingHashMapLong<String> eventTypeNameMapBacking = new NonBlockingHashMapLong<>(256);
+	private final Map<Long, String> eventTypeNameMapBacking = new HashMap<>(256);
 	private final LongMapping<String> eventTypeMap;
 
 	MetadataEvent(RecordingStream stream) throws IOException {
