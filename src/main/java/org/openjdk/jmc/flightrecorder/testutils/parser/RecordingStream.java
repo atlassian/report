@@ -64,7 +64,7 @@ public final class RecordingStream implements AutoCloseable {
 		}
 	}
 
-	byte read() throws IOException {
+	public byte read() throws IOException {
 		position += 1;
 		return delegate.readByte();
 	}

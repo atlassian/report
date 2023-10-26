@@ -47,13 +47,14 @@ class JfrExecutionEventFilter {
             return true
         }
 
-        override fun onEvent(typeId: Long, stream: RecordingStream, payloadSize: Long): Boolean {
+        override fun onEvent(typeId: Long, stream: RecordingStream, payloadSizeInBytes: Long): Boolean {
             if (typeId == 101L) {
                 filterMaybe()
             }
 
-            while (stream.available() > 0) {
-                output.write(stream.readInt())
+            var i = 0
+            while (i++ < payloadSizeInBytes) {
+                output.writeByte(stream.read().toInt())
             }
             return true
         }
