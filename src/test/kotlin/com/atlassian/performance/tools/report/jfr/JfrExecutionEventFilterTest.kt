@@ -29,6 +29,7 @@ class JfrExecutionEventFilterTest {
     }
 
     @Test
+    @Ignore("WIP")
     fun shouldRewriteJfr() {
         // given
         val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")

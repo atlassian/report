@@ -9,60 +9,55 @@ object VarInt {
      * Impl copied from [jdk.jfr.internal.EventWriter.putUncheckedLong]
      */
     fun write(value: Long, stream: OutputStream) {
-        fun putUncheckedLong(v: Long) {
-            var v = v
-            if (v and 0x7FL.inv() == 0L) {
-                putUncheckedByte(v.toByte()) // 0-6
-                return
-            }
-            putUncheckedByte((v or 0x80L).toByte()) // 0-6
-            v = v ushr 7
-            if (v and 0x7FL.inv() == 0L) {
-                putUncheckedByte(v.toByte()) // 7-13
-                return
-            }
-            putUncheckedByte((v or 0x80L).toByte()) // 7-13
-            v = v ushr 7
-            if (v and 0x7FL.inv() == 0L) {
-                putUncheckedByte(v.toByte()) // 14-20
-                return
-            }
-            putUncheckedByte((v or 0x80L).toByte()) // 14-20
-            v = v ushr 7
-            if (v and 0x7FL.inv() == 0L) {
-                putUncheckedByte(v.toByte()) // 21-27
-                return
-            }
-            putUncheckedByte((v or 0x80L).toByte()) // 21-27
-            v = v ushr 7
-            if (v and 0x7FL.inv() == 0L) {
-                putUncheckedByte(v.toByte()) // 28-34
-                return
-            }
-            putUncheckedByte((v or 0x80L).toByte()) // 28-34
-            v = v ushr 7
-            if (v and 0x7FL.inv() == 0L) {
-                putUncheckedByte(v.toByte()) // 35-41
-                return
-            }
-            putUncheckedByte((v or 0x80L).toByte()) // 35-41
-            v = v ushr 7
-            if (v and 0x7FL.inv() == 0L) {
-                putUncheckedByte(v.toByte()) // 42-48
-                return
-            }
-            putUncheckedByte((v or 0x80L).toByte()) // 42-48
-            v = v ushr 7
-            if (v and 0x7FL.inv() == 0L) {
-                putUncheckedByte(v.toByte()) // 49-55
-                return
-            }
-            putUncheckedByte((v or 0x80L).toByte()) // 49-55
-            putUncheckedByte((v ushr 7).toByte()) // 56-63, last byte as is.
+        var v = value
+        if (v and 0x7FL.inv() == 0L) {
+            stream.write(v.toInt()) // 0-6
+            return
         }
+        stream.write((v or 0x80L).toInt()) // 0-6
+        v = v ushr 7
+        if (v and 0x7FL.inv() == 0L) {
+            stream.write(v.toInt()) // 7-13
+            return
+        }
+        stream.write((v or 0x80L).toInt()) // 7-13
+        v = v ushr 7
+        if (v and 0x7FL.inv() == 0L) {
+            stream.write(v.toInt()) // 14-20
+            return
+        }
+        stream.write((v or 0x80L).toInt()) // 14-20
+        v = v ushr 7
+        if (v and 0x7FL.inv() == 0L) {
+            stream.write(v.toInt()) // 21-27
+            return
+        }
+        stream.write((v or 0x80L).toInt()) // 21-27
+        v = v ushr 7
+        if (v and 0x7FL.inv() == 0L) {
+            stream.write(v.toInt()) // 28-34
+            return
+        }
+        stream.write((v or 0x80L).toInt()) // 28-34
+        v = v ushr 7
+        if (v and 0x7FL.inv() == 0L) {
+            stream.write(v.toInt()) // 35-41
+            return
+        }
+        stream.write((v or 0x80L).toInt()) // 35-41
+        v = v ushr 7
+        if (v and 0x7FL.inv() == 0L) {
+            stream.write(v.toInt()) // 42-48
+            return
+        }
+        stream.write((v or 0x80L).toInt()) // 42-48
+        v = v ushr 7
+        if (v and 0x7FL.inv() == 0L) {
+            stream.write(v.toInt()) // 49-55
+            return
+        }
+        stream.write((v or 0x80L).toInt()) // 49-55
+        stream.write((v ushr 7).toInt()) // 56-63, last byte as is.
     }
 
-    fun read(stream: InputStream): Long {
-        return 0L
-    }
 }
