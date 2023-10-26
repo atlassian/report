@@ -4,30 +4,44 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.ByteArrayOutputStream
 
+/**
+ * Test input data was taken from [org.openjdk.jmc.flightrecorder.testutils.parser.RecordingStream.readVarint] debugging on real JFR file.
+ */
 class VarIntTest {
 
+    @Test
+    fun shouldWrite0() {
+        val stream = ByteArrayOutputStream(8)
+        VarInt.write(0, stream)
 
-    // i    readValue   readValue & 0x7F    (readValue & 0x7F) << (7 * i)   value
-// 0    10010100    ?0010100                                 00010100                              ?0010100
-// 1    10110000    ?0110000                        00011000_00000000                     00011000_00010100
-// 2    10000000    00000000               00000000_00000000_00000000            00000000_00011000_00010100
-// 3    10000000    00000000                                            00000000_00000000_00011000_00010100
-// 4    00000000    00000000                                                              00011000_10010100
-
+        val writtenBytes: ByteArray = stream.toByteArray()
+        assertThat(writtenBytes).isEqualTo(
+            byteArrayOf(0)
+        )
+    }
 
     @Test
-    fun shouldWrite() {
+    fun shouldWrite561593504618() {
         val stream = ByteArrayOutputStream(8)
-        VarInt.write(0b00011000_10010100, stream)
+        VarInt.write(561593504618, stream)
 
         val writtenBytes: ByteArray = stream.toByteArray()
         assertThat(writtenBytes).isEqualTo(
             byteArrayOf(
-                0b10010100.toByte(),
-                0b10110000.toByte(),
-                0b10000000.toByte(),
-                0b10000000.toByte(),
-                0b00000000.toByte()
+                234.toByte(), 166.toByte(), 211.toByte(), 140.toByte(), 172.toByte(), 16.toByte()
+            )
+        )
+    }
+
+    @Test
+    fun shouldWrite2147483647() {
+        val stream = ByteArrayOutputStream(8)
+        VarInt.write(2147483647, stream)
+
+        val writtenBytes: ByteArray = stream.toByteArray()
+        assertThat(writtenBytes).isEqualTo(
+            byteArrayOf(
+                255.toByte(), 255.toByte(), 255.toByte(), 255.toByte(), 7.toByte()
             )
         )
     }
