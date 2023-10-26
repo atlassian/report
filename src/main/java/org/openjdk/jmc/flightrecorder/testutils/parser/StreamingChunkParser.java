@@ -99,8 +99,10 @@ public final class StreamingChunkParser {
 						if (eventType == 0) {
 							// metadata
 							stream.reset(); // roll-back the stream to the event start
+							stream.startRecordingWrites();
 							MetadataEvent m = new MetadataEvent(stream);
-							if (!listener.onMetadata(m)) {
+							stream.stopRecordingWrites();
+							if (!listener.onMetadata(m, stream::write)) {
 								log.debug("'onMetadata' returned false. Skipping events for chunk {}", chunkCounter);
 								stream.skip(header.size - (stream.position() - chunkStartPos));
 								listener.onChunkEnd(chunkCounter, true);

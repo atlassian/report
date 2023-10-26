@@ -33,7 +33,9 @@
  */
 package org.openjdk.jmc.flightrecorder.testutils.parser;
 
+import java.io.DataOutputStream;
 import java.nio.file.Path;
+import java.util.function.Consumer;
 
 /**
  * A callback to be provided to {@linkplain StreamingChunkParser#parse(Path, ChunkParserListener)}
@@ -64,6 +66,10 @@ public interface ChunkParserListener {
 	 * @return {@literal false} if the remainder of the chunk should be skipped
 	 */
 	default boolean onMetadata(MetadataEvent metadata) {
+		return true;
+	}
+
+	default boolean onMetadata(MetadataEvent metadata, Consumer<DataOutputStream> write) {
 		return true;
 	}
 

@@ -33,97 +33,188 @@
  */
 package org.openjdk.jmc.flightrecorder.testutils.parser;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import com.atlassian.performance.tools.report.jfr.VarInt;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 public final class RecordingStream implements AutoCloseable {
-	private final DataInputStream delegate;
-	private long position = 0;
+    private final DataInputStream delegate;
+    private long position = 0;
 
-	RecordingStream(InputStream is) {
-		BufferedInputStream bis = (is instanceof BufferedInputStream) ? (BufferedInputStream) is
-				: new BufferedInputStream(is);
-		delegate = new DataInputStream(bis);
-	}
+    private List<Consumer<DataOutputStream>> writeLog = new ArrayList<>();
+    private boolean isRecordingWrites = false;
 
-	long position() {
-		return position;
-	}
+    RecordingStream(InputStream is) {
+        BufferedInputStream bis = (is instanceof BufferedInputStream) ? (BufferedInputStream) is
+                : new BufferedInputStream(is);
+        delegate = new DataInputStream(bis);
+    }
 
-	void read(byte[] buffer, int offset, int length) throws IOException {
-		while (length > 0) {
-			int read = delegate.read(buffer, offset, length);
-			if (read == -1) {
-				throw new IOException("Unexpected EOF");
-			}
-			offset += read;
-			length -= read;
-			position += read;
-		}
-	}
+    long position() {
+        return position;
+    }
 
-	public byte read() throws IOException {
-		position += 1;
-		return delegate.readByte();
-	}
+    void startRecordingWrites() {
+        isRecordingWrites = true;
+    }
 
-	short readShort() throws IOException {
-		position += 2;
-		return delegate.readShort();
-	}
+    void stopRecordingWrites() {
+        isRecordingWrites = false;
+    }
 
-	public int readInt() throws IOException {
-		position += 4;
-		return delegate.readInt();
-	}
+    void write(DataOutputStream os) {
+        for (Consumer<DataOutputStream> write : writeLog) {
+            write.accept(os);
+        }
+        writeLog.clear();
+    }
 
-	long readLong() throws IOException {
-		position += 8;
-		return delegate.readLong();
-	}
+    public void read(byte[] buffer, int offset, int length) throws IOException {
+        while (length > 0) {
+            int read = delegate.read(buffer, offset, length);
+            if (read == -1) {
+                throw new IOException("Unexpected EOF");
+            }
+            if (isRecordingWrites) {
+                byte[] copy = new byte[read];
+                System.arraycopy(buffer, offset, copy, 0, read);
+                writeLog.add(os -> {
+                    try {
+                        os.write(copy);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+            offset += read;
+            length -= read;
+            position += read;
+        }
+    }
 
-	long readVarint() throws IOException {
-		long value = 0;
-		int readValue = 0;
-		int i = 0;
-		do {
-			readValue = delegate.read();
-			value |= (long) (readValue & 0x7F) << (7 * i);
-			i++;
-		} while ((readValue & 0x80) != 0
-				// In fact a fully LEB128 encoded 64bit number could take up to 10 bytes
-				// (in order to store 64 bit original value using 7bit slots we need at most 10 of them).
-				// However, eg. JMC parser will stop at 9 bytes, assuming that the compressed number is
-				// a Java unsigned long (therefore having only 63 bits and they all fit in 9 bytes).
-				&& i < 9);
-		position += i;
-		return value;
-	}
+    public byte read() throws IOException {
+        position += 1;
+        byte result = delegate.readByte();
+        if (isRecordingWrites) {
+            writeLog.add(os -> {
+                try {
+                    os.writeByte(result);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+        return result;
+    }
 
-	public int available() throws IOException {
-		return delegate.available();
-	}
+    short readShort() throws IOException {
+        position += 2;
+        short result = delegate.readShort();
+        if (isRecordingWrites) {
+            writeLog.add(os -> {
+                try {
+                    os.writeShort(result);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+        return result;
+    }
 
-	void skip(long bytes) throws IOException {
-		long toSkip = bytes;
-		while (toSkip > 0) {
-			toSkip -= delegate.skip(toSkip);
-		}
-		position += bytes;
-	}
+    public int readInt() throws IOException {
+        position += 4;
+        int result = delegate.readInt();
+        if (isRecordingWrites) {
+            writeLog.add(os -> {
+                try {
+                    os.writeInt(result);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+        return result;
+    }
 
-	public void mark(int readlimit) {
-		delegate.mark(readlimit);
-	}
+    long readLong() throws IOException {
+        position += 8;
+        long result = delegate.readLong();
+        if (isRecordingWrites) {
+            writeLog.add(os -> {
+                try {
+                    os.writeLong(result);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+        return result;
+    }
 
-	public void reset() throws IOException {
-		delegate.reset();
-	}
+    public void addVarintWrite(long value) {
+        if (isRecordingWrites) {
+            writeLog.add(os -> {
+                VarInt.write(value, os);
+            });
+        }
+    }
 
-	@Override
-	public void close() throws IOException {
-		delegate.close();
-	}
+    long readVarint() throws IOException {
+        long value = 0;
+        int readValue = 0;
+        int i = 0;
+        do {
+            readValue = delegate.read();
+            if (isRecordingWrites) {
+                int finalReadValue1 = readValue;
+                writeLog.add(os -> {
+                    try {
+                        os.writeByte(finalReadValue1);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+            int finalReadValue = readValue;
+            value |= (long) (readValue & 0x7F) << (7 * i);
+            i++;
+        } while ((readValue & 0x80) != 0
+                // In fact a fully LEB128 encoded 64bit number could take up to 10 bytes
+                // (in order to store 64 bit original value using 7bit slots we need at most 10 of them).
+                // However, eg. JMC parser will stop at 9 bytes, assuming that the compressed number is
+                // a Java unsigned long (therefore having only 63 bits and they all fit in 9 bytes).
+                && i < 9);
+        position += i;
+//        addVarintWrite(value);
+        return value;
+    }
+
+    public int available() throws IOException {
+        return delegate.available();
+    }
+
+    void skip(long bytes) throws IOException {
+        long toSkip = bytes;
+        while (toSkip > 0) {
+            toSkip -= delegate.skip(toSkip);
+        }
+        position += bytes;
+    }
+
+    public void mark(int readlimit) {
+        delegate.mark(readlimit);
+    }
+
+    public void reset() throws IOException {
+        delegate.reset();
+    }
+
+    @Override
+    public void close() throws IOException {
+        delegate.close();
+    }
 }

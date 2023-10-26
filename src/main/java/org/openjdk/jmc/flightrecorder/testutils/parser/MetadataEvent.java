@@ -54,8 +54,11 @@ public final class MetadataEvent {
 
 	private final Map<Long, String> eventTypeNameMapBacking = new HashMap<>(256);
 	private final LongMapping<String> eventTypeMap;
+	public final long positionBeforeRead;
+	public final long positionAfterRead;
 
 	MetadataEvent(RecordingStream stream) throws IOException {
+		positionBeforeRead = stream.position();
 		size = (int) stream.readVarint();
 		long typeId = stream.readVarint();
 		if (typeId != 0) {
@@ -66,6 +69,7 @@ public final class MetadataEvent {
 		metadataId = stream.readVarint();
 		readElements(stream, readStringTable(stream));
 		eventTypeMap = eventTypeNameMapBacking::get;
+		positionAfterRead = stream.position();
 	}
 
 	public Map<Long, String> getEventTypeNameMapBacking() {
