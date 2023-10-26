@@ -74,7 +74,7 @@ public final class RecordingStream implements AutoCloseable {
 		return delegate.readShort();
 	}
 
-	int readInt() throws IOException {
+	public int readInt() throws IOException {
 		position += 4;
 		return delegate.readInt();
 	}
@@ -102,7 +102,7 @@ public final class RecordingStream implements AutoCloseable {
 		return value;
 	}
 
-	int available() throws IOException {
+	public int available() throws IOException {
 		return delegate.available();
 	}
 
