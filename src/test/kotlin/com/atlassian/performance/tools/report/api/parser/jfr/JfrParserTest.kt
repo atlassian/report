@@ -1,9 +1,7 @@
 package com.atlassian.performance.tools.report.api.parser.jfr
 
 import org.junit.Test
-import org.openjdk.jmc.common.item.Attribute
-import org.openjdk.jmc.common.item.IItemCollection
-import org.openjdk.jmc.common.item.ItemFilters
+import org.openjdk.jmc.common.item.*
 import org.openjdk.jmc.common.unit.UnitLookup
 import org.openjdk.jmc.flightrecorder.JfrLoaderToolkit
 import org.openjdk.jmc.flightrecorder.jdk.JdkFilters
