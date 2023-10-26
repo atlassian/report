@@ -4,6 +4,7 @@ import org.openjdk.jmc.flightrecorder.testutils.parser.*
 import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkHeader.MAGIC
 import java.io.DataOutputStream
 import java.io.File
+import java.io.OutputStream
 import java.nio.file.Path
 
 
@@ -49,13 +50,16 @@ class JfrExecutionEventFilter {
             return true
         }
 
-        override fun onEvent(typeId: Long, stream: RecordingStream, payloadSizeInBytes: Long): Boolean {
+        override fun onEvent(typeId: Long, stream: RecordingStream, payloadSize: Long, eventSize: Long): Boolean {
             if (typeId == 101L) {
                 filterMaybe()
             }
 
+            VarInt.write(eventSize, output)
+            VarInt.write(typeId, output)
+
             var i = 0
-            while (i++ < payloadSizeInBytes) {
+            while (i++ < payloadSize) {
                 output.writeByte(stream.read().toInt())
             }
             return true

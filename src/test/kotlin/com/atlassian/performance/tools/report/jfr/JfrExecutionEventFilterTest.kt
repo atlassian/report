@@ -18,7 +18,7 @@ class JfrExecutionEventFilterTest {
         var eventCount = mutableMapOf<Long, Long>()
         FileInputStream(this.toFile()).use {
             StreamingChunkParser().parse(it, object : ChunkParserListener {
-                override fun onEvent(typeId: Long, stream: RecordingStream, payloadSizeInBytes: Long): Boolean {
+                override fun onEvent(typeId: Long, stream: RecordingStream, payloadSize: Long, eventSize: Long): Boolean {
                     eventCount.computeIfAbsent(typeId) { 0 }
                     eventCount[typeId] = eventCount[typeId]!! + 1
                     return true
@@ -29,7 +29,6 @@ class JfrExecutionEventFilterTest {
     }
 
     @Test
-    @Ignore("WIP")
     fun shouldRewriteJfr() {
         // given
         val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")

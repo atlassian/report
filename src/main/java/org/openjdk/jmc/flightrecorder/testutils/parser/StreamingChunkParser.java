@@ -110,7 +110,7 @@ public final class StreamingChunkParser {
 							stream.skip(eventSize - (stream.position() - eventStartPos));
 						} else {
 							long currentPos = stream.position();
-							if (!listener.onEvent(eventType, stream, eventSize - (currentPos - eventStartPos))) {
+							if (!listener.onEvent(eventType, stream, eventSize - (currentPos - eventStartPos), eventSize)) {
 								log.debug("'onEvent({}, stream)' returned false. Skipping the rest of the chunk {}",
 										eventType, chunkCounter);
 								// skip the rest of the chunk
