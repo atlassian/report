@@ -14,12 +14,13 @@ import java.nio.file.Path
 class JfrExecutionEventFilterTest {
     private val zippedInput = File(javaClass.getResource("/profiler-result.zip")!!.toURI())
 
-    private fun Path.countEvents(): Int {
-        var eventCount = 0
+    private fun Path.countEvents(): Map<Long, Long> {
+        var eventCount = mutableMapOf<Long, Long>()
         FileInputStream(this.toFile()).use {
             StreamingChunkParser().parse(it, object : ChunkParserListener {
                 override fun onEvent(typeId: Long, stream: RecordingStream, payloadSizeInBytes: Long): Boolean {
-                    eventCount++
+                    eventCount.computeIfAbsent(typeId) { 0 }
+                    eventCount[typeId] = eventCount[typeId]!! + 1
                     return true
                 }
             })
