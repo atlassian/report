@@ -4,8 +4,8 @@ import org.openjdk.jmc.flightrecorder.testutils.parser.*
 import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkHeader.MAGIC
 import java.io.DataOutputStream
 import java.io.File
-import java.io.OutputStream
 import java.nio.file.Path
+import java.util.function.Consumer
 
 
 class JfrExecutionEventFilter {
@@ -43,42 +43,14 @@ class JfrExecutionEventFilter {
             return true
         }
 
-        private fun writeStringTable(metadata: MetadataEvent) {
-            val eventTypeNameMap = metadata.eventTypeNameMapBacking
-            VarInt.write(eventTypeNameMap.size.toLong(), output)
-            eventTypeNameMap.forEach { (id, name) ->
-                VarInt.write(id, output)
-                if (id == 3L) {
-                    VarInt.write(name.length.toLong(), output)
-                    output.writeBytes(name)
-                }
-                if (id == 4L) {
-                    VarInt.write(name.length.toLong(), output)
-                    for (character in name) {
-                        VarInt.write(character.toLong(), output)
-                    }
-                }
-            }
-        }
-
-        private fun writeElements(metadata: MetadataEvent) {
-
-        }
-
-        override fun onMetadata(metadata: MetadataEvent): Boolean {
-            with(metadata) {
-                VarInt.write(size.toLong(), output)
-                VarInt.write(0, output)
-                VarInt.write(startTime, output)
-                VarInt.write(duration, output)
-                VarInt.write(metadataId, output)
-                writeStringTable(this)
-                writeElements(this)
-            }
+        override fun onMetadata(metadata: MetadataEvent, writes: Consumer<DataOutputStream>): Boolean {
+            writes.accept(output) // it's working!
+            // TODO check also transfer from start to end position (metadata.positionBeforeRead to metadata.positionAfterRead). It might require re-reading the file
             return true
         }
 
         override fun onEvent(typeId: Long, stream: RecordingStream, payloadSize: Long, eventSize: Long): Boolean {
+            // TODO there are 4 bytes missing at the beginning of the event
             if (typeId == 101L) {
                 filterMaybe()
             }
@@ -86,9 +58,9 @@ class JfrExecutionEventFilter {
             VarInt.write(eventSize, output)
             VarInt.write(typeId, output)
 
-            var i = 0
-            while (i++ < payloadSize) {
-                output.writeByte(stream.read().toInt())
+            ByteArray(payloadSize.toInt()).let { eventPayload ->
+                stream.read(eventPayload, 0, payloadSize.toInt())
+                output.write(eventPayload)
             }
             return true
         }

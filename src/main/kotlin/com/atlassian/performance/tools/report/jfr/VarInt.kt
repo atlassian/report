@@ -8,6 +8,7 @@ object VarInt {
     /**
      * Impl copied from [jdk.jfr.internal.EventWriter.putUncheckedLong]
      */
+    @JvmStatic
     fun write(value: Long, stream: OutputStream) {
         var v = value
         if (v and 0x7FL.inv() == 0L) {
