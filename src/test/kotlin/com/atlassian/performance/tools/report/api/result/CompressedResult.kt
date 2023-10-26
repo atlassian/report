@@ -23,23 +23,25 @@ class CompressedResult(
         }
     }
 
-    private fun unzip(
-        file: File
-    ): Path {
-        val unpacked = Files.createTempDirectory(file.name)
-        val zip = ZipFile(file)
-        zip.stream().forEach { entry ->
-            val unpackedEntry = unpacked.resolve(entry.name)
-            if (entry.isDirectory) {
-                unpackedEntry.ensureDirectory()
-            } else {
-                zip.getInputStream(entry).use { packedStream ->
-                    unpackedEntry.toFile().outputStream().use { unpackedStream ->
-                        packedStream.copyTo(unpackedStream)
+    companion object {
+        fun unzip(
+            file: File
+        ): Path {
+            val unpacked = Files.createTempDirectory(file.name)
+            val zip = ZipFile(file)
+            zip.stream().forEach { entry ->
+                val unpackedEntry = unpacked.resolve(entry.name)
+                if (entry.isDirectory) {
+                    unpackedEntry.ensureDirectory()
+                } else {
+                    zip.getInputStream(entry).use { packedStream ->
+                        unpackedEntry.toFile().outputStream().use { unpackedStream ->
+                            packedStream.copyTo(unpackedStream)
+                        }
                     }
                 }
             }
+            return unpacked
         }
-        return unpacked
     }
 }
