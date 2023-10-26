@@ -3,19 +3,21 @@ package com.atlassian.performance.tools.report.jfr
 import org.openjdk.jmc.flightrecorder.testutils.parser.*
 import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkHeader.MAGIC
 import java.io.DataOutputStream
+import java.io.File
 import java.nio.file.Path
 
 
 class JfrExecutionEventFilter {
 
-    fun go(recording: Path) {
+    fun go(recording: Path): File {
         recording.toFile().inputStream().buffered().use { inputStream ->
-            val filteredRecording = recording.resolveSibling("filtered-" + recording.fileName.toString())
-            filteredRecording.toFile().outputStream().buffered().use { outputStream ->
+            val filteredRecording = recording.resolveSibling("filtered-" + recording.fileName.toString()).toFile()
+            filteredRecording.outputStream().buffered().use { outputStream ->
                 val writer = FilteringJfrWriter(DataOutputStream(outputStream))
                 val parser = StreamingChunkParser()
                 parser.parse(inputStream, writer)
             }
+            return filteredRecording
         }
     }
 
