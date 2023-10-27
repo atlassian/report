@@ -69,10 +69,6 @@ public interface ChunkParserListener {
 		return true;
 	}
 
-	default boolean onMetadata(MetadataEvent metadata, Consumer<DataOutputStream> write) {
-		return true;
-	}
-
 	/**
 	 * Called for each parsed event
 	 *

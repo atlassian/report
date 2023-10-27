@@ -33,19 +33,14 @@
  */
 package org.openjdk.jmc.flightrecorder.testutils.parser;
 
-import com.atlassian.performance.tools.report.jfr.VarInt;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public final class RecordingStream implements AutoCloseable {
     private final DataInputStream delegate;
     private long position = 0;
-
-    private List<Consumer<DataOutputStream>> writeLog = new ArrayList<>();
-    private boolean isRecordingWrites = false;
 
     RecordingStream(InputStream is) {
         BufferedInputStream bis = (is instanceof BufferedInputStream) ? (BufferedInputStream) is
@@ -57,37 +52,11 @@ public final class RecordingStream implements AutoCloseable {
         return position;
     }
 
-    void startRecordingWrites() {
-        isRecordingWrites = true;
-    }
-
-    void stopRecordingWrites() {
-        isRecordingWrites = false;
-    }
-
-    void write(DataOutputStream os) {
-        for (Consumer<DataOutputStream> write : writeLog) {
-            write.accept(os);
-        }
-        writeLog.clear();
-    }
-
     public void read(byte[] buffer, int offset, int length) throws IOException {
         while (length > 0) {
             int read = delegate.read(buffer, offset, length);
             if (read == -1) {
                 throw new IOException("Unexpected EOF");
-            }
-            if (isRecordingWrites) {
-                byte[] copy = new byte[read];
-                System.arraycopy(buffer, offset, copy, 0, read);
-                writeLog.add(os -> {
-                    try {
-                        os.write(copy);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
             }
             offset += read;
             length -= read;
@@ -97,70 +66,22 @@ public final class RecordingStream implements AutoCloseable {
 
     public byte read() throws IOException {
         position += 1;
-        byte result = delegate.readByte();
-        if (isRecordingWrites) {
-            writeLog.add(os -> {
-                try {
-                    os.writeByte(result);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        }
-        return result;
+        return delegate.readByte();
     }
 
     short readShort() throws IOException {
         position += 2;
-        short result = delegate.readShort();
-        if (isRecordingWrites) {
-            writeLog.add(os -> {
-                try {
-                    os.writeShort(result);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        }
-        return result;
+        return delegate.readShort();
     }
 
     public int readInt() throws IOException {
         position += 4;
-        int result = delegate.readInt();
-        if (isRecordingWrites) {
-            writeLog.add(os -> {
-                try {
-                    os.writeInt(result);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        }
-        return result;
+        return delegate.readInt();
     }
 
     long readLong() throws IOException {
         position += 8;
-        long result = delegate.readLong();
-        if (isRecordingWrites) {
-            writeLog.add(os -> {
-                try {
-                    os.writeLong(result);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        }
-        return result;
-    }
-
-    public void addVarintWrite(long value) {
-        if (isRecordingWrites) {
-            writeLog.add(os -> {
-                VarInt.write(value, os);
-            });
-        }
+        return delegate.readLong();
     }
 
     long readVarint() throws IOException {
@@ -169,17 +90,6 @@ public final class RecordingStream implements AutoCloseable {
         int i = 0;
         do {
             readValue = delegate.read();
-            if (isRecordingWrites) {
-                int finalReadValue1 = readValue;
-                writeLog.add(os -> {
-                    try {
-                        os.writeByte(finalReadValue1);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-            }
-            int finalReadValue = readValue;
             value |= (long) (readValue & 0x7F) << (7 * i);
             i++;
         } while ((readValue & 0x80) != 0
@@ -189,7 +99,6 @@ public final class RecordingStream implements AutoCloseable {
                 // a Java unsigned long (therefore having only 63 bits and they all fit in 9 bytes).
                 && i < 9);
         position += i;
-//        addVarintWrite(value);
         return value;
     }
 

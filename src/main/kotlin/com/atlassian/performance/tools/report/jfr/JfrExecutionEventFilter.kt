@@ -14,7 +14,7 @@ class JfrExecutionEventFilter {
         recording.toFile().inputStream().buffered().use { inputStream ->
             val filteredRecording = recording.resolveSibling("filtered-" + recording.fileName.toString()).toFile()
             filteredRecording.outputStream().buffered().use { outputStream ->
-                val writer = FilteringJfrWriter(DataOutputStream(outputStream))
+                val writer = FilteringJfrWriter(DataOutputStream(outputStream), recording)
                 val parser = StreamingChunkParser()
                 parser.parse(inputStream, writer)
             }
@@ -23,7 +23,8 @@ class JfrExecutionEventFilter {
     }
 
     class FilteringJfrWriter(
-        val output: DataOutputStream
+        val output: DataOutputStream,
+        val input: Path
     ) : ChunkParserListener {
 
         override fun onChunkStart(chunkIndex: Int, header: ChunkHeader): Boolean {
@@ -45,14 +46,18 @@ class JfrExecutionEventFilter {
 
         private val checkpointEventType = 1L
 
-        override fun onMetadata(metadata: MetadataEvent, writes: Consumer<DataOutputStream>): Boolean {
-            writes.accept(output) // it's working!
-            // TODO check also transfer from start to end position (metadata.positionBeforeRead to metadata.positionAfterRead). It might require re-reading the file
+        override fun onMetadata(metadata: MetadataEvent): Boolean {
+            val eventSize = metadata.positionAfterRead - metadata.positionBeforeRead
+            input.toFile().inputStream().use { inputStream ->
+                inputStream.skip(metadata.positionBeforeRead)
+                val eventPayload = ByteArray(eventSize.toInt())
+                inputStream.read(eventPayload)
+                output.write(eventPayload)
+            }
             return true
         }
 
         override fun onEvent(typeId: Long, stream: RecordingStream, payloadSize: Long, eventSize: Long): Boolean {
-            // TODO there are 4 bytes missing at the beginning of the event
             if (typeId == 101L) {
                 filterMaybe()
             }
