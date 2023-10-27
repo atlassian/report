@@ -155,7 +155,7 @@ public final class MetadataEvent {
 	@Override
 	public String toString() {
 		return "Metadata{" + "size=" + size + ", startTime=" + startTime + ", duration=" + duration + ", metadataId="
-				+ metadataId + '}';
+				+ metadataId + '}' + eventTypeNameMapBacking;
 	}
 
 	@Override

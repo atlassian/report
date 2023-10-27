@@ -45,5 +45,14 @@ class VarIntTest {
             )
         )
     }
+
+    @Test
+    fun shouldWrite6164() {
+        val stream = ByteArrayOutputStream(8)
+        VarInt.write(6164, stream)
+
+        val writtenBytes: ByteArray = stream.toByteArray()
+        assertThat(writtenBytes).hasSize(5)
+    }
 }
 
