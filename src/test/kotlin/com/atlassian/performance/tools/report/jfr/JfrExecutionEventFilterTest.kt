@@ -72,6 +72,9 @@ class JfrExecutionEventFilterTest {
         // when
         val output = JfrExecutionEventFilter().go(input)
         // then
+        val firstChunk = expectedSummary.first()
+        assertThat(firstChunk.eventsCount[101]).isEqualTo(7731677)
+        assertThat(firstChunk.eventsCount[106]).isEqualTo(1023)
         val actualSummary = output.toPath().summary()
         assertThat(actualSummary).isEqualTo(expectedSummary)
     }
