@@ -84,7 +84,7 @@ public final class RecordingStream implements AutoCloseable {
         return delegate.readLong();
     }
 
-    long readVarint() throws IOException {
+    public long readVarint() throws IOException {
         long value = 0;
         int readValue = 0;
         int i = 0;
@@ -112,14 +112,6 @@ public final class RecordingStream implements AutoCloseable {
             toSkip -= delegate.skip(toSkip);
         }
         position += bytes;
-    }
-
-    public void mark(int readlimit) {
-        delegate.mark(readlimit);
-    }
-
-    public void reset() throws IOException {
-        delegate.reset();
     }
 
     @Override

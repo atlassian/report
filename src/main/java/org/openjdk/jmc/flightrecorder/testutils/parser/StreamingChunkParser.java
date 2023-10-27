@@ -92,14 +92,15 @@ public final class StreamingChunkParser {
 				long chunkEndPos = chunkStartPos + (int) header.size;
 				while (stream.position() < chunkEndPos) {
 					long eventStartPos = stream.position();
-					stream.mark(20); // max 2 varints ahead
-					int eventSize = (int) stream.readVarint();
+					long longEventSize = stream.readVarint();
+					listener.onEventSize(longEventSize);
+					int eventSize = (int) longEventSize;
 					if (eventSize > 0) {
 						long eventType = stream.readVarint();
+						listener.onEventType(eventType);
 						if (eventType == 0) {
 							// metadata
-							stream.reset(); // roll-back the stream to the event start
-							MetadataEvent m = new MetadataEvent(stream);
+							MetadataEvent m = new MetadataEvent(stream, eventSize, eventType);
 							if (!listener.onMetadata(m)) {
 								log.debug("'onMetadata' returned false. Skipping events for chunk {}", chunkCounter);
 								stream.skip(header.size - (stream.position() - chunkStartPos));
@@ -107,7 +108,7 @@ public final class StreamingChunkParser {
 							}
 						} else {
 							long currentPos = stream.position();
-							if (!listener.onEvent(eventType, stream, eventSize - (currentPos - eventStartPos), eventSize)) {
+							if (!listener.onEvent(eventType, stream, eventSize - (currentPos - eventStartPos))) {
 								log.debug("'onEvent({}, stream)' returned false. Skipping the rest of the chunk {}",
 										eventType, chunkCounter);
 								// skip the rest of the chunk
@@ -118,6 +119,8 @@ public final class StreamingChunkParser {
 							// always skip any unconsumed event data to get the stream into consistent state
 							stream.skip(eventSize - (stream.position() - eventStartPos));
 						}
+					} else {
+						log.debug("ZERO SIZE EVENT");
 					}
 				}
 				if (!listener.onChunkEnd(chunkCounter, false)) {
