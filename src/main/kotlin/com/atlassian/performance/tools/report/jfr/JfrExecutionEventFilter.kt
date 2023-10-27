@@ -2,8 +2,7 @@ package com.atlassian.performance.tools.report.jfr
 
 import org.openjdk.jmc.flightrecorder.testutils.parser.*
 import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkHeader.MAGIC
-import java.io.DataOutputStream
-import java.io.File
+import java.io.*
 import java.nio.file.Path
 
 
@@ -13,7 +12,7 @@ class JfrExecutionEventFilter {
         recording.toFile().inputStream().buffered().use { inputStream ->
             val filteredRecording = recording.resolveSibling("filtered-" + recording.fileName.toString()).toFile()
             filteredRecording.outputStream().buffered().use { outputStream ->
-                val writer = FilteringJfrWriter(DataOutputStream(outputStream), recording)
+                val writer = FilteringJfrWriter(filteredRecording, outputStream, recording)
                 val parser = StreamingChunkParser()
                 parser.parse(inputStream, writer)
             }
@@ -22,24 +21,23 @@ class JfrExecutionEventFilter {
     }
 
     class FilteringJfrWriter(
-        val output: DataOutputStream,
+        val outputFile: File,
+        output: OutputStream,
         val input: Path
     ) : ChunkParserListener {
 
+        private val countingOutput = CountingOutputStream(output)
+        private val output = DataOutputStream(countingOutput)
+
+        private var lastHeader: ChunkHeader? = null
+        private var absoluteChunkStartPos = 0L
+        private var chunkHeaderSize = 0L
+
         override fun onChunkStart(chunkIndex: Int, header: ChunkHeader): Boolean {
-            with(header) {
-                output.write(MAGIC)
-                output.writeShort(major.toInt())
-                output.writeShort(minor.toInt())
-                output.writeLong(size)
-                output.writeLong(cpOffset)
-                output.writeLong(metaOffset)
-                output.writeLong(startNanos)
-                output.writeLong(duration)
-                output.writeLong(startTicks)
-                output.writeLong(frequency)
-                output.writeInt(if (compressed) 1 else 0)
-            }
+            lastHeader = header
+            absoluteChunkStartPos = countingOutput.count
+            writeChunkHeader(header, output)
+            chunkHeaderSize = countingOutput.count - absoluteChunkStartPos
             return true
         }
 
@@ -77,6 +75,43 @@ class JfrExecutionEventFilter {
                 }
             }
             return true
+        }
+
+        override fun onChunkEnd(chunkIndex: Int, skipped: Boolean): Boolean {
+            updateChunkSize()
+            return true
+        }
+
+        private fun writeChunkHeader(header: ChunkHeader, output: DataOutput) {
+            with(header) {
+                output.write(MAGIC)
+                output.writeShort(major.toInt())
+                output.writeShort(minor.toInt())
+                output.writeLong(size)
+                output.writeLong(cpOffset)
+                output.writeLong(metaOffset)
+                output.writeLong(startNanos)
+                output.writeLong(duration)
+                output.writeLong(startTicks)
+                output.writeLong(frequency)
+                output.writeInt(if (compressed) 1 else 0)
+                //   130357145
+                // - 167235804
+                //    36878656
+            }
+
+        }
+
+        private fun updateChunkSize() {
+            val chunkSize = countingOutput.count - chunkHeaderSize - absoluteChunkStartPos
+            RandomAccessFile(outputFile, "rw").use {
+                it.seek(absoluteChunkStartPos)
+                writeChunkHeader(
+                    lastHeader!!.toBuilder()
+                        .size(chunkSize)
+                        .build(), it
+                )
+            }
         }
 
         private fun filterMaybe() {
