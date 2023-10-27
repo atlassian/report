@@ -35,93 +35,196 @@ package org.openjdk.jmc.flightrecorder.testutils.parser;
 
 import java.io.IOException;
 
-/** A chunk header data object */
+/**
+ * A chunk header data object
+ */
 public final class ChunkHeader {
-	public static final byte[] MAGIC = new byte[] {'F', 'L', 'R', '\0'};
-	public final short major;
-	public final short minor;
-	public final long size;
-	public final long cpOffset;
-	public final long metaOffset;
-	public final long startNanos;
-	public final long duration;
-	public final long startTicks;
-	public final long frequency;
-	public final boolean compressed;
+    public static final byte[] MAGIC = new byte[]{'F', 'L', 'R', '\0'};
+    public final short major;
+    public final short minor;
+    public final long size;
+    public final long cpOffset;
+    public final long metaOffset;
+    public final long startNanos;
+    public final long duration;
+    public final long startTicks;
+    public final long frequency;
+    public final boolean compressed;
 
-	ChunkHeader(RecordingStream recording) throws IOException {
-		byte[] buffer = new byte[MAGIC.length];
-		recording.read(buffer, 0, MAGIC.length);
-		for (int i = 0; i < MAGIC.length; i++) {
-			if (buffer[i] != MAGIC[i]) {
-				throw new IOException("Invalid JFR Magic Number: " + bytesToString(buffer, 0, MAGIC.length));
-			}
-		}
-		major = recording.readShort();
-		minor = recording.readShort();
-		size = recording.readLong();
-		cpOffset = recording.readLong();
-		metaOffset = recording.readLong();
-		startNanos = recording.readLong();
-		duration = recording.readLong();
-		startTicks = recording.readLong();
-		frequency = recording.readLong();
-		compressed = recording.readInt() != 0;
-	}
+    ChunkHeader(RecordingStream recording) throws IOException {
+        byte[] buffer = new byte[MAGIC.length];
+        recording.read(buffer, 0, MAGIC.length);
+        for (int i = 0; i < MAGIC.length; i++) {
+            if (buffer[i] != MAGIC[i]) {
+                throw new IOException("Invalid JFR Magic Number: " + bytesToString(buffer, 0, MAGIC.length));
+            }
+        }
+        major = recording.readShort();
+        minor = recording.readShort();
+        size = recording.readLong();
+        cpOffset = recording.readLong();
+        metaOffset = recording.readLong();
+        startNanos = recording.readLong();
+        duration = recording.readLong();
+        startTicks = recording.readLong();
+        frequency = recording.readLong();
+        compressed = recording.readInt() != 0;
+    }
 
-	@Override
-	public String toString() {
-		return "ChunkHeader{" + "major=" + major + ", minor=" + minor + ", size=" + size + ", cpOffset=" + cpOffset
-				+ ", metaOffset=" + metaOffset + ", startNanos=" + startNanos + ", duration=" + duration
-				+ ", startTicks=" + startTicks + ", frequency=" + frequency + ", compressed=" + compressed + '}';
-	}
+    ChunkHeader(Builder builder) {
+        this.major = builder.major;
+        this.minor = builder.minor;
+        this.size = builder.size;
+        this.cpOffset = builder.cpOffset;
+        this.metaOffset = builder.metaOffset;
+        this.startNanos = builder.startNanos;
+        this.duration = builder.duration;
+        this.startTicks = builder.startTicks;
+        this.frequency = builder.frequency;
+        this.compressed = builder.compressed;
+    }
 
-	private static String bytesToString(byte[] array, int offset, int len) {
-		StringBuilder sb = new StringBuilder("[");
-		boolean comma = false;
-		for (int i = 0; i < len; i++) {
-			if (comma) {
-				sb.append(", ");
-			} else {
-				comma = true;
-			}
-			sb.append(array[i + offset]);
-		}
-		sb.append(']');
-		return sb.toString();
-	}
+    @Override
+    public String toString() {
+        return "ChunkHeader{" + "major=" + major + ", minor=" + minor + ", size=" + size + ", cpOffset=" + cpOffset
+                + ", metaOffset=" + metaOffset + ", startNanos=" + startNanos + ", duration=" + duration
+                + ", startTicks=" + startTicks + ", frequency=" + frequency + ", compressed=" + compressed + '}';
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+    public Builder toBuilder() {
+        return new Builder(this);
+    }
 
-		ChunkHeader that = (ChunkHeader) o;
+    public static class Builder {
 
-		if (major != that.major) return false;
-		if (minor != that.minor) return false;
-		if (size != that.size) return false;
-		if (cpOffset != that.cpOffset) return false;
-		if (metaOffset != that.metaOffset) return false;
-		if (startNanos != that.startNanos) return false;
-		if (duration != that.duration) return false;
-		if (startTicks != that.startTicks) return false;
-		if (frequency != that.frequency) return false;
+        private short major;
+        private short minor;
+        private long size;
+        private long cpOffset;
+        private long metaOffset;
+        private long startNanos;
+        private long duration;
+        private long startTicks;
+        private long frequency;
+        private boolean compressed;
+
+        public Builder() {
+        }
+
+        public Builder(ChunkHeader header) {
+            this.major = header.major;
+            this.minor = header.minor;
+            this.size = header.size;
+            this.cpOffset = header.cpOffset;
+            this.metaOffset = header.metaOffset;
+            this.startNanos = header.startNanos;
+            this.duration = header.duration;
+            this.startTicks = header.startTicks;
+            this.frequency = header.frequency;
+            this.compressed = header.compressed;
+        }
+
+        public Builder major(short major) {
+            this.major = major;
+            return this;
+        }
+
+        public Builder minor(short minor) {
+            this.minor = minor;
+            return this;
+        }
+
+        public Builder size(long size) {
+            this.size = size;
+            return this;
+        }
+
+        public Builder cpOffset(long cpOffset) {
+            this.cpOffset = cpOffset;
+            return this;
+        }
+
+        public Builder metaOffset(long metaOffset) {
+            this.metaOffset = metaOffset;
+            return this;
+        }
+
+        public Builder startNanos(long startNanos) {
+            this.startNanos = startNanos;
+            return this;
+        }
+
+        public Builder duration(long duration) {
+            this.duration = duration;
+            return this;
+        }
+
+        public Builder startTicks(long startTicks) {
+            this.startTicks = startTicks;
+            return this;
+        }
+
+        public Builder frequency(long frequency) {
+            this.frequency = frequency;
+            return this;
+        }
+
+        public Builder compressed(boolean compressed) {
+            this.compressed = compressed;
+            return this;
+        }
+
+        public ChunkHeader build() {
+            return new ChunkHeader(this);
+        }
+    }
+
+    private static String bytesToString(byte[] array, int offset, int len) {
+        StringBuilder sb = new StringBuilder("[");
+        boolean comma = false;
+        for (int i = 0; i < len; i++) {
+            if (comma) {
+                sb.append(", ");
+            } else {
+                comma = true;
+            }
+            sb.append(array[i + offset]);
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ChunkHeader that = (ChunkHeader) o;
+
+        if (major != that.major) return false;
+        if (minor != that.minor) return false;
+        if (size != that.size) return false;
+        if (cpOffset != that.cpOffset) return false;
+        if (metaOffset != that.metaOffset) return false;
+        if (startNanos != that.startNanos) return false;
+        if (duration != that.duration) return false;
+        if (startTicks != that.startTicks) return false;
+        if (frequency != that.frequency) return false;
         return compressed == that.compressed;
     }
 
-	@Override
-	public int hashCode() {
-		int result = major;
-		result = 31 * result + (int) minor;
-		result = 31 * result + (int) (size ^ (size >>> 32));
-		result = 31 * result + (int) (cpOffset ^ (cpOffset >>> 32));
-		result = 31 * result + (int) (metaOffset ^ (metaOffset >>> 32));
-		result = 31 * result + (int) (startNanos ^ (startNanos >>> 32));
-		result = 31 * result + (int) (duration ^ (duration >>> 32));
-		result = 31 * result + (int) (startTicks ^ (startTicks >>> 32));
-		result = 31 * result + (int) (frequency ^ (frequency >>> 32));
-		result = 31 * result + (compressed ? 1 : 0);
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        int result = major;
+        result = 31 * result + (int) minor;
+        result = 31 * result + (int) (size ^ (size >>> 32));
+        result = 31 * result + (int) (cpOffset ^ (cpOffset >>> 32));
+        result = 31 * result + (int) (metaOffset ^ (metaOffset >>> 32));
+        result = 31 * result + (int) (startNanos ^ (startNanos >>> 32));
+        result = 31 * result + (int) (duration ^ (duration >>> 32));
+        result = 31 * result + (int) (startTicks ^ (startTicks >>> 32));
+        result = 31 * result + (int) (frequency ^ (frequency >>> 32));
+        result = 31 * result + (compressed ? 1 : 0);
+        return result;
+    }
 }
