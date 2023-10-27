@@ -90,4 +90,38 @@ public final class ChunkHeader {
 		sb.append(']');
 		return sb.toString();
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		ChunkHeader that = (ChunkHeader) o;
+
+		if (major != that.major) return false;
+		if (minor != that.minor) return false;
+		if (size != that.size) return false;
+		if (cpOffset != that.cpOffset) return false;
+		if (metaOffset != that.metaOffset) return false;
+		if (startNanos != that.startNanos) return false;
+		if (duration != that.duration) return false;
+		if (startTicks != that.startTicks) return false;
+		if (frequency != that.frequency) return false;
+        return compressed == that.compressed;
+    }
+
+	@Override
+	public int hashCode() {
+		int result = major;
+		result = 31 * result + (int) minor;
+		result = 31 * result + (int) (size ^ (size >>> 32));
+		result = 31 * result + (int) (cpOffset ^ (cpOffset >>> 32));
+		result = 31 * result + (int) (metaOffset ^ (metaOffset >>> 32));
+		result = 31 * result + (int) (startNanos ^ (startNanos >>> 32));
+		result = 31 * result + (int) (duration ^ (duration >>> 32));
+		result = 31 * result + (int) (startTicks ^ (startTicks >>> 32));
+		result = 31 * result + (int) (frequency ^ (frequency >>> 32));
+		result = 31 * result + (compressed ? 1 : 0);
+		return result;
+	}
 }
