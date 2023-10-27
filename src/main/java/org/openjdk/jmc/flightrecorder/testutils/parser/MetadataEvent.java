@@ -38,6 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * JFR Chunk metadata
@@ -57,12 +58,11 @@ public final class MetadataEvent {
 	public final long positionBeforeRead;
 	public final long positionAfterRead;
 
-	MetadataEvent(RecordingStream stream) throws IOException {
+	MetadataEvent(RecordingStream stream, int eventSize, long eventType) throws IOException {
 		positionBeforeRead = stream.position();
-		size = (int) stream.readVarint();
-		long typeId = stream.readVarint();
-		if (typeId != 0) {
-			throw new IOException("Unexpected event type: " + typeId + " (should be 0)");
+		size = eventSize;
+		if (eventType != 0) {
+			throw new IOException("Unexpected event type: " + eventType + " (should be 0)");
 		}
 		startTime = stream.readVarint();
 		duration = stream.readVarint();
@@ -156,5 +156,18 @@ public final class MetadataEvent {
 	public String toString() {
 		return "Metadata{" + "size=" + size + ", startTime=" + startTime + ", duration=" + duration + ", metadataId="
 				+ metadataId + '}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		MetadataEvent that = (MetadataEvent) o;
+		return size == that.size && startTime == that.startTime && duration == that.duration && metadataId == that.metadataId;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(size, startTime, duration, metadataId);
 	}
 }

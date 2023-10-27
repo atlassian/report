@@ -5,7 +5,6 @@ import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkHeader.MAGIC
 import java.io.DataOutputStream
 import java.io.File
 import java.nio.file.Path
-import java.util.function.Consumer
 
 
 class JfrExecutionEventFilter {
@@ -46,24 +45,29 @@ class JfrExecutionEventFilter {
 
         private val checkpointEventType = 1L
 
+        override fun onEventSize(eventSize: Long) {
+            VarInt.write(eventSize, output)
+        }
+
+        override fun onEventType(eventType: Long) {
+            VarInt.write(eventType, output)
+        }
+
         override fun onMetadata(metadata: MetadataEvent): Boolean {
-            val eventSize = metadata.positionAfterRead - metadata.positionBeforeRead
+            val payloadSize = metadata.positionAfterRead - metadata.positionBeforeRead
             input.toFile().inputStream().use { inputStream ->
                 inputStream.skip(metadata.positionBeforeRead)
-                val eventPayload = ByteArray(eventSize.toInt())
+                val eventPayload = ByteArray(payloadSize.toInt())
                 inputStream.read(eventPayload)
                 output.write(eventPayload)
             }
             return true
         }
 
-        override fun onEvent(typeId: Long, stream: RecordingStream, payloadSize: Long, eventSize: Long): Boolean {
+        override fun onEvent(typeId: Long, stream: RecordingStream, payloadSize: Long): Boolean {
             if (typeId == 101L) {
                 filterMaybe()
             }
-
-            VarInt.write(eventSize, output)
-            VarInt.write(typeId, output)
 
             if (typeId != checkpointEventType) {
                 ByteArray(payloadSize.toInt()).let { eventPayload ->

@@ -70,6 +70,20 @@ public interface ChunkParserListener {
 	}
 
 	/**
+	 * @param eventSize
+	 *            the size of the event in bytes, including the event "header" (eventSize itself and typeId)
+	 */
+	default void onEventSize(long eventSize) {
+	}
+
+	/**
+	 * @param eventType the same as {@code onEvent(typeId)}
+	 */
+	default void onEventType(long eventType) {
+
+	}
+
+	/**
 	 * Called for each parsed event
 	 *
 	 * @param typeId
@@ -78,11 +92,9 @@ public interface ChunkParserListener {
 	 *            {@linkplain RecordingStream} positioned at the event payload start
 	 * @param payloadSize
 	 *            the size of the payload in bytes
-	 * @param eventSize
-	 *            the size of the event in bytes, including the event "header" (eventSize itself and typeId)
 	 * @return {@literal false} if the remainder of the chunk should be skipped
 	 */
-	default boolean onEvent(long typeId, RecordingStream stream, long payloadSize, long eventSize) {
+	default boolean onEvent(long typeId, RecordingStream stream, long payloadSize) {
 		return true;
 	}
 
@@ -102,4 +114,6 @@ public interface ChunkParserListener {
 	/** Called when the recording was fully processed */
 	default void onRecordingEnd() {
 	}
+
+
 }

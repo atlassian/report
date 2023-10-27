@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkHeader
 import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkParserListener
+import org.openjdk.jmc.flightrecorder.testutils.parser.MetadataEvent
 import org.openjdk.jmc.flightrecorder.testutils.parser.RecordingStream
 import org.openjdk.jmc.flightrecorder.testutils.parser.StreamingChunkParser
 import java.io.File
@@ -16,12 +17,14 @@ class JfrExecutionEventFilterTest {
 
     data class Chunk(
         val eventsCount: Map<Long, Long>,
-        val header: ChunkHeader
+        val header: ChunkHeader,
+        val metadataEvent: List<MetadataEvent>
     )
 
     private fun Path.summary(): List<Chunk> {
         val eventsCount = mutableMapOf<Long, Long>()
         var chunkHeader: ChunkHeader? = null
+        val metadataEvents = mutableListOf<MetadataEvent>()
         val result = mutableListOf<Chunk>()
         FileInputStream(this.toFile()).use {
             StreamingChunkParser().parse(it, object : ChunkParserListener {
@@ -33,17 +36,23 @@ class JfrExecutionEventFilterTest {
                 }
 
                 override fun onChunkEnd(chunkIndex: Int, skipped: Boolean): Boolean {
-                    result.add(Chunk(eventsCount.toMap(), chunkHeader!!))
+                    result.add(Chunk(eventsCount.toMap(), chunkHeader!!, ArrayList(metadataEvents)))
                     eventsCount.clear()
+                    metadataEvents.clear()
                     println("Chunk $chunkIndex end")
+                    return true
+                }
+
+                override fun onMetadata(metadata: MetadataEvent): Boolean {
+                    println("metadata: $metadata")
+                    metadataEvents.add(metadata)
                     return true
                 }
 
                 override fun onEvent(
                     typeId: Long,
                     stream: RecordingStream,
-                    payloadSize: Long,
-                    eventSize: Long
+                    payloadSize: Long
                 ): Boolean {
                     eventsCount.computeIfAbsent(typeId) { 0 }
                     eventsCount[typeId] = eventsCount[typeId]!! + 1
