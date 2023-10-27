@@ -68,11 +68,9 @@ class JfrExecutionEventFilter {
                 filterMaybe()
             }
 
-            if (typeId != checkpointEventType) {
-                ByteArray(payloadSize.toInt()).let { eventPayload ->
-                    stream.read(eventPayload, 0, payloadSize.toInt())
-                    output.write(eventPayload)
-                }
+            ByteArray(payloadSize.toInt()).let { eventPayload ->
+                stream.read(eventPayload, 0, payloadSize.toInt())
+                output.write(eventPayload)
             }
             return true
         }

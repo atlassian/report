@@ -93,8 +93,8 @@ public final class StreamingChunkParser {
 				while (stream.position() < chunkEndPos) {
 					long eventStartPos = stream.position();
 					long longEventSize = stream.readVarint();
-					listener.onEventSize(longEventSize);
 					int eventSize = (int) longEventSize;
+					listener.onEventSize(eventSize);
 					if (eventSize > 0) {
 						long eventType = stream.readVarint();
 						listener.onEventType(eventType);
