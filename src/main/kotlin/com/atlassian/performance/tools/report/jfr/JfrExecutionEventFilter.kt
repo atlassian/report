@@ -43,6 +43,8 @@ class JfrExecutionEventFilter {
             return true
         }
 
+        private val checkpointEventType = 1L
+
         override fun onMetadata(metadata: MetadataEvent, writes: Consumer<DataOutputStream>): Boolean {
             writes.accept(output) // it's working!
             // TODO check also transfer from start to end position (metadata.positionBeforeRead to metadata.positionAfterRead). It might require re-reading the file
@@ -58,9 +60,11 @@ class JfrExecutionEventFilter {
             VarInt.write(eventSize, output)
             VarInt.write(typeId, output)
 
-            ByteArray(payloadSize.toInt()).let { eventPayload ->
-                stream.read(eventPayload, 0, payloadSize.toInt())
-                output.write(eventPayload)
+            if (typeId != checkpointEventType) {
+                ByteArray(payloadSize.toInt()).let { eventPayload ->
+                    stream.read(eventPayload, 0, payloadSize.toInt())
+                    output.write(eventPayload)
+                }
             }
             return true
         }

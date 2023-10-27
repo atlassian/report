@@ -107,9 +107,6 @@ public final class StreamingChunkParser {
 								stream.skip(header.size - (stream.position() - chunkStartPos));
 								listener.onChunkEnd(chunkCounter, true);
 							}
-						} else if (eventType == 1) {
-							// checkpoint event; skip for now
-							stream.skip(eventSize - (stream.position() - eventStartPos));
 						} else {
 							long currentPos = stream.position();
 							if (!listener.onEvent(eventType, stream, eventSize - (currentPos - eventStartPos), eventSize)) {
