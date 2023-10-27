@@ -2,8 +2,8 @@ package com.atlassian.performance.tools.report.jfr
 
 import com.atlassian.performance.tools.report.api.result.CompressedResult
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
 import org.junit.Test
+import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkHeader
 import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkParserListener
 import org.openjdk.jmc.flightrecorder.testutils.parser.RecordingStream
 import org.openjdk.jmc.flightrecorder.testutils.parser.StreamingChunkParser
@@ -14,30 +14,57 @@ import java.nio.file.Path
 class JfrExecutionEventFilterTest {
     private val zippedInput = File(javaClass.getResource("/profiler-result.zip")!!.toURI())
 
-    private fun Path.countEvents(): Map<Long, Long> {
-        val eventCount = mutableMapOf<Long, Long>()
+    data class Chunk(
+        val eventsCount: Map<Long, Long>,
+        val header: ChunkHeader
+    )
+
+    private fun Path.summary(): List<Chunk> {
+        val eventsCount = mutableMapOf<Long, Long>()
+        var chunkHeader: ChunkHeader? = null
+        val result = mutableListOf<Chunk>()
         FileInputStream(this.toFile()).use {
             StreamingChunkParser().parse(it, object : ChunkParserListener {
-                override fun onEvent(typeId: Long, stream: RecordingStream, payloadSize: Long, eventSize: Long): Boolean {
-                    eventCount.computeIfAbsent(typeId) { 0 }
-                    eventCount[typeId] = eventCount[typeId]!! + 1
+
+                override fun onChunkStart(chunkIndex: Int, header: ChunkHeader): Boolean {
+                    println("Chunk $chunkIndex: $header")
+                    chunkHeader = header
                     return true
                 }
+
+                override fun onChunkEnd(chunkIndex: Int, skipped: Boolean): Boolean {
+                    result.add(Chunk(eventsCount.toMap(), chunkHeader!!))
+                    eventsCount.clear()
+                    println("Chunk $chunkIndex end")
+                    return true
+                }
+
+                override fun onEvent(
+                    typeId: Long,
+                    stream: RecordingStream,
+                    payloadSize: Long,
+                    eventSize: Long
+                ): Boolean {
+                    eventsCount.computeIfAbsent(typeId) { 0 }
+                    eventsCount[typeId] = eventsCount[typeId]!! + 1
+                    return true
+                }
+
             })
         }
-        return eventCount
+        return result
     }
 
     @Test
     fun shouldRewriteJfr() {
         // given
         val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
-        val expectedEventCount = input.toAbsolutePath().countEvents()
+        val expectedSummary = input.toAbsolutePath().summary()
         // when
         val output = JfrExecutionEventFilter().go(input)
         // then
-        val actualEventCount = output.toPath().countEvents()
-        assertThat(actualEventCount).isEqualTo(expectedEventCount)
+        val actualSummary = output.toPath().summary()
+        assertThat(actualSummary).isEqualTo(expectedSummary)
     }
 
 }
