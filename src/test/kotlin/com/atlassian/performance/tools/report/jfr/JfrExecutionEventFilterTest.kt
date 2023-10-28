@@ -6,7 +6,6 @@ import org.junit.Test
 import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkHeader
 import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkParserListener
 import org.openjdk.jmc.flightrecorder.testutils.parser.MetadataEvent
-import org.openjdk.jmc.flightrecorder.testutils.parser.RecordingStream
 import org.openjdk.jmc.flightrecorder.testutils.parser.StreamingChunkParser
 import java.io.File
 import java.io.FileInputStream
@@ -18,13 +17,23 @@ class JfrExecutionEventFilterTest {
     data class Chunk(
         val eventsCount: Map<Long, Long>,
         val header: ChunkHeader,
-        val metadataEvent: List<MetadataEvent>
-    )
+        val metadataEvent: List<MetadataEvent>,
+        val eventTypes: List<Long>,
+        val eventSizes: List<Long>
+    ) {
+        override fun toString(): String {
+            return "Chunk(eventsCount=$eventsCount, header=$header, metadataEvent=$metadataEvent)"
+        }
+    }
+
+
 
     private fun Path.summary(): List<Chunk> {
         val eventsCount = mutableMapOf<Long, Long>()
         var chunkHeader: ChunkHeader? = null
         val metadataEvents = mutableListOf<MetadataEvent>()
+        val eventTypes = mutableListOf<Long>()
+        val eventSizes = mutableListOf<Long>()
         val result = mutableListOf<Chunk>()
         FileInputStream(this.toFile()).use {
             StreamingChunkParser().parse(it, object : ChunkParserListener {
@@ -36,9 +45,18 @@ class JfrExecutionEventFilterTest {
                 }
 
                 override fun onChunkEnd(chunkIndex: Int, skipped: Boolean): Boolean {
-                    result.add(Chunk(eventsCount.toMap(), chunkHeader!!, ArrayList(metadataEvents)))
-                    eventsCount.clear()
+                    result.add(
+                        Chunk(
+                            eventsCount = eventsCount.toMap(),
+                            header = chunkHeader!!,
+                            metadataEvent = ArrayList(metadataEvents),
+                            eventTypes = ArrayList(eventTypes),
+                            eventSizes = ArrayList(eventSizes)
+                        )
+                    )
                     metadataEvents.clear()
+                    eventTypes.clear()
+                    eventSizes.clear()
                     println("Chunk $chunkIndex end")
                     return true
                 }
@@ -51,11 +69,12 @@ class JfrExecutionEventFilterTest {
 
                 override fun onEvent(
                     typeId: Long,
-                    stream: RecordingStream,
-                    payloadSize: Long
+                    eventPayload: ByteArray
                 ): Boolean {
                     eventsCount.computeIfAbsent(typeId) { 0 }
                     eventsCount[typeId] = eventsCount[typeId]!! + 1
+                    eventTypes.add(typeId)
+                    eventSizes.add(eventPayload.size.toLong())
                     return true
                 }
 
@@ -65,12 +84,19 @@ class JfrExecutionEventFilterTest {
     }
 
     @Test
+    fun shouldPrintDetails() {
+        val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
+        val expectedSummary = input.toAbsolutePath().summary()
+        println(expectedSummary)
+    }
+
+    @Test
     fun shouldRewriteJfr() {
         // given
         val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
         val expectedSummary = input.toAbsolutePath().summary()
         // when
-        val output = JfrExecutionEventFilter().go(input)
+        val output = JfrExecutionEventFilter().filter(input)
         // then
         val firstChunk = expectedSummary.first()
         assertThat(firstChunk.eventsCount[101]).isEqualTo(7731677)
