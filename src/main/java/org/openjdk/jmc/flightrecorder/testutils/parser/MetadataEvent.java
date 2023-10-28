@@ -62,7 +62,7 @@ public final class MetadataEvent {
 		positionBeforeRead = stream.position();
 		size = eventSize;
 		if (eventType != 0) {
-			throw new IOException("Unexpected event type: " + eventType + " (should be 0)");
+			throw new IOException("Unexpected event type: " + eventType + " (should be 0). Stream at position: " + stream.position());
 		}
 		startTime = stream.readVarint();
 		duration = stream.readVarint();
@@ -148,7 +148,7 @@ public final class MetadataEvent {
 			}
 			return new String(chars);
 		} else {
-			throw new IOException("Unexpected string constant id: " + id);
+			throw new IOException("Unexpected string constant id: " + id + ". Stream at position " + stream.position() + ", " + this);
 		}
 	}
 

@@ -1,5 +1,6 @@
 package com.atlassian.performance.tools.report.jfr
 
+import org.apache.logging.log4j.LogManager
 import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkHeader
 import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkParserListener
 import org.openjdk.jmc.flightrecorder.testutils.parser.MetadataEvent
@@ -12,10 +13,12 @@ import java.nio.file.Path
 
 
 class JfrExecutionEventFilter {
+    private val logger = LogManager.getLogger(this::class.java)
 
     fun filter(recording: Path): File {
         recording.toFile().inputStream().buffered().use { inputStream ->
             val filteredRecording = recording.resolveSibling("filtered-" + recording.fileName.toString()).toFile()
+            logger.debug("Writing filtered recording to $filteredRecording ...")
             filteredRecording.outputStream().buffered().use { outputStream ->
                 val writer = FilteringJfrWriter(filteredRecording, outputStream, recording)
                 val parser = StreamingChunkParser()
@@ -30,6 +33,7 @@ class JfrExecutionEventFilter {
         output: OutputStream,
         val input: Path
     ) : ChunkParserListener {
+        private val logger = LogManager.getLogger(this::class.java)
 
         private val countingOutput = CountingOutputStream(output)
         private val output = DataOutputStream(countingOutput)
@@ -63,6 +67,8 @@ class JfrExecutionEventFilter {
                 inputStream.read(eventPayload)
                 output.write(eventPayload)
             }
+            val metadataBytesCount = countingOutput.count - positionBeforeWrite
+
             return true
         }
 
@@ -75,16 +81,18 @@ class JfrExecutionEventFilter {
         }
 
         override fun onChunkEnd(chunkIndex: Int, skipped: Boolean): Boolean {
-            updateChunkSize()
+            updateChunk()
             return true
         }
 
-        private fun updateChunkSize() {
+        private fun updateChunk() {
             val chunkSize = countingOutput.count - ChunkHeader.SIZE - absoluteChunkStartPos
             RandomAccessFile(outputFile, "rw").use {
                 it.seek(absoluteChunkStartPos)
-                lastHeader!!.toBuilder().size(chunkSize).build()
-                    .write(it)
+                lastHeader!!.toBuilder().size(chunkSize).build().apply {
+                    logger.debug("Updating chunk to $this")
+                    write(it)
+                }
             }
         }
 

@@ -1,6 +1,7 @@
 package com.atlassian.performance.tools.report.jfr
 
 import com.atlassian.performance.tools.report.api.result.CompressedResult
+import org.apache.logging.log4j.LogManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkHeader
@@ -12,6 +13,7 @@ import java.io.FileInputStream
 import java.nio.file.Path
 
 class JfrExecutionEventFilterTest {
+    private val logger = LogManager.getLogger(this::class.java)
     private val zippedInput = File(javaClass.getResource("/profiler-result.zip")!!.toURI())
 
     data class Chunk(
@@ -39,12 +41,15 @@ class JfrExecutionEventFilterTest {
             StreamingChunkParser().parse(it, object : ChunkParserListener {
 
                 override fun onChunkStart(chunkIndex: Int, header: ChunkHeader): Boolean {
-                    println("Chunk $chunkIndex: $header")
+                    logger.debug("Chunk $chunkIndex>>")
+                    logger.debug("$header")
                     chunkHeader = header
                     return true
                 }
 
                 override fun onChunkEnd(chunkIndex: Int, skipped: Boolean): Boolean {
+                    logger.debug("eventsCount: $eventsCount")
+                    logger.debug("<<Chunk $chunkIndex")
                     result.add(
                         Chunk(
                             eventsCount = eventsCount.toMap(),
@@ -57,12 +62,11 @@ class JfrExecutionEventFilterTest {
                     metadataEvents.clear()
                     eventTypes.clear()
                     eventSizes.clear()
-                    println("Chunk $chunkIndex end")
                     return true
                 }
 
                 override fun onMetadata(metadata: MetadataEvent): Boolean {
-                    println("metadata: $metadata")
+                    logger.debug("$metadata")
                     metadataEvents.add(metadata)
                     return true
                 }
@@ -83,24 +87,32 @@ class JfrExecutionEventFilterTest {
         return result
     }
 
+    private fun expectedSummary(input: Path) :List<Chunk> {
+        val expectedSummary = input.toAbsolutePath().summary()
+        val firstChunk = expectedSummary.first()
+        assertThat(firstChunk.eventsCount[101]).isEqualTo(7731677)
+        assertThat(firstChunk.eventsCount[106]).isEqualTo(1023)
+        return expectedSummary
+    }
+
     @Test
     fun shouldPrintDetails() {
         val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
         val expectedSummary = input.toAbsolutePath().summary()
-        println(expectedSummary)
+        logger.debug(expectedSummary)
     }
 
     @Test
     fun shouldRewriteJfr() {
         // given
         val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
-        val expectedSummary = input.toAbsolutePath().summary()
+        logger.debug("Reading expected JRF $input ...")
+        val expectedSummary = expectedSummary(input)
         // when
+        logger.debug("Filtering JRF...")
         val output = JfrExecutionEventFilter().filter(input)
         // then
-        val firstChunk = expectedSummary.first()
-        assertThat(firstChunk.eventsCount[101]).isEqualTo(7731677)
-        assertThat(firstChunk.eventsCount[106]).isEqualTo(1023)
+        logger.debug("Reading actual JRF $output ...")
         val actualSummary = output.toPath().summary()
         assertThat(actualSummary).isEqualTo(expectedSummary)
     }

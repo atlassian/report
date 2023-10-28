@@ -15,6 +15,7 @@
     </Appenders>
     <Loggers>
         <Logger name="com.atlassian.performance.tools" level="debug"/>
+        <Logger name="org.openjdk.jmc.flightrecorder" level="debug"/>
         <Root>
             <AppenderRef ref="Console"/>
         </Root>

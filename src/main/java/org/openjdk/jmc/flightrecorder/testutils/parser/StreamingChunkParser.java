@@ -33,8 +33,8 @@
  */
 package org.openjdk.jmc.flightrecorder.testutils.parser;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +48,7 @@ import java.io.InputStream;
  * This class is not thread-safe and is intended to be used from a single thread only.
  */
 public final class StreamingChunkParser {
-	private static final Logger log = LoggerFactory.getLogger(StreamingChunkParser.class);
+	private static final Logger log = LogManager.getLogger(StreamingChunkParser.class);
 
 	/**
 	 * Parse the given JFR recording stream.<br>
@@ -100,6 +100,7 @@ public final class StreamingChunkParser {
 						listener.onEventType(eventType);
 						if (eventType == 0) {
 							// metadata
+							log.debug("Metadata event payload at position {}", stream.position());
 							MetadataEvent m = new MetadataEvent(stream, eventSize, eventType);
 							if (!listener.onMetadata(m)) {
 								log.debug("'onMetadata' returned false. Skipping events for chunk {}", chunkCounter);
