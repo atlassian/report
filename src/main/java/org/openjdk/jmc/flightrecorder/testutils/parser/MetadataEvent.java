@@ -57,6 +57,10 @@ public final class MetadataEvent {
 	private final LongMapping<String> eventTypeMap;
 	public final long positionBeforeRead;
 	public final long positionAfterRead;
+	/**
+	 * Without bytes for eventType and eventId
+	 */
+	public final long payloadSize;
 
 	MetadataEvent(RecordingStream stream, int eventSize, long eventType) throws IOException {
 		positionBeforeRead = stream.position();
@@ -70,6 +74,7 @@ public final class MetadataEvent {
 		readElements(stream, readStringTable(stream));
 		eventTypeMap = eventTypeNameMapBacking::get;
 		positionAfterRead = stream.position();
+		payloadSize = positionAfterRead - positionBeforeRead;
 	}
 
 	public Map<Long, String> getEventTypeNameMapBacking() {
