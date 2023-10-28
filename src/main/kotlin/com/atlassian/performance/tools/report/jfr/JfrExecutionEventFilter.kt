@@ -60,10 +60,10 @@ class JfrExecutionEventFilter {
         }
 
         override fun onMetadata(metadata: MetadataEvent): Boolean {
-            val payloadSize = metadata.positionAfterRead - metadata.positionBeforeRead
+            val positionBeforeWrite = countingOutput.count
             input.toFile().inputStream().use { inputStream ->
                 inputStream.skip(metadata.positionBeforeRead)
-                val eventPayload = ByteArray(payloadSize.toInt())
+                val eventPayload = ByteArray(metadata.payloadSize.toInt())
                 inputStream.read(eventPayload)
                 output.write(eventPayload)
             }

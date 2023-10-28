@@ -59,6 +59,7 @@ class JfrExecutionEventFilterTest {
                             eventSizes = ArrayList(eventSizes)
                         )
                     )
+                    eventsCount.clear()
                     metadataEvents.clear()
                     eventTypes.clear()
                     eventSizes.clear()
