@@ -1,8 +1,13 @@
 package com.atlassian.performance.tools.report.jfr
 
-import org.openjdk.jmc.flightrecorder.testutils.parser.*
+import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkHeader
+import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkParserListener
+import org.openjdk.jmc.flightrecorder.testutils.parser.MetadataEvent
+import org.openjdk.jmc.flightrecorder.testutils.parser.StreamingChunkParser
+import java.io.DataOutputStream
+import java.io.File
 import java.io.OutputStream
-import java.io.*
+import java.io.RandomAccessFile
 import java.nio.file.Path
 
 
@@ -61,15 +66,11 @@ class JfrExecutionEventFilter {
             return true
         }
 
-        override fun onEvent(typeId: Long, stream: RecordingStream, payloadSize: Long): Boolean {
+        override fun onEvent(typeId: Long, eventPayload: ByteArray): Boolean {
             if (typeId == 101L) {
                 filterMaybe()
             }
-
-            ByteArray(payloadSize.toInt()).let { eventPayload ->
-                stream.read(eventPayload, 0, payloadSize.toInt())
-                output.write(eventPayload)
-            }
+            output.write(eventPayload)
             return true
         }
 
