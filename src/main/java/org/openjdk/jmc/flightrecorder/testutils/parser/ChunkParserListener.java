@@ -88,13 +88,11 @@ public interface ChunkParserListener {
 	 *
 	 * @param typeId
 	 *            event type id
-	 * @param stream
-	 *            {@linkplain RecordingStream} positioned at the event payload start
-	 * @param payloadSize
-	 *            the size of the payload in bytes
+	 * @param eventPayload
+	 *            payload without the event "header" (eventSize and typeId)
 	 * @return {@literal false} if the remainder of the chunk should be skipped
 	 */
-	default boolean onEvent(long typeId, RecordingStream stream, long payloadSize) {
+	default boolean onEvent(long typeId, byte[] eventPayload) {
 		return true;
 	}
 
