@@ -82,7 +82,7 @@ public final class StreamingChunkParser {
 			int chunkCounter = 1;
 			while (stream.available() > 0) {
 				long chunkStartPos = stream.position();
-				ChunkHeader header = new ChunkHeader(stream);
+				ChunkHeader header = ChunkHeader.read(stream);
 				if (!listener.onChunkStart(chunkCounter, header)) {
 					log.debug("'onChunkStart' returned false. Skipping metadata and events for chunk {}", chunkCounter);
 					stream.skip(header.size - (stream.position() - chunkStartPos));

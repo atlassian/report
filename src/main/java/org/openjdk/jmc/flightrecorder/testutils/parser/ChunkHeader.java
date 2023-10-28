@@ -33,6 +33,7 @@
  */
 package org.openjdk.jmc.flightrecorder.testutils.parser;
 
+import java.io.DataOutput;
 import java.io.IOException;
 
 /**
@@ -51,7 +52,7 @@ public final class ChunkHeader {
     public final long frequency;
     public final boolean compressed;
 
-    ChunkHeader(RecordingStream recording) throws IOException {
+    public static ChunkHeader read(RecordingStream recording) throws IOException {
         byte[] buffer = new byte[MAGIC.length];
         recording.read(buffer, 0, MAGIC.length);
         for (int i = 0; i < MAGIC.length; i++) {
@@ -59,16 +60,32 @@ public final class ChunkHeader {
                 throw new IOException("Invalid JFR Magic Number: " + bytesToString(buffer, 0, MAGIC.length));
             }
         }
-        major = recording.readShort();
-        minor = recording.readShort();
-        size = recording.readLong();
-        cpOffset = recording.readLong();
-        metaOffset = recording.readLong();
-        startNanos = recording.readLong();
-        duration = recording.readLong();
-        startTicks = recording.readLong();
-        frequency = recording.readLong();
-        compressed = recording.readInt() != 0;
+        return new ChunkHeader.Builder()
+                .major(recording.readShort())
+                .minor(recording.readShort())
+                .size(recording.readLong())
+                .cpOffset(recording.readLong())
+                .metaOffset(recording.readLong())
+                .startNanos(recording.readLong())
+                .duration(recording.readLong())
+                .startTicks(recording.readLong())
+                .frequency(recording.readLong())
+                .compressed(recording.readInt() != 0)
+                .build();
+    }
+
+    public void write(DataOutput output) throws IOException {
+        output.write(MAGIC);
+        output.writeShort(major);
+        output.writeShort(minor);
+        output.writeLong(size);
+        output.writeLong(cpOffset);
+        output.writeLong(metaOffset);
+        output.writeLong(startNanos);
+        output.writeLong(duration);
+        output.writeLong(startTicks);
+        output.writeLong(frequency);
+        output.writeInt(compressed ? 1 : 0);
     }
 
     ChunkHeader(Builder builder) {
