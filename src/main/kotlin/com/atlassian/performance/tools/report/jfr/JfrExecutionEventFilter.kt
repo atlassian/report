@@ -36,7 +36,7 @@ class JfrExecutionEventFilter {
         override fun onChunkStart(chunkIndex: Int, header: ChunkHeader): Boolean {
             lastHeader = header
             absoluteChunkStartPos = countingOutput.count
-            writeChunkHeader(header, output)
+            header.write(output)
             chunkHeaderSize = countingOutput.count - absoluteChunkStartPos
             return true
         }
@@ -80,35 +80,12 @@ class JfrExecutionEventFilter {
             return true
         }
 
-        private fun writeChunkHeader(header: ChunkHeader, output: DataOutput) {
-            with(header) {
-                output.write(MAGIC)
-                output.writeShort(major.toInt())
-                output.writeShort(minor.toInt())
-                output.writeLong(size)
-                output.writeLong(cpOffset)
-                output.writeLong(metaOffset)
-                output.writeLong(startNanos)
-                output.writeLong(duration)
-                output.writeLong(startTicks)
-                output.writeLong(frequency)
-                output.writeInt(if (compressed) 1 else 0)
-                //   130357145
-                // - 167235804
-                //    36878656
-            }
-
-        }
-
         private fun updateChunkSize() {
             val chunkSize = countingOutput.count - chunkHeaderSize - absoluteChunkStartPos
             RandomAccessFile(outputFile, "rw").use {
                 it.seek(absoluteChunkStartPos)
-                writeChunkHeader(
-                    lastHeader!!.toBuilder()
-                        .size(chunkSize)
-                        .build(), it
-                )
+                lastHeader!!.toBuilder().size(chunkSize).build()
+                    .write(it)
             }
         }
 
