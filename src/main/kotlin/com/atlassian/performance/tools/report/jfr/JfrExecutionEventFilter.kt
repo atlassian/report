@@ -1,14 +1,14 @@
 package com.atlassian.performance.tools.report.jfr
 
 import org.openjdk.jmc.flightrecorder.testutils.parser.*
-import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkHeader.MAGIC
+import java.io.OutputStream
 import java.io.*
 import java.nio.file.Path
 
 
 class JfrExecutionEventFilter {
 
-    fun go(recording: Path): File {
+    fun filter(recording: Path): File {
         recording.toFile().inputStream().buffered().use { inputStream ->
             val filteredRecording = recording.resolveSibling("filtered-" + recording.fileName.toString()).toFile()
             filteredRecording.outputStream().buffered().use { outputStream ->
@@ -31,13 +31,11 @@ class JfrExecutionEventFilter {
 
         private var lastHeader: ChunkHeader? = null
         private var absoluteChunkStartPos = 0L
-        private var chunkHeaderSize = 0L
 
         override fun onChunkStart(chunkIndex: Int, header: ChunkHeader): Boolean {
             lastHeader = header
             absoluteChunkStartPos = countingOutput.count
             header.write(output)
-            chunkHeaderSize = countingOutput.count - absoluteChunkStartPos
             return true
         }
 
@@ -81,7 +79,7 @@ class JfrExecutionEventFilter {
         }
 
         private fun updateChunkSize() {
-            val chunkSize = countingOutput.count - chunkHeaderSize - absoluteChunkStartPos
+            val chunkSize = countingOutput.count - ChunkHeader.SIZE - absoluteChunkStartPos
             RandomAccessFile(outputFile, "rw").use {
                 it.seek(absoluteChunkStartPos)
                 lastHeader!!.toBuilder().size(chunkSize).build()

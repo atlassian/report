@@ -52,6 +52,8 @@ public final class ChunkHeader {
     public final long frequency;
     public final boolean compressed;
 
+    public static int SIZE = MAGIC.length + 2 * Short.BYTES + 7 * Long.BYTES + Integer.BYTES;
+
     public static ChunkHeader read(RecordingStream recording) throws IOException {
         byte[] buffer = new byte[MAGIC.length];
         recording.read(buffer, 0, MAGIC.length);
