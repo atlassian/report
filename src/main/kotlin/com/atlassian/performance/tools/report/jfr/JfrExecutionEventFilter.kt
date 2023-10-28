@@ -52,7 +52,6 @@ class JfrExecutionEventFilter {
 
         override fun onEventSize(eventSize: Long) {
             VarInt.write(eventSize, output)
-            output.writeLong(eventSize)
         }
 
         override fun onEventType(eventType: Long) {
