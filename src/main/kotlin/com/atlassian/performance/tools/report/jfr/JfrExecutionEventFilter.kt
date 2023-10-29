@@ -3,6 +3,7 @@ package com.atlassian.performance.tools.report.jfr
 import org.apache.logging.log4j.LogManager
 import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkHeader
 import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkParserListener
+import org.openjdk.jmc.flightrecorder.testutils.parser.EventHeader
 import org.openjdk.jmc.flightrecorder.testutils.parser.MetadataEvent
 import org.openjdk.jmc.flightrecorder.testutils.parser.StreamingChunkParser
 import java.io.DataOutputStream
@@ -50,25 +51,14 @@ class JfrExecutionEventFilter {
 
         private val checkpointEventType = 1L
 
-        override fun onMetadata(eventSize: Long, eventType: Long, metadata: MetadataEvent): Boolean {
-            VarInt.write(eventSize, output)
-            VarInt.write(eventType, output)
-            input.toFile().inputStream().use { inputStream ->
-                inputStream.skip(metadata.positionBeforeRead)
-                val eventPayload = ByteArray(metadata.payloadSize.toInt())
-                inputStream.read(eventPayload)
-                output.write(eventPayload)
-            }
-
+        override fun onMetadata(eventHeader: EventHeader, metadataPayload: ByteArray, metadata: MetadataEvent): Boolean {
+            output.write(eventHeader.bytes)
+            output.write(metadataPayload)
             return true
         }
 
-        override fun onEvent(eventSize: Long, eventTypeId: Long, eventPayload: ByteArray): Boolean {
-            if (eventTypeId == 101L) {
-                filterMaybe()
-            }
-            VarInt.write(eventSize, output)
-            VarInt.write(eventTypeId, output)
+        override fun onEvent(eventHeader: EventHeader, eventPayload: ByteArray): Boolean {
+            output.write(eventHeader.bytes)
             output.write(eventPayload)
             return true
         }

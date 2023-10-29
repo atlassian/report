@@ -4,10 +4,7 @@ import com.atlassian.performance.tools.report.api.result.CompressedResult
 import org.apache.logging.log4j.LogManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkHeader
-import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkParserListener
-import org.openjdk.jmc.flightrecorder.testutils.parser.MetadataEvent
-import org.openjdk.jmc.flightrecorder.testutils.parser.StreamingChunkParser
+import org.openjdk.jmc.flightrecorder.testutils.parser.*
 import java.io.File
 import java.io.FileInputStream
 import java.nio.file.Path
@@ -27,7 +24,6 @@ class JfrExecutionEventFilterTest {
             return "Chunk(eventsCount=$eventsCount, header=$header, metadataEvent=$metadataEvent)"
         }
     }
-
 
 
     private fun Path.summary(): List<Chunk> {
@@ -66,20 +62,16 @@ class JfrExecutionEventFilterTest {
                     return true
                 }
 
-                override fun onMetadata(eventSize: Long, eventTypeId: Long, metadata: MetadataEvent): Boolean {
+                override fun onMetadata(eventHeader: EventHeader, metadataPayload: ByteArray, metadata: MetadataEvent): Boolean {
                     logger.debug("$metadata")
                     metadataEvents.add(metadata)
                     return true
                 }
 
-                override fun onEvent(
-                    eventSize: Long,
-                    eventTypeId: Long,
-                    eventPayload: ByteArray
-                ): Boolean {
-                    eventsCount.computeIfAbsent(eventTypeId) { 0 }
-                    eventsCount[eventTypeId] = eventsCount[eventTypeId]!! + 1
-                    eventTypes.add(eventTypeId)
+                override fun onEvent(eventHeader: EventHeader, eventPayload: ByteArray): Boolean {
+                    eventsCount.computeIfAbsent(eventHeader.eventTypeId) { 0 }
+                    eventsCount[eventHeader.eventTypeId] = eventsCount[eventHeader.eventTypeId]!! + 1
+                    eventTypes.add(eventHeader.eventTypeId)
                     eventSizes.add(eventPayload.size.toLong())
                     return true
                 }
@@ -89,7 +81,7 @@ class JfrExecutionEventFilterTest {
         return result
     }
 
-    private fun expectedSummary(input: Path) :List<Chunk> {
+    private fun expectedSummary(input: Path): List<Chunk> {
         val expectedSummary = input.toAbsolutePath().summary()
         val firstChunk = expectedSummary.first()
         assertThat(firstChunk.eventsCount[101]).isEqualTo(7731677)

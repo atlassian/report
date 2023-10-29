@@ -33,14 +33,14 @@
  */
 package org.openjdk.jmc.flightrecorder.testutils.parser;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public final class RecordingStream implements AutoCloseable {
     private final DataInputStream delegate;
     private long position = 0;
+    private final ByteArrayOutputStream toBytesLog = new ByteArrayOutputStream();
+    private DataOutputStream toBytesStream = new DataOutputStream(toBytesLog);
+    private boolean isRecordingWrites = false;
 
     RecordingStream(InputStream is) {
         BufferedInputStream bis = (is instanceof BufferedInputStream) ? (BufferedInputStream) is
@@ -52,11 +52,25 @@ public final class RecordingStream implements AutoCloseable {
         return position;
     }
 
+    void startRecordingWrites() {
+        isRecordingWrites = true;
+    }
+
+    public byte[] stopRecordingWrites() {
+        isRecordingWrites = false;
+        byte[] result = toBytesLog.toByteArray();
+        toBytesLog.reset();
+        return result;
+    }
+
     public void read(byte[] buffer, int offset, int length) throws IOException {
         while (length > 0) {
             int read = delegate.read(buffer, offset, length);
             if (read == -1) {
                 throw new IOException("Unexpected EOF");
+            }
+            if (isRecordingWrites) {
+                toBytesStream.write(buffer, offset, read);
             }
             offset += read;
             length -= read;
@@ -66,22 +80,38 @@ public final class RecordingStream implements AutoCloseable {
 
     public byte read() throws IOException {
         position += 1;
-        return delegate.readByte();
+        byte result = delegate.readByte();
+        if (isRecordingWrites) {
+            toBytesStream.writeByte(result);
+        }
+        return result;
     }
 
     short readShort() throws IOException {
         position += 2;
-        return delegate.readShort();
+        short result = delegate.readShort();
+        if (isRecordingWrites) {
+            toBytesStream.writeShort(result);
+        }
+        return result;
     }
 
     public int readInt() throws IOException {
         position += 4;
-        return delegate.readInt();
+        int result = delegate.readInt();
+        if (isRecordingWrites) {
+            toBytesStream.writeInt(delegate.readInt());
+        }
+        return result;
     }
 
     long readLong() throws IOException {
         position += 8;
-        return delegate.readLong();
+        long result = delegate.readLong();
+        if (isRecordingWrites) {
+            toBytesStream.writeLong(result);
+        }
+        return result;
     }
 
     public long readVarint() throws IOException {
@@ -90,6 +120,9 @@ public final class RecordingStream implements AutoCloseable {
         int i = 0;
         do {
             readValue = delegate.read();
+            if (isRecordingWrites) {
+                toBytesStream.writeByte(readValue);
+            }
             value |= (long) (readValue & 0x7F) << (7 * i);
             i++;
         } while ((readValue & 0x80) != 0
