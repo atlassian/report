@@ -7,9 +7,12 @@ import java.io.File
 import java.io.OutputStream
 import java.io.RandomAccessFile
 import java.nio.file.Path
+import java.util.function.Predicate
 
 
-class JfrExecutionEventFilter {
+class JfrExecutionEventFilter(
+    private val eventFilter: Predicate<EventHeader> = Predicate { true }
+) {
     private val logger = LogManager.getLogger(this::class.java)
 
     fun filter(recording: Path): File {
@@ -17,7 +20,7 @@ class JfrExecutionEventFilter {
             val filteredRecording = recording.resolveSibling("filtered-" + recording.fileName.toString()).toFile()
             logger.debug("Writing filtered recording to $filteredRecording ...")
             filteredRecording.outputStream().buffered().use { outputStream ->
-                val writer = FilteringJfrWriter(filteredRecording, outputStream)
+                val writer = FilteringJfrWriter(filteredRecording, outputStream, eventFilter)
                 val parser = StreamingChunkParser()
                 parser.parse(inputStream, writer)
             }
@@ -26,8 +29,9 @@ class JfrExecutionEventFilter {
     }
 
     class FilteringJfrWriter(
-        val outputFile: File,
-        output: OutputStream
+        private val outputFile: File,
+        output: OutputStream,
+        private val eventFilter: Predicate<EventHeader>
     ) : ChunkParserListener {
         private val logger = LogManager.getLogger(this::class.java)
 
@@ -57,8 +61,10 @@ class JfrExecutionEventFilter {
         }
 
         override fun onEvent(eventHeader: EventHeader, eventPayload: ByteArray): Boolean {
-            output.write(eventHeader.bytes)
-            output.write(eventPayload)
+            if (eventFilter.test(eventHeader)) {
+                output.write(eventHeader.bytes)
+                output.write(eventPayload)
+            }
             return true
         }
 
@@ -79,8 +85,5 @@ class JfrExecutionEventFilter {
             }
         }
 
-        private fun filterMaybe() {
-
-        }
     }
 }
