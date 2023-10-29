@@ -90,13 +90,6 @@ class JfrExecutionEventFilterTest {
     }
 
     @Test
-    fun shouldPrintDetails() {
-        val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
-        val expectedSummary = input.toAbsolutePath().summary()
-        logger.debug(expectedSummary)
-    }
-
-    @Test
     fun shouldRewriteJfr() {
         // given
         val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
