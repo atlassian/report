@@ -86,6 +86,7 @@ class JfrExecutionEventFilter {
 
         private fun updateChunk() {
             val chunkSize = countingOutput.count - ChunkHeader.SIZE - absoluteChunkStartPos
+            output.flush() // save the output, otherwise below update will be lost
             RandomAccessFile(outputFile, "rw").use {
                 it.seek(absoluteChunkStartPos)
                 lastHeader!!.toBuilder().size(chunkSize).build().apply {
