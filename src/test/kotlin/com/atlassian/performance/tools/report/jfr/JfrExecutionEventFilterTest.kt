@@ -66,19 +66,20 @@ class JfrExecutionEventFilterTest {
                     return true
                 }
 
-                override fun onMetadata(metadata: MetadataEvent): Boolean {
+                override fun onMetadata(eventSize: Long, eventTypeId: Long, metadata: MetadataEvent): Boolean {
                     logger.debug("$metadata")
                     metadataEvents.add(metadata)
                     return true
                 }
 
                 override fun onEvent(
-                    typeId: Long,
+                    eventSize: Long,
+                    eventTypeId: Long,
                     eventPayload: ByteArray
                 ): Boolean {
-                    eventsCount.computeIfAbsent(typeId) { 0 }
-                    eventsCount[typeId] = eventsCount[typeId]!! + 1
-                    eventTypes.add(typeId)
+                    eventsCount.computeIfAbsent(eventTypeId) { 0 }
+                    eventsCount[eventTypeId] = eventsCount[eventTypeId]!! + 1
+                    eventTypes.add(eventTypeId)
                     eventSizes.add(eventPayload.size.toLong())
                     return true
                 }
