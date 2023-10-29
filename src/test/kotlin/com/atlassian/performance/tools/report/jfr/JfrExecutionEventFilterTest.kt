@@ -8,6 +8,7 @@ import org.openjdk.jmc.flightrecorder.testutils.parser.*
 import java.io.File
 import java.io.FileInputStream
 import java.nio.file.Path
+import java.util.function.Predicate
 
 class JfrExecutionEventFilterTest {
     private val logger = LogManager.getLogger(this::class.java)
@@ -62,7 +63,11 @@ class JfrExecutionEventFilterTest {
                     return true
                 }
 
-                override fun onMetadata(eventHeader: EventHeader, metadataPayload: ByteArray, metadata: MetadataEvent): Boolean {
+                override fun onMetadata(
+                    eventHeader: EventHeader,
+                    metadataPayload: ByteArray,
+                    metadata: MetadataEvent
+                ): Boolean {
                     logger.debug("$metadata")
                     metadataEvents.add(metadata)
                     return true
@@ -96,8 +101,23 @@ class JfrExecutionEventFilterTest {
         logger.debug("Reading expected JRF $input ...")
         val expectedSummary = expectedSummary(input)
         // when
-        logger.debug("Filtering JRF...")
+        logger.debug("Rewriting JRF without changes ...")
         val output = JfrExecutionEventFilter().filter(input)
+        // then
+        logger.debug("Reading actual JRF $output ...")
+        val actualSummary = output.toPath().summary()
+        assertThat(actualSummary).isEqualTo(expectedSummary)
+    }
+
+    @Test
+    fun shouldFilterJfr() {
+        // given
+        val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
+        logger.debug("Reading expected JRF $input ...")
+        val expectedSummary = expectedSummary(input)
+        // when
+        logger.debug("Filtering JRF ...")
+        val output = JfrExecutionEventFilter(eventFilter = Predicate { it.eventTypeId == 101L }).filter(input)
         // then
         logger.debug("Reading actual JRF $output ...")
         val actualSummary = output.toPath().summary()
