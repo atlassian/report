@@ -50,31 +50,25 @@ class JfrExecutionEventFilter {
 
         private val checkpointEventType = 1L
 
-        override fun onEventSize(eventSize: Long) {
+        override fun onMetadata(eventSize: Long, eventType: Long, metadata: MetadataEvent): Boolean {
             VarInt.write(eventSize, output)
-        }
-
-        override fun onEventType(eventType: Long) {
             VarInt.write(eventType, output)
-        }
-
-        override fun onMetadata(metadata: MetadataEvent): Boolean {
-            val positionBeforeWrite = countingOutput.count
             input.toFile().inputStream().use { inputStream ->
                 inputStream.skip(metadata.positionBeforeRead)
                 val eventPayload = ByteArray(metadata.payloadSize.toInt())
                 inputStream.read(eventPayload)
                 output.write(eventPayload)
             }
-            val metadataBytesCount = countingOutput.count - positionBeforeWrite
 
             return true
         }
 
-        override fun onEvent(typeId: Long, eventPayload: ByteArray): Boolean {
-            if (typeId == 101L) {
+        override fun onEvent(eventSize: Long, eventTypeId: Long, eventPayload: ByteArray): Boolean {
+            if (eventTypeId == 101L) {
                 filterMaybe()
             }
+            VarInt.write(eventSize, output)
+            VarInt.write(eventTypeId, output)
             output.write(eventPayload)
             return true
         }

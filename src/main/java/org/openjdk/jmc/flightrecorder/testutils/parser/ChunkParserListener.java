@@ -63,36 +63,27 @@ public interface ChunkParserListener {
 	 *
 	 * @param metadata
 	 *            the chunk metadata event
+	 * @param eventSize
+	 *            the size of the event in bytes, including the event "header" (eventSize and eventTypeId)
+	 * @param eventTypeId the same as {@code onEvent(typeId)}
 	 * @return {@literal false} if the remainder of the chunk should be skipped
 	 */
-	default boolean onMetadata(MetadataEvent metadata) {
+	default boolean onMetadata(long eventSize, long eventTypeId, MetadataEvent metadata) {
 		return true;
-	}
-
-	/**
-	 * @param eventSize
-	 *            the size of the event in bytes, including the event "header" (eventSize itself and typeId)
-	 */
-	default void onEventSize(long eventSize) {
-	}
-
-	/**
-	 * @param eventType the same as {@code onEvent(typeId)}
-	 */
-	default void onEventType(long eventType) {
-
 	}
 
 	/**
 	 * Called for each parsed event
 	 *
-	 * @param typeId
+	 * @param eventSize
+	 *            the size of the event in bytes, including the event "header" (eventSize and eventTypeId)
+	 * @param eventTypeId
 	 *            event type id
 	 * @param eventPayload
-	 *            payload without the event "header" (eventSize and typeId)
+	 *            payload without the event "header" (eventSize and eventTypeId)
 	 * @return {@literal false} if the remainder of the chunk should be skipped
 	 */
-	default boolean onEvent(long typeId, byte[] eventPayload) {
+	default boolean onEvent(long eventSize, long eventTypeId, byte[] eventPayload) {
 		return true;
 	}
 

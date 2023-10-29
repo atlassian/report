@@ -94,15 +94,13 @@ public final class StreamingChunkParser {
 					long eventStartPos = stream.position();
 					long longEventSize = stream.readVarint();
 					int eventSize = (int) longEventSize;
-					listener.onEventSize(eventSize);
 					if (eventSize > 0) {
 						long eventType = stream.readVarint();
-						listener.onEventType(eventType);
 						if (eventType == 0) {
 							// metadata
 							log.debug("Metadata event payload at position {}", stream.position());
 							MetadataEvent m = new MetadataEvent(stream, eventSize, eventType);
-							if (!listener.onMetadata(m)) {
+							if (!listener.onMetadata(eventSize, eventType, m)) {
 								log.debug("'onMetadata' returned false. Skipping events for chunk {}", chunkCounter);
 								stream.skip(header.size - (stream.position() - chunkStartPos));
 								listener.onChunkEnd(chunkCounter, true);
@@ -112,7 +110,7 @@ public final class StreamingChunkParser {
 							int payloadSize = (int)(eventSize - (currentPos - eventStartPos));
 							byte[] eventPayload = new byte[payloadSize];
 							stream.read(eventPayload, 0, payloadSize);
-							if (!listener.onEvent(eventType, eventPayload)) {
+							if (!listener.onEvent(eventSize, eventType, eventPayload)) {
 								log.debug("'onEvent({}, stream)' returned false. Skipping the rest of the chunk {}",
 										eventType, chunkCounter);
 								// skip the rest of the chunk
