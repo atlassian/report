@@ -46,133 +46,181 @@ import java.util.Objects;
  * It contains the chunk specific type specifications
  */
 public final class MetadataEvent {
-	private static final byte[] COMMON_BUFFER = new byte[4096]; // reusable byte buffer
+    private static final byte[] COMMON_BUFFER = new byte[4096]; // reusable byte buffer
 
-	public final int size;
-	public final long startTime;
-	public final long duration;
-	public final long metadataId;
+    public final int size;
+    public final long startTime;
+    public final long duration;
+    public final long metadataId;
+    /**
+     * Based on [jdk.jfr.internal.MetadataReader]
+     */
+    private int gmtOffset = 1;
 
-	private final Map<Long, String> eventTypeNameMapBacking = new HashMap<>(256);
-	private final LongMapping<String> eventTypeMap;
-	public final long positionBeforeRead;
-	public final long positionAfterRead;
-	/**
-	 * Without bytes for eventType and eventId
-	 */
-	public final long payloadSize;
+    private final Map<Long, String> eventTypeNameMapBacking = new HashMap<>(256);
+    private final LongMapping<String> eventTypeMap;
 
-	MetadataEvent(RecordingStream stream, int eventSize, long eventType) throws IOException {
-		positionBeforeRead = stream.position();
-		size = eventSize;
-		if (eventType != 0) {
-			throw new IOException("Unexpected event type: " + eventType + " (should be 0). Stream at position: " + stream.position());
-		}
-		startTime = stream.readVarint();
-		duration = stream.readVarint();
-		metadataId = stream.readVarint();
-		readElements(stream, readStringTable(stream));
-		eventTypeMap = eventTypeNameMapBacking::get;
-		positionAfterRead = stream.position();
-		payloadSize = positionAfterRead - positionBeforeRead;
-	}
+    MetadataEvent(RecordingStream stream, int eventSize, long eventType) throws IOException {
+        size = eventSize;
+        if (eventType != 0) {
+            throw new IOException("Unexpected event type: " + eventType + " (should be 0). Stream at position: " + stream.position());
+        }
+        startTime = stream.readVarint();
+        duration = stream.readVarint();
+        metadataId = stream.readVarint();
+        readElements(stream, readStringTable(stream));
+        eventTypeMap = eventTypeNameMapBacking::get;
+    }
 
-	public Map<Long, String> getEventTypeNameMapBacking() {
-		return Collections.unmodifiableMap(eventTypeNameMapBacking);
-	}
+    private MetadataEvent(int size, long startTime, long duration, long metadataId, Map<Long, String> eventTypeNameMapBacking) {
+        this.size = size;
+        this.startTime = startTime;
+        this.duration = duration;
+        this.metadataId = metadataId;
+        this.eventTypeNameMapBacking.putAll(eventTypeNameMapBacking);
+        this.eventTypeMap = eventTypeNameMapBacking::get;
+    }
 
-	/**
-	 * Lazily compute and return the mappings of event type ids to event type names
-	 *
-	 * @return mappings of event type ids to event type names
-	 */
-	public LongMapping<String> getEventTypeNameMap() {
-		return eventTypeMap;
-	}
+    public int getGmtOffset() {
+        return gmtOffset;
+    }
 
-	private String[] readStringTable(RecordingStream stream) throws IOException {
-		int stringCnt = (int) stream.readVarint();
-		String[] stringConstants = new String[stringCnt];
-		for (int stringIdx = 0; stringIdx < stringCnt; stringIdx++) {
-			stringConstants[stringIdx] = readUTF8(stream);
-		}
-		return stringConstants;
-	}
+    public static class Builder {
+        private int size;
+        private long startTime;
+        private long duration;
+        private long metadataId;
+        private Map<Long, String> eventTypeNameMapBacking = new HashMap<>(256);
 
-	private void readElements(RecordingStream stream, String[] stringConstants) throws IOException {
-		// get the element name
-		int stringPtr = (int) stream.readVarint();
-		boolean isClassElement = "class".equals(stringConstants[stringPtr]);
+        public Builder size(int size) {
+            this.size = size;
+            return this;
+        }
 
-		// process the attributes
-		int attrCount = (int) stream.readVarint();
-		String superType = null;
-		String name = null;
-		String id = null;
-		for (int i = 0; i < attrCount; i++) {
-			int keyPtr = (int) stream.readVarint();
-			int valPtr = (int) stream.readVarint();
-			// ignore anything but 'class' elements
-			if (isClassElement) {
-				if ("superType".equals(stringConstants[keyPtr])) {
-					superType = stringConstants[valPtr];
-				} else if ("name".equals(stringConstants[keyPtr])) {
-					name = stringConstants[valPtr];
-				} else if ("id".equals(stringConstants[keyPtr])) {
-					id = stringConstants[valPtr];
-				}
-			}
-		}
-		// only event types are currently collected
-		if (name != null && id != null && "jdk.jfr.Event".equals(superType)) {
-			eventTypeNameMapBacking.put(Long.parseLong(id), name);
-		}
-		// now inspect all the enclosed elements
-		int elemCount = (int) stream.readVarint();
-		for (int i = 0; i < elemCount; i++) {
-			readElements(stream, stringConstants);
-		}
-	}
+        public Builder startTime(long startTime) {
+            this.startTime = startTime;
+            return this;
+        }
 
-	private String readUTF8(RecordingStream stream) throws IOException {
-		byte id = stream.read();
-		if (id == 0) {
-			return null;
-		} else if (id == 1) {
-			return "";
-		} else if (id == 3) {
-			int size = (int) stream.readVarint();
-			byte[] content = size <= COMMON_BUFFER.length ? COMMON_BUFFER : new byte[size];
-			stream.read(content, 0, size);
-			return new String(content, 0, size, StandardCharsets.UTF_8);
-		} else if (id == 4) {
-			int size = (int) stream.readVarint();
-			char[] chars = new char[size];
-			for (int i = 0; i < size; i++) {
-				chars[i] = (char) stream.readVarint();
-			}
-			return new String(chars);
-		} else {
-			throw new IOException("Unexpected string constant id: " + id + ". Stream at position " + stream.position() + ", " + this);
-		}
-	}
+        public Builder duration(long duration) {
+            this.duration = duration;
+            return this;
+        }
 
-	@Override
-	public String toString() {
-		return "Metadata{" + "size=" + size + ", startTime=" + startTime + ", duration=" + duration + ", metadataId="
-				+ metadataId + '}' + eventTypeNameMapBacking;
-	}
+        public Builder metadataId(long metadataId) {
+            this.metadataId = metadataId;
+            return this;
+        }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		MetadataEvent that = (MetadataEvent) o;
-		return size == that.size && startTime == that.startTime && duration == that.duration && metadataId == that.metadataId;
-	}
+        public Builder eventTypeNameMapBacking(Map<Long, String> eventTypeNameMapBacking) {
+            this.eventTypeNameMapBacking.putAll(eventTypeNameMapBacking);
+            return this;
+        }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(size, startTime, duration, metadataId);
-	}
+        public MetadataEvent build() {
+            return new MetadataEvent(size, startTime, duration, metadataId, eventTypeNameMapBacking);
+        }
+    }
+
+    public Map<Long, String> getEventTypeNameMapBacking() {
+        return Collections.unmodifiableMap(eventTypeNameMapBacking);
+    }
+
+    /**
+     * Lazily compute and return the mappings of event type ids to event type names
+     *
+     * @return mappings of event type ids to event type names
+     */
+    public LongMapping<String> getEventTypeNameMap() {
+        return eventTypeMap;
+    }
+
+    private String[] readStringTable(RecordingStream stream) throws IOException {
+        int stringCnt = (int) stream.readVarint();
+        String[] stringConstants = new String[stringCnt];
+        for (int stringIdx = 0; stringIdx < stringCnt; stringIdx++) {
+            stringConstants[stringIdx] = readUTF8(stream);
+        }
+        return stringConstants;
+    }
+
+    private void readElements(RecordingStream stream, String[] stringConstants) throws IOException {
+        // get the element name
+        int stringPtr = (int) stream.readVarint();
+        boolean isClassElement = "class".equals(stringConstants[stringPtr]);
+
+        // process the attributes
+        int attrCount = (int) stream.readVarint();
+        String superType = null;
+        String name = null;
+        String id = null;
+        for (int i = 0; i < attrCount; i++) {
+            int keyPtr = (int) stream.readVarint();
+            int valPtr = (int) stream.readVarint();
+            // ignore anything but 'class' elements
+            if ("gmtOffset".equals(stringConstants[keyPtr])) {
+                gmtOffset = Integer.parseInt(stringConstants[valPtr]);
+            }
+            if (isClassElement) {
+                if ("superType".equals(stringConstants[keyPtr])) {
+                    superType = stringConstants[valPtr];
+                } else if ("name".equals(stringConstants[keyPtr])) {
+                    name = stringConstants[valPtr];
+                } else if ("id".equals(stringConstants[keyPtr])) {
+                    id = stringConstants[valPtr];
+                }
+            }
+        }
+        // only event types are currently collected
+        if (name != null && id != null && "jdk.jfr.Event".equals(superType)) {
+            eventTypeNameMapBacking.put(Long.parseLong(id), name);
+        }
+        // now inspect all the enclosed elements
+        int elemCount = (int) stream.readVarint();
+        for (int i = 0; i < elemCount; i++) {
+            readElements(stream, stringConstants);
+        }
+    }
+
+    private String readUTF8(RecordingStream stream) throws IOException {
+        byte id = stream.read();
+        if (id == 0) {
+            return null;
+        } else if (id == 1) {
+            return "";
+        } else if (id == 3) {
+            int size = (int) stream.readVarint();
+            byte[] content = size <= COMMON_BUFFER.length ? COMMON_BUFFER : new byte[size];
+            stream.read(content, 0, size);
+            return new String(content, 0, size, StandardCharsets.UTF_8);
+        } else if (id == 4) {
+            int size = (int) stream.readVarint();
+            char[] chars = new char[size];
+            for (int i = 0; i < size; i++) {
+                chars[i] = (char) stream.readVarint();
+            }
+            return new String(chars);
+        } else {
+            throw new IOException("Unexpected string constant id: " + id + ". Stream at position " + stream.position() + ", " + this);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Metadata{" + "size=" + size + ", startTime=" + startTime + ", duration=" + duration + ", metadataId="
+                + metadataId + '}' + eventTypeNameMapBacking;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MetadataEvent that = (MetadataEvent) o;
+        return size == that.size && startTime == that.startTime && duration == that.duration && metadataId == that.metadataId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(size, startTime, duration, metadataId);
+    }
 }

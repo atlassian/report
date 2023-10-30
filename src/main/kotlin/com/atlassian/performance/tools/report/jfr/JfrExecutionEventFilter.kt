@@ -11,7 +11,7 @@ import java.util.function.Predicate
 
 
 class JfrExecutionEventFilter(
-    private val eventFilter: Predicate<EventHeader> = Predicate { true }
+    private val eventFilter: Predicate<Event> = Predicate { true }
 ) {
     private val logger = LogManager.getLogger(this::class.java)
 
@@ -31,7 +31,8 @@ class JfrExecutionEventFilter(
     class FilteringJfrWriter(
         private val outputFile: File,
         output: OutputStream,
-        private val eventFilter: Predicate<EventHeader>
+        private val eventFilter: Predicate<Event>,
+        private val eventPayloadParser: EventPayloadParser = EventPayloadParser()
     ) : ChunkParserListener {
         private val logger = LogManager.getLogger(this::class.java)
 
@@ -44,10 +45,13 @@ class JfrExecutionEventFilter(
         private var lastMetadataEventOffset: Long = 0L
         private var lastCheckpointEventOffset: Long = 0L
         private var absoluteChunkStartPos = 0L
+        private var timeConverter: TimeConverter? = null
+        var lastAcceptedEvent: Event? = null
 
         override fun onChunkStart(chunkIndex: Int, header: ChunkHeader): Boolean {
             lastHeader = header
             absoluteChunkStartPos = countingOutput.count
+            timeConverter = TimeConverter.of(header)
             header.write(output)
             return true
         }
@@ -70,10 +74,14 @@ class JfrExecutionEventFilter(
             if (eventHeader.eventTypeId == checkpointEventType) {
                 lastCheckpointEventOffset = countingOutput.countSinceLastReset
             }
+            val event = eventPayloadParser.parse(lastHeader!!, eventHeader, eventPayload)
 
-            if (eventHeader.eventTypeId == checkpointEventType || eventFilter.test(eventHeader)) {
+            if (eventHeader.eventTypeId == checkpointEventType || eventFilter.test(event)) {
                 output.write(eventHeader.bytes)
                 output.write(eventPayload)
+                lastAcceptedEvent = event
+            } else {
+                true
             }
             return true
         }
