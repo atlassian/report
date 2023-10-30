@@ -44,11 +44,14 @@ public final class ChunkHeader {
     public final short major;
     public final short minor;
     public final long size;
-    public final long cpOffset;
-    public final long metaOffset;
+    public final long constantPoolOffset;
+    public final long metadataOffset;
     public final long startNanos;
-    public final long duration;
+    public final long durationNanos;
     public final long startTicks;
+    /**
+     * Ticks per second
+     */
     public final long frequency;
     public final boolean compressed;
 
@@ -81,10 +84,10 @@ public final class ChunkHeader {
         output.writeShort(major);
         output.writeShort(minor);
         output.writeLong(size);
-        output.writeLong(cpOffset);
-        output.writeLong(metaOffset);
+        output.writeLong(constantPoolOffset);
+        output.writeLong(metadataOffset);
         output.writeLong(startNanos);
-        output.writeLong(duration);
+        output.writeLong(durationNanos);
         output.writeLong(startTicks);
         output.writeLong(frequency);
         output.writeInt(compressed ? 1 : 0);
@@ -94,10 +97,10 @@ public final class ChunkHeader {
         this.major = builder.major;
         this.minor = builder.minor;
         this.size = builder.size;
-        this.cpOffset = builder.cpOffset;
-        this.metaOffset = builder.metaOffset;
+        this.constantPoolOffset = builder.cpOffset;
+        this.metadataOffset = builder.metaOffset;
         this.startNanos = builder.startNanos;
-        this.duration = builder.duration;
+        this.durationNanos = builder.duration;
         this.startTicks = builder.startTicks;
         this.frequency = builder.frequency;
         this.compressed = builder.compressed;
@@ -105,8 +108,8 @@ public final class ChunkHeader {
 
     @Override
     public String toString() {
-        return "ChunkHeader{" + "major=" + major + ", minor=" + minor + ", size=" + size + ", cpOffset=" + cpOffset
-                + ", metaOffset=" + metaOffset + ", startNanos=" + startNanos + ", duration=" + duration
+        return "ChunkHeader{" + "major=" + major + ", minor=" + minor + ", size=" + size + ", cpOffset=" + constantPoolOffset
+                + ", metaOffset=" + metadataOffset + ", startNanos=" + startNanos + ", duration=" + durationNanos
                 + ", startTicks=" + startTicks + ", frequency=" + frequency + ", compressed=" + compressed + '}';
     }
 
@@ -134,10 +137,10 @@ public final class ChunkHeader {
             this.major = header.major;
             this.minor = header.minor;
             this.size = header.size;
-            this.cpOffset = header.cpOffset;
-            this.metaOffset = header.metaOffset;
+            this.cpOffset = header.constantPoolOffset;
+            this.metaOffset = header.metadataOffset;
             this.startNanos = header.startNanos;
-            this.duration = header.duration;
+            this.duration = header.durationNanos;
             this.startTicks = header.startTicks;
             this.frequency = header.frequency;
             this.compressed = header.compressed;
@@ -223,10 +226,10 @@ public final class ChunkHeader {
         if (major != that.major) return false;
         if (minor != that.minor) return false;
         if (size != that.size) return false;
-        if (cpOffset != that.cpOffset) return false;
-        if (metaOffset != that.metaOffset) return false;
+        if (constantPoolOffset != that.constantPoolOffset) return false;
+        if (metadataOffset != that.metadataOffset) return false;
         if (startNanos != that.startNanos) return false;
-        if (duration != that.duration) return false;
+        if (durationNanos != that.durationNanos) return false;
         if (startTicks != that.startTicks) return false;
         if (frequency != that.frequency) return false;
         return compressed == that.compressed;
@@ -237,10 +240,10 @@ public final class ChunkHeader {
         int result = major;
         result = 31 * result + (int) minor;
         result = 31 * result + (int) (size ^ (size >>> 32));
-        result = 31 * result + (int) (cpOffset ^ (cpOffset >>> 32));
-        result = 31 * result + (int) (metaOffset ^ (metaOffset >>> 32));
+        result = 31 * result + (int) (constantPoolOffset ^ (constantPoolOffset >>> 32));
+        result = 31 * result + (int) (metadataOffset ^ (metadataOffset >>> 32));
         result = 31 * result + (int) (startNanos ^ (startNanos >>> 32));
-        result = 31 * result + (int) (duration ^ (duration >>> 32));
+        result = 31 * result + (int) (durationNanos ^ (durationNanos >>> 32));
         result = 31 * result + (int) (startTicks ^ (startTicks >>> 32));
         result = 31 * result + (int) (frequency ^ (frequency >>> 32));
         result = 31 * result + (compressed ? 1 : 0);
