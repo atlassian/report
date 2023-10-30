@@ -71,7 +71,7 @@ class JfrExecutionEventFilter(
                 lastCheckpointEventOffset = countingOutput.countSinceLastReset
             }
 
-            if (eventFilter.test(eventHeader)) {
+            if (eventHeader.eventTypeId == checkpointEventType || eventFilter.test(eventHeader)) {
                 output.write(eventHeader.bytes)
                 output.write(eventPayload)
             }
