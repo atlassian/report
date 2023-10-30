@@ -24,6 +24,13 @@ class CompressedResult(
     }
 
     companion object {
+
+        fun unzip(clazz: Class<*>, resource: String) = clazz
+            .getResource(resource)!!
+            .toURI()
+            .let { File(it) }
+            .let { unzip(it) }
+
         fun unzip(
             file: File
         ): Path {
