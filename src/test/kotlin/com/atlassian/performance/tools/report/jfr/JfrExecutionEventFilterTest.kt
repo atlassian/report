@@ -134,7 +134,7 @@ class JfrExecutionEventFilterTest {
         val gmtOffset = actualSummary.first().metadataEvents.first().gmtOffset
         assertThat(gmtOffset).isEqualTo(0)
 
-        assertThat(firstEvent!!.start).isEqualTo(Instant.parse("2023-10-25T07:14:03.518352946Z"))
+        assertThat(firstEvent!!.start).isEqualTo(Instant.parse("2023-10-25T07:23:25.131185714Z"))
 //        assertThat(lastEvent!!.start).isEqualTo(Instant.parse("2023-10-25T07:14:03.518352946Z"))
     }
 
@@ -142,7 +142,7 @@ class JfrExecutionEventFilterTest {
     fun shouldFilterEventsBetweenTimestamps() {
         // given
         val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
-        val earliestEvent = Instant.parse("2023-10-25T07:14:03.518352946Z")
+        val earliestEvent = Instant.parse("2023-10-25T07:30:48.369362068Z")
         val latestEvent = earliestEvent.plusSeconds(60)
         var firstEvent: Event? = null
         var lastEvent: Event? = null
@@ -164,8 +164,8 @@ class JfrExecutionEventFilterTest {
         logger.debug("Reading actual JFR $output ...")
         val actualSummary = output.toPath().summary()
 
-        assertThat(firstEvent!!.start).isEqualTo(Instant.parse("2023-10-25T07:14:03.518352946Z"))
-        assertThat(lastEvent!!.start).isEqualTo(Instant.parse("2023-10-25T07:14:03.518352946Z"))
+        assertThat(firstEvent!!.start).isEqualTo(Instant.parse("2023-10-25T07:30:48.370264532Z"))
+        assertThat(lastEvent!!.start).isEqualTo(Instant.parse("2023-10-25T07:31:48.171148043Z"))
     }
 
     @Test
