@@ -41,6 +41,7 @@ class JfrExecutionEventFilter(
         private val output = DataOutputStream(countingOutput)
 
         private var lastHeader: ChunkHeader? = null
+        private var lastMetadataEventOffset: Long = 0L
         private var lastCheckpointEventOffset: Long = 0L
         private var absoluteChunkStartPos = 0L
 
@@ -58,6 +59,8 @@ class JfrExecutionEventFilter(
             metadataPayload: ByteArray,
             metadata: MetadataEvent
         ): Boolean {
+            lastMetadataEventOffset = countingOutput.countSinceLastReset
+
             output.write(eventHeader.bytes)
             output.write(metadataPayload)
             return true
@@ -88,6 +91,7 @@ class JfrExecutionEventFilter(
                 .toBuilder()
                 .size(countingOutput.count - absoluteChunkStartPos)
                 .cpOffset(lastCheckpointEventOffset)
+                .metaOffset(lastMetadataEventOffset)
                 .build()
             RandomAccessFile(outputFile, "rw").use {
                 it.seek(absoluteChunkStartPos)
