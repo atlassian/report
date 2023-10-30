@@ -42,7 +42,7 @@ public final class RecordingStream implements AutoCloseable {
     private DataOutputStream toBytesStream = new DataOutputStream(toBytesLog);
     private boolean isRecordingWrites = false;
 
-    RecordingStream(InputStream is) {
+    public RecordingStream(InputStream is) {
         BufferedInputStream bis = (is instanceof BufferedInputStream) ? (BufferedInputStream) is
                 : new BufferedInputStream(is);
         delegate = new DataInputStream(bis);
