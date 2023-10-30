@@ -168,5 +168,18 @@ class JfrExecutionEventFilterTest {
         assertThat(lastEvent!!.start).isEqualTo(Instant.parse("2023-10-25T07:14:03.518352946Z"))
     }
 
+    @Test
+    fun shouldThrowAwayHalfOfExecutionEvents() {
+        // given
+        val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
+        var executionEventCounter = 0
+        val predicate = Predicate<Event> {
+            executionEventCounter++ %2 == 0
+        }
+        // when
+        logger.debug("Filtering JFR ...")
+        val jrfFilter = JfrExecutionEventFilter(predicate)
+        jrfFilter.filter(input)
+    }
 
 }
