@@ -2,7 +2,7 @@ package org.openjdk.jmc.flightrecorder.testutils.parser;
 
 public class EventHeader {
     /**
-     * 	 Size of the event in bytes, including the event "header" (eventSize and eventTypeId)
+     * Size of the event in bytes, excluding the event "header" (eventSize and eventTypeId)
      */
     public final long size;
     public final long eventTypeId;
@@ -15,5 +15,12 @@ public class EventHeader {
         this.size = size;
         this.eventTypeId = eventTypeId;
         this.bytes = bytes;
+    }
+
+    /**
+     * @return total event size, including header and payload
+     */
+    public long eventSize() {
+        return bytes.length + size;
     }
 }

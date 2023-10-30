@@ -35,10 +35,13 @@ class JfrExecutionEventFilter(
     ) : ChunkParserListener {
         private val logger = LogManager.getLogger(this::class.java)
 
+
         private val countingOutput = CountingOutputStream(output)
+
         private val output = DataOutputStream(countingOutput)
 
         private var lastHeader: ChunkHeader? = null
+        private var lastCheckpointEventOffset: Long = 0L
         private var absoluteChunkStartPos = 0L
 
         override fun onChunkStart(chunkIndex: Int, header: ChunkHeader): Boolean {
@@ -61,6 +64,10 @@ class JfrExecutionEventFilter(
         }
 
         override fun onEvent(eventHeader: EventHeader, eventPayload: ByteArray): Boolean {
+            if (eventHeader.eventTypeId == checkpointEventType) {
+                lastCheckpointEventOffset = countingOutput.countSinceLastReset
+            }
+
             if (eventFilter.test(eventHeader)) {
                 output.write(eventHeader.bytes)
                 output.write(eventPayload)
@@ -70,15 +77,21 @@ class JfrExecutionEventFilter(
 
         override fun onChunkEnd(chunkIndex: Int, skipped: Boolean): Boolean {
             updateChunk()
+            countingOutput.resetCount()
             return true
         }
 
         private fun updateChunk() {
-            val chunkSize = countingOutput.count - absoluteChunkStartPos
             output.flush() // save the output, otherwise below update will be lost
+            val currentHeader = lastHeader!!
+            val updatedHeader = currentHeader
+                .toBuilder()
+                .size(countingOutput.count - absoluteChunkStartPos)
+                .cpOffset(lastCheckpointEventOffset)
+                .build()
             RandomAccessFile(outputFile, "rw").use {
                 it.seek(absoluteChunkStartPos)
-                lastHeader!!.toBuilder().size(chunkSize).build().apply {
+                updatedHeader.apply {
                     logger.debug("Updating chunk to $this")
                     write(it)
                 }
