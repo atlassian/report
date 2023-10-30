@@ -117,7 +117,7 @@ class JfrExecutionEventFilterTest {
         val expectedSummary = expectedSummary(input)
         // when
         logger.debug("Filtering JRF ...")
-        val output = JfrExecutionEventFilter(eventFilter = Predicate { it.eventTypeId == 101L }).filter(input)
+        val output = JfrExecutionEventFilter(eventFilter = Predicate { it.eventTypeId != 101L }).filter(input)
         // then
         logger.debug("Reading actual JRF $output ...")
         val actualSummary = output.toPath().summary()
