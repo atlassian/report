@@ -2,7 +2,6 @@ package com.atlassian.performance.tools.report.jfr
 
 import com.atlassian.performance.tools.report.api.result.CompressedResult
 import jdk.jfr.consumer.RecordedEvent
-import jdk.jfr.consumer.RecordedThread
 import org.apache.logging.log4j.LogManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -12,7 +11,7 @@ import java.io.FileInputStream
 import java.nio.file.Path
 import java.util.function.Predicate
 
-class JfrExecutionEventFilterTest {
+class JfrFilterTest {
     private val logger = LogManager.getLogger(this::class.java)
     private val zippedInput = File(javaClass.getResource("/profiler-result.zip")!!.toURI())
 
@@ -104,7 +103,7 @@ class JfrExecutionEventFilterTest {
         val expectedSummary = expectedSummary(input)
         // when
         logger.debug("Rewriting JFR without changes ...")
-        val output = JfrExecutionEventFilter().filter(input)
+        val output = JfrFilter().filter(input)
         // then
         logger.debug("Reading actual JFR $output ...")
         val actualSummary = output.toPath().summary()
@@ -123,7 +122,7 @@ class JfrExecutionEventFilterTest {
         }
         // when
         logger.debug("Filtering JFR ...")
-        val jrfFilter = JfrExecutionEventFilter(predicateBefore)
+        val jrfFilter = JfrFilter(predicateBefore)
         val filteredFile = jrfFilter.filter(input)
         // then
         val actualThreadCounter = mutableMapOf<Long?, Long>()

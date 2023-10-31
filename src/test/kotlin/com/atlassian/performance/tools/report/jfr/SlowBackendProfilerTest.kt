@@ -48,7 +48,7 @@ class SlowBackendProfilerTest {
 
         // when
         val slotFilter = BackendTimeslotsFilter(slowViewIssueNavigations)
-        val profileFilter =  JfrExecutionEventFilter(Predicate(slotFilter::keep))
+        val profileFilter =  JfrFilter(Predicate(slotFilter::keep))
         val node1ProfileFiltered = profileFilter.filter(node1Profile)
         val node2ProfileFiltered = profileFilter.filter(node2Profile)
 
