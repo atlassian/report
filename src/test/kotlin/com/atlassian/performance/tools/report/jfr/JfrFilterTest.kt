@@ -8,7 +8,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.openjdk.jmc.flightrecorder.testutils.parser.*
 import java.io.File
-import java.io.FileInputStream
 import java.nio.file.Path
 import java.util.function.Predicate
 
@@ -36,51 +35,49 @@ class JfrFilterTest {
         val eventTypes = mutableListOf<Long>()
         val eventSizes = mutableListOf<Long>()
         val result = mutableListOf<Chunk>()
-        FileInputStream(this.toFile()).use {
-            StreamingChunkParser(object : ChunkParserListener {
+        StreamingChunkParser(object : ChunkParserListener {
 
-                override fun onChunkStart(chunkIndex: Int, header: ChunkHeader) {
-                    logger.debug("Chunk $chunkIndex>>")
-                    logger.debug("$header")
-                    chunkHeader = header
-                }
+            override fun onChunkStart(chunkIndex: Int, header: ChunkHeader) {
+                logger.debug("Chunk $chunkIndex>>")
+                logger.debug("$header")
+                chunkHeader = header
+            }
 
-                override fun onChunkEnd(chunkIndex: Int, skipped: Boolean) {
-                    logger.debug("eventsCount: $eventsCount")
-                    logger.debug("<<Chunk $chunkIndex")
-                    result.add(
-                        Chunk(
-                            eventsCount = eventsCount.toMap(),
-                            header = chunkHeader!!,
-                            metadataEvents = ArrayList(metadataEvents),
-                            eventTypes = ArrayList(eventTypes),
-                            eventSizes = ArrayList(eventSizes)
-                        )
+            override fun onChunkEnd(chunkIndex: Int, skipped: Boolean) {
+                logger.debug("eventsCount: $eventsCount")
+                logger.debug("<<Chunk $chunkIndex")
+                result.add(
+                    Chunk(
+                        eventsCount = eventsCount.toMap(),
+                        header = chunkHeader!!,
+                        metadataEvents = ArrayList(metadataEvents),
+                        eventTypes = ArrayList(eventTypes),
+                        eventSizes = ArrayList(eventSizes)
                     )
-                    eventsCount.clear()
-                    metadataEvents.clear()
-                    eventTypes.clear()
-                    eventSizes.clear()
-                }
+                )
+                eventsCount.clear()
+                metadataEvents.clear()
+                eventTypes.clear()
+                eventSizes.clear()
+            }
 
-                override fun onMetadata(
-                    eventHeader: EventHeader,
-                    metadataPayload: ByteArray,
-                    metadata: MetadataEvent
-                ) {
-                    logger.debug("$metadata")
-                    metadataEvents.add(metadata)
-                }
+            override fun onMetadata(
+                eventHeader: EventHeader,
+                metadataPayload: ByteArray,
+                metadata: MetadataEvent
+            ) {
+                logger.debug("$metadata")
+                metadataEvents.add(metadata)
+            }
 
-                override fun onEvent(event: RecordedEvent, header: EventHeader, eventPayload: ByteArray) {
-                    eventsCount.computeIfAbsent(header.eventTypeId) { 0 }
-                    eventsCount[header.eventTypeId] = eventsCount[header.eventTypeId]!! + 1
-                    eventTypes.add(header.eventTypeId)
-                    eventSizes.add(eventPayload.size.toLong())
-                }
+            override fun onEvent(event: RecordedEvent, header: EventHeader, eventPayload: ByteArray) {
+                eventsCount.computeIfAbsent(header.eventTypeId) { 0 }
+                eventsCount[header.eventTypeId] = eventsCount[header.eventTypeId]!! + 1
+                eventTypes.add(header.eventTypeId)
+                eventSizes.add(eventPayload.size.toLong())
+            }
 
-            }).parse(this)
-        }
+        }).parse(this)
         return result
     }
 

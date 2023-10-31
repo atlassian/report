@@ -31,7 +31,7 @@ class FilteringJfrWriter(
 
         override fun onChunkStart(chunkIndex: Int, header: ChunkHeader) {
             lastHeader = header
-            absoluteChunkStartPos = countingOutput.count
+            absoluteChunkStartPos = countingOutput.position
             header.write(output)
         }
 
@@ -40,7 +40,7 @@ class FilteringJfrWriter(
             metadataPayload: ByteArray,
             metadata: MetadataEvent
         ) {
-            lastMetadataEventOffset = countingOutput.countSinceLastReset
+            lastMetadataEventOffset = countingOutput.offsetSinceLastReset
 
             output.write(eventHeader.bytes)
             output.write(metadataPayload)
@@ -54,14 +54,14 @@ class FilteringJfrWriter(
         }
 
         override fun onCheckpoint(eventHeader: EventHeader, eventPayload: ByteArray) {
-            lastCheckpointEventOffset = countingOutput.countSinceLastReset
+            lastCheckpointEventOffset = countingOutput.offsetSinceLastReset
             output.write(eventHeader.bytes)
             output.write(eventPayload)
         }
 
         override fun onChunkEnd(chunkIndex: Int, skipped: Boolean) {
             updateChunk()
-            countingOutput.resetCount()
+            countingOutput.resetOffset()
         }
 
         private fun updateChunk() {
@@ -69,7 +69,7 @@ class FilteringJfrWriter(
             val currentHeader = lastHeader!!
             val updatedHeader = currentHeader
                 .toBuilder()
-                .size(countingOutput.count - absoluteChunkStartPos)
+                .size(countingOutput.position - absoluteChunkStartPos)
                 .cpOffset(lastCheckpointEventOffset)
                 .metaOffset(lastMetadataEventOffset)
                 .build()
