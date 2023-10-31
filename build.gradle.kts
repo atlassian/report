@@ -50,9 +50,6 @@ dependencies {
     api("com.atlassian.performance.tools:infrastructure:[2.0.0,5.0.0)")
     api("com.atlassian.performance.tools:workspace:[2.0.0,3.0.0)")
     api("com.atlassian.performance.tools:virtual-users:[1.0.0,4.0.0)")
-    implementation("org.openjdk.jmc:flightrecorder:8.3.1")
-    implementation("org.openjdk.jmc:flightrecorder.writer:8.3.1")
-
 
 
     listOf(
