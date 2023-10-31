@@ -11,7 +11,7 @@ import java.nio.file.Path
 import java.util.function.Predicate
 
 
-class JfrExecutionEventFilter(
+class JfrFilter(
     private val eventFilter: Predicate<RecordedEvent> = Predicate { true }
 ) {
     private val logger = LogManager.getLogger(this::class.java)
