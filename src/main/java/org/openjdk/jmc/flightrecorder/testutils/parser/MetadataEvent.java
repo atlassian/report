@@ -35,7 +35,6 @@ package org.openjdk.jmc.flightrecorder.testutils.parser;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -58,7 +57,6 @@ public final class MetadataEvent {
     private int gmtOffset = 1;
 
     private final Map<Long, String> eventTypeNameMapBacking = new HashMap<>(256);
-    private final LongMapping<String> eventTypeMap;
 
     MetadataEvent(RecordingStream stream, int eventSize, long eventType) throws IOException {
         size = eventSize;
@@ -69,7 +67,6 @@ public final class MetadataEvent {
         duration = stream.readVarint();
         metadataId = stream.readVarint();
         readElements(stream, readStringTable(stream));
-        eventTypeMap = eventTypeNameMapBacking::get;
     }
 
     private MetadataEvent(int size, long startTime, long duration, long metadataId, Map<Long, String> eventTypeNameMapBacking) {
@@ -78,7 +75,6 @@ public final class MetadataEvent {
         this.duration = duration;
         this.metadataId = metadataId;
         this.eventTypeNameMapBacking.putAll(eventTypeNameMapBacking);
-        this.eventTypeMap = eventTypeNameMapBacking::get;
     }
 
     public int getGmtOffset() {
@@ -120,19 +116,6 @@ public final class MetadataEvent {
         public MetadataEvent build() {
             return new MetadataEvent(size, startTime, duration, metadataId, eventTypeNameMapBacking);
         }
-    }
-
-    public Map<Long, String> getEventTypeNameMapBacking() {
-        return Collections.unmodifiableMap(eventTypeNameMapBacking);
-    }
-
-    /**
-     * Lazily compute and return the mappings of event type ids to event type names
-     *
-     * @return mappings of event type ids to event type names
-     */
-    public LongMapping<String> getEventTypeNameMap() {
-        return eventTypeMap;
     }
 
     private String[] readStringTable(RecordingStream stream) throws IOException {

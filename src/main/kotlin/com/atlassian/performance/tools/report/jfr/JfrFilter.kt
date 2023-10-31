@@ -44,46 +44,39 @@ class JfrFilter(
         private var lastCheckpointEventOffset: Long = 0L
         private var absoluteChunkStartPos = 0L
 
-        override fun onChunkStart(chunkIndex: Int, header: ChunkHeader): Boolean {
+        override fun onChunkStart(chunkIndex: Int, header: ChunkHeader) {
             lastHeader = header
             absoluteChunkStartPos = countingOutput.count
             header.write(output)
-            return true
         }
-
-        private val checkpointEventType = 1L
 
         override fun onMetadata(
             eventHeader: EventHeader,
             metadataPayload: ByteArray,
             metadata: MetadataEvent
-        ): Boolean {
+        ) {
             lastMetadataEventOffset = countingOutput.countSinceLastReset
 
             output.write(eventHeader.bytes)
             output.write(metadataPayload)
-            return true
         }
 
-        override fun onEvent(event: RecordedEvent, eventHeader: EventHeader, eventPayload: ByteArray): Boolean {
+        override fun onEvent(event: RecordedEvent, eventHeader: EventHeader, eventPayload: ByteArray) {
             if (eventFilter.test(event)) {
                 output.write(eventHeader.bytes)
                 output.write(eventPayload)
             }
-            return true
         }
 
-        override fun onCheckpoint(eventHeader: EventHeader, eventPayload: ByteArray): Boolean {
+        override fun onCheckpoint(eventHeader: EventHeader, eventPayload: ByteArray) {
             lastCheckpointEventOffset = countingOutput.countSinceLastReset
             output.write(eventHeader.bytes)
             output.write(eventPayload)
-            return true
         }
 
-        override fun onChunkEnd(chunkIndex: Int, skipped: Boolean): Boolean {
+        override fun onChunkEnd(chunkIndex: Int, skipped: Boolean) {
             updateChunk()
             countingOutput.resetCount()
-            return true
         }
 
         private fun updateChunk() {

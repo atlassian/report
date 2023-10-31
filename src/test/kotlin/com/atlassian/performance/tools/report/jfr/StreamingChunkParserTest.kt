@@ -22,14 +22,13 @@ class StreamingChunkParserTest {
         var firstEvent: RecordedEvent? = null
         var lastEvent: RecordedEvent? = null
         parser.parse(input, object : ChunkParserListener {
-            override fun onEvent(event: RecordedEvent, header: EventHeader, eventPayload: ByteArray): Boolean {
+            override fun onEvent(event: RecordedEvent, header: EventHeader, eventPayload: ByteArray) {
                 if (firstEvent == null) {
                     firstEvent = event
                 }
                 lastEvent = event
-                return true
             }
-        });
+        })
         // then
         SoftAssertions.assertSoftly {
             it.assertThat(firstEvent!!.startTime).isEqualTo(Instant.parse("2023-10-25T07:23:25.111857Z"))
@@ -47,7 +46,7 @@ class StreamingChunkParserTest {
         val threadIdCount = mutableMapOf<Long, Int>()
         // when
         parser.parse(input, object : ChunkParserListener {
-            override fun onEvent(event: RecordedEvent, header: EventHeader, eventPayload: ByteArray): Boolean {
+            override fun onEvent(event: RecordedEvent, header: EventHeader, eventPayload: ByteArray) {
                 if (event.eventType.id == 101L) {
                     foundExecutionSamples++
                     val javaThreadId = event.javaThreadId()
@@ -56,9 +55,8 @@ class StreamingChunkParserTest {
                         foundThreads++
                     }
                 }
-                return true
             }
-        });
+        })
         // then
         SoftAssertions.assertSoftly {
             it.assertThat(foundThreads).isEqualTo(foundExecutionSamples)

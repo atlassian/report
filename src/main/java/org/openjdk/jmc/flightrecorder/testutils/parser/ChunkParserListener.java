@@ -52,10 +52,8 @@ public interface ChunkParserListener {
 	 *            the chunk index (1-based)
 	 * @param header
 	 *            the parsed chunk header
-	 * @return {@literal false} if the chunk should be skipped
 	 */
-	default boolean onChunkStart(int chunkIndex, ChunkHeader header) {
-		return true;
+	default void onChunkStart(int chunkIndex, ChunkHeader header) {
 	}
 
 	/**
@@ -63,10 +61,8 @@ public interface ChunkParserListener {
 	 *
 	 * @param metadata
 	 *            the chunk metadata event
-	 * @return {@literal false} if the remainder of the chunk should be skipped
 	 */
-	default boolean onMetadata(EventHeader eventHeader, byte[] metadataPayload, MetadataEvent metadata) {
-		return true;
+	default void onMetadata(EventHeader eventHeader, byte[] metadataPayload, MetadataEvent metadata) {
 	}
 
 	/**
@@ -74,14 +70,11 @@ public interface ChunkParserListener {
 	 *
 	 * @param eventPayload
 	 *            payload without the event "header"
-	 * @return {@literal false} if the remainder of the chunk should be skipped
 	 */
-	default boolean onEvent(RecordedEvent event, EventHeader eventHeader, byte[] eventPayload) {
-		return true;
+	default void onEvent(RecordedEvent event, EventHeader eventHeader, byte[] eventPayload) {
 	}
 
-	default boolean onCheckpoint(EventHeader eventHeader, byte[] eventPayload) {
-		return true;
+	default void onCheckpoint(EventHeader eventHeader, byte[] eventPayload) {
 	}
 
 	/**
@@ -91,10 +84,8 @@ public interface ChunkParserListener {
 	 *            the chunk index (1-based)
 	 * @param skipped
 	 *            {@literal true} if the chunk was skipped
-	 * @return {@literal false} if the remaining chunks in the recording should be skipped
 	 */
-	default boolean onChunkEnd(int chunkIndex, boolean skipped) {
-		return true;
+	default void onChunkEnd(int chunkIndex, boolean skipped) {
 	}
 
 	/** Called when the recording was fully processed */
