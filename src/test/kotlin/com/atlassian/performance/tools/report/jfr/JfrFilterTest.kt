@@ -38,14 +38,13 @@ class JfrFilterTest {
         FileInputStream(this.toFile()).use {
             StreamingChunkParser().parse(this, object : ChunkParserListener {
 
-                override fun onChunkStart(chunkIndex: Int, header: ChunkHeader): Boolean {
+                override fun onChunkStart(chunkIndex: Int, header: ChunkHeader) {
                     logger.debug("Chunk $chunkIndex>>")
                     logger.debug("$header")
                     chunkHeader = header
-                    return true
                 }
 
-                override fun onChunkEnd(chunkIndex: Int, skipped: Boolean): Boolean {
+                override fun onChunkEnd(chunkIndex: Int, skipped: Boolean) {
                     logger.debug("eventsCount: $eventsCount")
                     logger.debug("<<Chunk $chunkIndex")
                     result.add(
@@ -61,25 +60,22 @@ class JfrFilterTest {
                     metadataEvents.clear()
                     eventTypes.clear()
                     eventSizes.clear()
-                    return true
                 }
 
                 override fun onMetadata(
                     eventHeader: EventHeader,
                     metadataPayload: ByteArray,
                     metadata: MetadataEvent
-                ): Boolean {
+                ) {
                     logger.debug("$metadata")
                     metadataEvents.add(metadata)
-                    return true
                 }
 
-                override fun onEvent(event: RecordedEvent, header: EventHeader, eventPayload: ByteArray): Boolean {
+                override fun onEvent(event: RecordedEvent, header: EventHeader, eventPayload: ByteArray) {
                     eventsCount.computeIfAbsent(header.eventTypeId) { 0 }
                     eventsCount[header.eventTypeId] = eventsCount[header.eventTypeId]!! + 1
                     eventTypes.add(header.eventTypeId)
                     eventSizes.add(eventPayload.size.toLong())
-                    return true
                 }
 
             })
@@ -127,10 +123,9 @@ class JfrFilterTest {
         // then
         val actualThreadCounter = mutableMapOf<Long?, Long>()
         StreamingChunkParser().parse(filteredFile.toPath(), object : ChunkParserListener {
-            override fun onEvent(event: RecordedEvent, header: EventHeader, eventPayload: ByteArray): Boolean {
+            override fun onEvent(event: RecordedEvent, header: EventHeader, eventPayload: ByteArray) {
                 val javaThreadId = event.javaThreadId()
                 actualThreadCounter.compute(javaThreadId) { _, count -> (count ?: 0) + 1 }
-                return true
             }
         })
         assertThat(actualThreadCounter[670L]).isEqualTo(expectedThreadCounter[670L])

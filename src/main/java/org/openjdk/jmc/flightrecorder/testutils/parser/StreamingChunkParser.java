@@ -85,12 +85,7 @@ public final class StreamingChunkParser {
             while (stream.available() > 0) {
                 long chunkStartPos = stream.position();
                 ChunkHeader header = ChunkHeader.read(stream);
-                if (!listener.onChunkStart(chunkCounter, header)) {
-                    log.debug("'onChunkStart' returned false. Skipping metadata and events for chunk {}", chunkCounter);
-                    stream.skip(header.size - (stream.position() - chunkStartPos));
-                    listener.onChunkEnd(chunkCounter, true);
-                    continue;
-                }
+                listener.onChunkStart(chunkCounter, header);
                 long chunkEndPos = chunkStartPos + (int) header.size;
 
 
@@ -108,11 +103,7 @@ public final class StreamingChunkParser {
                             stream.startRecordingWrites();
                             MetadataEvent metadata = new MetadataEvent(stream, eventSize, eventType);
                             byte[] metadataPayload = stream.stopRecordingWrites();
-                            if (!listener.onMetadata(eventHeader, metadataPayload, metadata)) {
-                                log.debug("'onMetadata' returned false. Skipping events for chunk {}", chunkCounter);
-                                stream.skip(header.size - (stream.position() - chunkStartPos));
-                                listener.onChunkEnd(chunkCounter, true);
-                            }
+                            listener.onMetadata(eventHeader, metadataPayload, metadata);
                         } else {
                             long currentPos = stream.position();
                             int payloadSize = (int) (eventSize - (currentPos - eventStartPos));
@@ -123,14 +114,7 @@ public final class StreamingChunkParser {
                                 listener.onCheckpoint(eventHeader, eventPayload);
                             } else {
                                 RecordedEvent jdkEvent = jdkRecording.readEvent();
-                                if (!listener.onEvent(jdkEvent, eventHeader, eventPayload)) {
-                                    log.debug("'onEvent({}, stream)' returned false. Skipping the rest of the chunk {}",
-                                            eventType, chunkCounter);
-                                    // skip the rest of the chunk
-                                    stream.skip(header.size - (stream.position() - chunkStartPos));
-                                    listener.onChunkEnd(chunkCounter, true);
-                                    continue;
-                                }
+                                listener.onEvent(jdkEvent, eventHeader, eventPayload);
                             }
                             // always skip any unconsumed event data to get the stream into consistent state
                             stream.skip(eventSize - (stream.position() - eventStartPos));
@@ -140,9 +124,7 @@ public final class StreamingChunkParser {
                         log.debug("ZERO SIZE EVENT");
                     }
                 }
-                if (!listener.onChunkEnd(chunkCounter, false)) {
-                    return;
-                }
+                listener.onChunkEnd(chunkCounter, false);
                 chunkCounter++;
             }
         } finally {
