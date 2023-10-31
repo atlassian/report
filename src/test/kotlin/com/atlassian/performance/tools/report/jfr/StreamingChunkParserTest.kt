@@ -17,11 +17,9 @@ class StreamingChunkParserTest {
     fun shouldParseTimestamps() {
         // given
         val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
-        val parser = StreamingChunkParser()
-        // when
         var firstEvent: RecordedEvent? = null
         var lastEvent: RecordedEvent? = null
-        parser.parse(input, object : ChunkParserListener {
+        val parser = StreamingChunkParser(object : ChunkParserListener {
             override fun onEvent(event: RecordedEvent, header: EventHeader, eventPayload: ByteArray) {
                 if (firstEvent == null) {
                     firstEvent = event
@@ -29,6 +27,8 @@ class StreamingChunkParserTest {
                 lastEvent = event
             }
         })
+        // when
+        parser.parse(input)
         // then
         SoftAssertions.assertSoftly {
             it.assertThat(firstEvent!!.startTime).isEqualTo(Instant.parse("2023-10-25T07:23:25.111857Z"))
@@ -40,12 +40,10 @@ class StreamingChunkParserTest {
     fun shouldParseThreadIds() {
         // given
         val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
-        val parser = StreamingChunkParser()
         var foundThreads = 0
         var foundExecutionSamples = 0
         val threadIdCount = mutableMapOf<Long, Int>()
-        // when
-        parser.parse(input, object : ChunkParserListener {
+        val parser = StreamingChunkParser(object : ChunkParserListener {
             override fun onEvent(event: RecordedEvent, header: EventHeader, eventPayload: ByteArray) {
                 if (event.eventType.id == 101L) {
                     foundExecutionSamples++
@@ -57,6 +55,8 @@ class StreamingChunkParserTest {
                 }
             }
         })
+        // when
+        parser.parse(input)
         // then
         SoftAssertions.assertSoftly {
             it.assertThat(foundThreads).isEqualTo(foundExecutionSamples)
