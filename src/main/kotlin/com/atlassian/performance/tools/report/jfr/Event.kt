@@ -5,5 +5,6 @@ import java.time.Instant
 
 class Event(
     val start: Instant,
-    val header: EventHeader
+    val header: EventHeader,
+    val threadId: Long?
 )

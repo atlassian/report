@@ -16,16 +16,14 @@ class JfrExecutionEventFilter(
     private val logger = LogManager.getLogger(this::class.java)
 
     fun filter(recording: Path): File {
-        recording.toFile().inputStream().buffered().use { inputStream ->
-            val filteredRecording = recording.resolveSibling("filtered-" + recording.fileName.toString()).toFile()
-            logger.debug("Writing filtered recording to $filteredRecording ...")
-            filteredRecording.outputStream().buffered().use { outputStream ->
-                val writer = FilteringJfrWriter(filteredRecording, outputStream, eventFilter)
-                val parser = StreamingChunkParser()
-                parser.parse(inputStream, writer)
-            }
-            return filteredRecording
+        val filteredRecording = recording.resolveSibling("filtered-" + recording.fileName.toString()).toFile()
+        logger.debug("Writing filtered recording to $filteredRecording ...")
+        filteredRecording.outputStream().buffered().use { outputStream ->
+            val writer = FilteringJfrWriter(filteredRecording, outputStream, eventFilter)
+            val parser = StreamingChunkParser()
+            parser.parse(recording, writer)
         }
+        return filteredRecording
     }
 
     class FilteringJfrWriter(
@@ -70,14 +68,12 @@ class JfrExecutionEventFilter(
             return true
         }
 
-        override fun onEvent(eventHeader: EventHeader, eventPayload: ByteArray): Boolean {
-            if (eventHeader.eventTypeId == checkpointEventType) {
+        override fun onEvent(event: Event, eventPayload: ByteArray): Boolean {
+            if (event.header.eventTypeId == checkpointEventType) {
                 lastCheckpointEventOffset = countingOutput.countSinceLastReset
             }
-            val event = eventPayloadParser.parse(lastHeader!!, eventHeader, eventPayload)
-
-            if (eventHeader.eventTypeId == checkpointEventType || eventFilter.test(event)) {
-                output.write(eventHeader.bytes)
+            if (event.header.eventTypeId == checkpointEventType || eventFilter.test(event)) {
+                output.write(event.header.bytes)
                 output.write(eventPayload)
                 lastAcceptedEvent = event
             } else {
