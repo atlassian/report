@@ -33,11 +33,15 @@
  */
 package org.openjdk.jmc.flightrecorder.testutils.parser;
 
-import org.apache.logging.log4j.Logger;
+import com.atlassian.performance.tools.report.jfr.Event;
+import com.atlassian.performance.tools.report.jfr.EventPayloadParser;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Streaming, almost zero-allocation, JFR chunk parser implementation. <br>
@@ -48,95 +52,95 @@ import java.io.InputStream;
  * This class is not thread-safe and is intended to be used from a single thread only.
  */
 public final class StreamingChunkParser {
-	private static final Logger log = LogManager.getLogger(StreamingChunkParser.class);
+    private static final Logger log = LogManager.getLogger(StreamingChunkParser.class);
 
-	/**
-	 * Parse the given JFR recording stream.<br>
-	 * The parser will process the recording stream and call the provided listener in this order:
-	 * <ol>
-	 * <li>listener.onRecordingStart()
-	 * <li>listener.onChunkStart()
-	 * <li>listener.onEvent() | listener.onMetadata()
-	 * <li>listener.onChunkEnd()
-	 * <li>listener.onRecordingEnd()
-	 * </ol>
-	 *
-	 * @param inputStream
-	 *            the JFR recording stream it will be closed when the parsing is over
-	 * @param listener
-	 *            the parser listener
-	 * @throws IOException
-	 */
-	public void parse(InputStream inputStream, ChunkParserListener listener) throws IOException {
-		try (RecordingStream stream = new RecordingStream(inputStream)) {
-			parse(stream, listener);
-		}
-	}
+    /**
+     * Parse the given JFR recording stream.<br>
+     * The parser will process the recording stream and call the provided listener in this order:
+     * <ol>
+     * <li>listener.onRecordingStart()
+     * <li>listener.onChunkStart()
+     * <li>listener.onEvent() | listener.onMetadata()
+     * <li>listener.onChunkEnd()
+     * <li>listener.onRecordingEnd()
+     * </ol>
+     *
+     * @param listener the parser listener
+     * @throws IOException
+     */
+    public void parse(Path inputFile, ChunkParserListener listener) throws IOException {
+        try (RecordingStream stream = new RecordingStream(new BufferedInputStream(Files.newInputStream(inputFile.toFile().toPath())))) {
+            parse(stream, listener);
+        }
+    }
 
-	private void parse(RecordingStream stream, ChunkParserListener listener) throws IOException {
-		if (stream.available() == 0) {
-			return;
-		}
-		try {
-			listener.onRecordingStart();
-			int chunkCounter = 1;
-			while (stream.available() > 0) {
-				long chunkStartPos = stream.position();
-				ChunkHeader header = ChunkHeader.read(stream);
-				if (!listener.onChunkStart(chunkCounter, header)) {
-					log.debug("'onChunkStart' returned false. Skipping metadata and events for chunk {}", chunkCounter);
-					stream.skip(header.size - (stream.position() - chunkStartPos));
-					listener.onChunkEnd(chunkCounter, true);
-					continue;
-				}
-				long chunkEndPos = chunkStartPos + (int) header.size;
-				while (stream.position() < chunkEndPos) {
-					long eventStartPos = stream.position();
-					stream.startRecordingWrites();
-					long longEventSize = stream.readVarint();
-					int eventSize = (int) longEventSize;
-					if (eventSize > 0) {
-						long eventType = stream.readVarint();
-						EventHeader eventHeader = new EventHeader(eventSize, eventType, stream.stopRecordingWrites());
-						if (eventType == 0) {
-							// metadata
-							log.debug("Metadata event payload at position {}", stream.position());
-							stream.startRecordingWrites();
-							MetadataEvent metadata = new MetadataEvent(stream, eventSize, eventType);
-							byte[] metadataPayload = stream.stopRecordingWrites();
-							if (!listener.onMetadata( eventHeader, metadataPayload, metadata)) {
-								log.debug("'onMetadata' returned false. Skipping events for chunk {}", chunkCounter);
-								stream.skip(header.size - (stream.position() - chunkStartPos));
-								listener.onChunkEnd(chunkCounter, true);
-							}
-						} else {
-							long currentPos = stream.position();
-							int payloadSize = (int)(eventSize - (currentPos - eventStartPos));
-							byte[] eventPayload = new byte[payloadSize];
-							stream.read(eventPayload, 0, payloadSize);
-							if (!listener.onEvent(eventHeader, eventPayload)) {
-								log.debug("'onEvent({}, stream)' returned false. Skipping the rest of the chunk {}",
-										eventType, chunkCounter);
-								// skip the rest of the chunk
-								stream.skip(header.size - (stream.position() - chunkStartPos));
-								listener.onChunkEnd(chunkCounter, true);
-								continue;
-							}
-							// always skip any unconsumed event data to get the stream into consistent state
-							stream.skip(eventSize - (stream.position() - eventStartPos));
-						}
-					} else {
-						stream.stopRecordingWrites();
-						log.debug("ZERO SIZE EVENT");
-					}
-				}
-				if (!listener.onChunkEnd(chunkCounter, false)) {
-					return;
-				}
-				chunkCounter++;
-			}
-		} finally {
-			listener.onRecordingEnd();
-		}
-	}
+    private void parse(RecordingStream stream, ChunkParserListener listener) throws IOException {
+        if (stream.available() == 0) {
+            return;
+        }
+        EventPayloadParser eventPayloadParser = new EventPayloadParser();
+
+        try {
+            listener.onRecordingStart();
+            int chunkCounter = 1;
+            while (stream.available() > 0) {
+                long chunkStartPos = stream.position();
+                ChunkHeader header = ChunkHeader.read(stream);
+                if (!listener.onChunkStart(chunkCounter, header)) {
+                    log.debug("'onChunkStart' returned false. Skipping metadata and events for chunk {}", chunkCounter);
+                    stream.skip(header.size - (stream.position() - chunkStartPos));
+                    listener.onChunkEnd(chunkCounter, true);
+                    continue;
+                }
+                long chunkEndPos = chunkStartPos + (int) header.size;
+                while (stream.position() < chunkEndPos) {
+                    long eventStartPos = stream.position();
+                    stream.startRecordingWrites();
+                    long longEventSize = stream.readVarint();
+                    int eventSize = (int) longEventSize;
+                    if (eventSize > 0) {
+                        long eventType = stream.readVarint();
+                        EventHeader eventHeader = new EventHeader(eventSize, eventType, stream.stopRecordingWrites());
+                        if (eventType == 0) {
+                            // metadata
+                            log.debug("Metadata event payload at position {}", stream.position());
+                            stream.startRecordingWrites();
+                            MetadataEvent metadata = new MetadataEvent(stream, eventSize, eventType);
+                            byte[] metadataPayload = stream.stopRecordingWrites();
+                            if (!listener.onMetadata(eventHeader, metadataPayload, metadata)) {
+                                log.debug("'onMetadata' returned false. Skipping events for chunk {}", chunkCounter);
+                                stream.skip(header.size - (stream.position() - chunkStartPos));
+                                listener.onChunkEnd(chunkCounter, true);
+                            }
+                        } else {
+                            long currentPos = stream.position();
+                            int payloadSize = (int) (eventSize - (currentPos - eventStartPos));
+                            byte[] eventPayload = new byte[payloadSize];
+                            stream.read(eventPayload, 0, payloadSize);
+                            Event event = eventPayloadParser.parse(header, eventHeader, eventPayload);
+                            if (!listener.onEvent(event, eventPayload)) {
+                                log.debug("'onEvent({}, stream)' returned false. Skipping the rest of the chunk {}",
+                                        eventType, chunkCounter);
+                                // skip the rest of the chunk
+                                stream.skip(header.size - (stream.position() - chunkStartPos));
+                                listener.onChunkEnd(chunkCounter, true);
+                                continue;
+                            }
+                            // always skip any unconsumed event data to get the stream into consistent state
+                            stream.skip(eventSize - (stream.position() - eventStartPos));
+                        }
+                    } else {
+                        stream.stopRecordingWrites();
+                        log.debug("ZERO SIZE EVENT");
+                    }
+                }
+                if (!listener.onChunkEnd(chunkCounter, false)) {
+                    return;
+                }
+                chunkCounter++;
+            }
+        } finally {
+            listener.onRecordingEnd();
+        }
+    }
 }

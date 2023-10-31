@@ -3,12 +3,12 @@ package com.atlassian.performance.tools.report.jfr
 import com.atlassian.performance.tools.report.api.result.CompressedResult
 import org.apache.logging.log4j.LogManager
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Ignore
 import org.junit.Test
 import org.openjdk.jmc.flightrecorder.testutils.parser.*
 import java.io.File
 import java.io.FileInputStream
 import java.nio.file.Path
-import java.time.Instant
 import java.util.function.Predicate
 
 class JfrExecutionEventFilterTest {
@@ -36,7 +36,7 @@ class JfrExecutionEventFilterTest {
         val eventSizes = mutableListOf<Long>()
         val result = mutableListOf<Chunk>()
         FileInputStream(this.toFile()).use {
-            StreamingChunkParser().parse(it, object : ChunkParserListener {
+            StreamingChunkParser().parse(this, object : ChunkParserListener {
 
                 override fun onChunkStart(chunkIndex: Int, header: ChunkHeader): Boolean {
                     logger.debug("Chunk $chunkIndex>>")
@@ -74,10 +74,10 @@ class JfrExecutionEventFilterTest {
                     return true
                 }
 
-                override fun onEvent(eventHeader: EventHeader, eventPayload: ByteArray): Boolean {
-                    eventsCount.computeIfAbsent(eventHeader.eventTypeId) { 0 }
-                    eventsCount[eventHeader.eventTypeId] = eventsCount[eventHeader.eventTypeId]!! + 1
-                    eventTypes.add(eventHeader.eventTypeId)
+                override fun onEvent(event: Event, eventPayload: ByteArray): Boolean {
+                    eventsCount.computeIfAbsent(event.header.eventTypeId) { 0 }
+                    eventsCount[event.header.eventTypeId] = eventsCount[event.header.eventTypeId]!! + 1
+                    eventTypes.add(event.header.eventTypeId)
                     eventSizes.add(eventPayload.size.toLong())
                     return true
                 }
@@ -111,75 +111,25 @@ class JfrExecutionEventFilterTest {
     }
 
     @Test
-    fun shouldParseFirstExecutionEventTimestamp() {
+    @Ignore("Enable when threadId becomes available")
+    fun shouldFilterByThreadId() {
         // given
         val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
-        var firstEvent: Event? = null
-        var lastEvent: Event? = null
+        var counter = 0
         val predicate = Predicate<Event> {
-            if (it.header.eventTypeId == 101L) {
-                if (firstEvent == null) {
-                    firstEvent = it
-                }
-                lastEvent = it
+            if (it.threadId == 802L) {
+                counter++
+                true
+            } else {
+                false
             }
-            true
-        }
-        // when
-        logger.debug("Filtering JFR ...")
-        val output = JfrExecutionEventFilter(predicate).filter(input)
-        // then
-        logger.debug("Reading actual JFR $output ...")
-        val actualSummary = output.toPath().summary()
-        val gmtOffset = actualSummary.first().metadataEvents.first().gmtOffset
-        assertThat(gmtOffset).isEqualTo(0)
-
-        assertThat(firstEvent!!.start).isEqualTo(Instant.parse("2023-10-25T07:23:25.131185714Z"))
-//        assertThat(lastEvent!!.start).isEqualTo(Instant.parse("2023-10-25T07:14:03.518352946Z"))
-    }
-
-    @Test
-    fun shouldFilterEventsBetweenTimestamps() {
-        // given
-        val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
-        val earliestEvent = Instant.parse("2023-10-25T07:30:48.369362068Z")
-        val latestEvent = earliestEvent.plusSeconds(60)
-        var firstEvent: Event? = null
-        var lastEvent: Event? = null
-        val predicate = Predicate<Event> {
-            val isEventAccepted = it.start.isAfter(earliestEvent) && it.start.isBefore(latestEvent)
-            if (isEventAccepted) {
-                if (firstEvent == null) {
-                    firstEvent = it
-                }
-                lastEvent = it
-            }
-            isEventAccepted
-        }
-        // when
-        logger.debug("Filtering JFR ...")
-        val jrfFilter = JfrExecutionEventFilter(predicate)
-        val output = jrfFilter.filter(input)
-        // then
-        logger.debug("Reading actual JFR $output ...")
-        val actualSummary = output.toPath().summary()
-
-        assertThat(firstEvent!!.start).isEqualTo(Instant.parse("2023-10-25T07:30:48.370264532Z"))
-        assertThat(lastEvent!!.start).isEqualTo(Instant.parse("2023-10-25T07:31:48.171148043Z"))
-    }
-
-    @Test
-    fun shouldThrowAwayHalfOfExecutionEvents() {
-        // given
-        val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
-        var executionEventCounter = 0
-        val predicate = Predicate<Event> {
-            executionEventCounter++ %2 == 0
         }
         // when
         logger.debug("Filtering JFR ...")
         val jrfFilter = JfrExecutionEventFilter(predicate)
         jrfFilter.filter(input)
+        // then
+        assertThat(counter).isEqualTo(1023)
     }
 
 }

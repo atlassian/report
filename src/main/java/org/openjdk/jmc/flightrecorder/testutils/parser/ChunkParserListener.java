@@ -33,9 +33,9 @@
  */
 package org.openjdk.jmc.flightrecorder.testutils.parser;
 
-import java.io.DataOutputStream;
+import com.atlassian.performance.tools.report.jfr.Event;
+
 import java.nio.file.Path;
-import java.util.function.Consumer;
 
 /**
  * A callback to be provided to {@linkplain StreamingChunkParser#parse(Path, ChunkParserListener)}
@@ -76,7 +76,7 @@ public interface ChunkParserListener {
 	 *            payload without the event "header"
 	 * @return {@literal false} if the remainder of the chunk should be skipped
 	 */
-	default boolean onEvent(EventHeader eventHeader, byte[] eventPayload) {
+	default boolean onEvent(Event event, byte[] eventPayload) {
 		return true;
 	}
 
