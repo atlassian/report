@@ -3,6 +3,7 @@ package com.atlassian.performance.tools.report.jfr
 import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.jiraactions.api.w3c.PerformanceResourceTiming
 import com.atlassian.performance.tools.report.api.FullTimeline
+import com.atlassian.performance.tools.report.api.jfr.JfrFilter
 import com.atlassian.performance.tools.report.api.result.CompressedResult.Companion.unzip
 import com.atlassian.performance.tools.report.api.result.RawCohortResult
 import jdk.jfr.consumer.RecordedEvent
@@ -48,7 +49,7 @@ class SlowBackendProfilerTest {
 
         // when
         val slotFilter = BackendTimeslotsFilter(slowViewIssueNavigations)
-        val profileFilter =  JfrFilter(Predicate(slotFilter::keep))
+        val profileFilter =  JfrFilter.Builder().eventFilter(Predicate(slotFilter::keep)).build()
         val node1ProfileFiltered = profileFilter.filter(node1Profile)
         val node2ProfileFiltered = profileFilter.filter(node2Profile)
 

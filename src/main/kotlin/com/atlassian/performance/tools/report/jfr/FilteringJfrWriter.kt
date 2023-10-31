@@ -2,35 +2,20 @@ package com.atlassian.performance.tools.report.jfr
 
 import jdk.jfr.consumer.RecordedEvent
 import org.apache.logging.log4j.LogManager
-import org.openjdk.jmc.flightrecorder.testutils.parser.*
+import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkHeader
+import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkParserListener
+import org.openjdk.jmc.flightrecorder.testutils.parser.EventHeader
+import org.openjdk.jmc.flightrecorder.testutils.parser.MetadataEvent
 import java.io.DataOutputStream
 import java.io.File
 import java.io.OutputStream
 import java.io.RandomAccessFile
-import java.nio.file.Path
 import java.util.function.Predicate
 
-
-class JfrFilter(
-    private val eventFilter: Predicate<RecordedEvent> = Predicate { true }
-) {
-    private val logger = LogManager.getLogger(this::class.java)
-
-    fun filter(recording: Path): File {
-        val filteredRecording = recording.resolveSibling("filtered-" + recording.fileName.toString()).toFile()
-        logger.debug("Writing filtered recording to $filteredRecording ...")
-        filteredRecording.outputStream().buffered().use { outputStream ->
-            val writer = FilteringJfrWriter(filteredRecording, outputStream, eventFilter)
-            val parser = StreamingChunkParser(writer)
-            parser.parse(recording)
-        }
-        return filteredRecording
-    }
-
-    class FilteringJfrWriter(
-        private val outputFile: File,
-        output: OutputStream,
-        private val eventFilter: Predicate<RecordedEvent>
+class FilteringJfrWriter(
+    private val outputFile: File,
+    output: OutputStream,
+    private val eventFilter: Predicate<RecordedEvent>
     ) : ChunkParserListener {
         private val logger = LogManager.getLogger(this::class.java)
 
@@ -98,4 +83,3 @@ class JfrFilter(
         }
 
     }
-}
