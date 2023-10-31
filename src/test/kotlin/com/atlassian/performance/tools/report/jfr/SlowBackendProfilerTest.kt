@@ -5,6 +5,7 @@ import com.atlassian.performance.tools.jiraactions.api.w3c.PerformanceResourceTi
 import com.atlassian.performance.tools.report.api.FullTimeline
 import com.atlassian.performance.tools.report.api.result.CompressedResult.Companion.unzip
 import com.atlassian.performance.tools.report.api.result.RawCohortResult
+import jdk.jfr.consumer.RecordedEvent
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.time.Duration
@@ -55,12 +56,12 @@ class SlowBackendProfilerTest {
     private class BackendTimeslotsFilter(
         private val timeslots: Iterable<BackendTimeslot>
     ) {
-        fun keep(profilerEvent: Event): Boolean {
+        fun keep(profilerEvent: RecordedEvent): Boolean {
             return timeslots.any { slot ->
                 if (slot.threadId == null) {
                     throw Exception("No thread id in $slot, cannot filter out red herrings")
                 }
-                slot.contains(profilerEvent.start) // && slot.threadId == profilerEvent.threadId
+                slot.contains(profilerEvent.startTime) // && slot.threadId == profilerEvent.threadId
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.atlassian.performance.tools.report.jfr
 
+import jdk.jfr.consumer.RecordedEvent
 import org.apache.logging.log4j.LogManager
 import org.openjdk.jmc.flightrecorder.testutils.parser.*
 import java.io.DataOutputStream
@@ -11,7 +12,7 @@ import java.util.function.Predicate
 
 
 class JfrExecutionEventFilter(
-    private val eventFilter: Predicate<Event> = Predicate { true }
+    private val eventFilter: Predicate<RecordedEvent> = Predicate { true }
 ) {
     private val logger = LogManager.getLogger(this::class.java)
 
@@ -29,8 +30,7 @@ class JfrExecutionEventFilter(
     class FilteringJfrWriter(
         private val outputFile: File,
         output: OutputStream,
-        private val eventFilter: Predicate<Event>,
-        private val eventPayloadParser: EventPayloadParser = EventPayloadParser()
+        private val eventFilter: Predicate<RecordedEvent>
     ) : ChunkParserListener {
         private val logger = LogManager.getLogger(this::class.java)
 
@@ -43,13 +43,10 @@ class JfrExecutionEventFilter(
         private var lastMetadataEventOffset: Long = 0L
         private var lastCheckpointEventOffset: Long = 0L
         private var absoluteChunkStartPos = 0L
-        private var timeConverter: TimeConverter? = null
-        var lastAcceptedEvent: Event? = null
 
         override fun onChunkStart(chunkIndex: Int, header: ChunkHeader): Boolean {
             lastHeader = header
             absoluteChunkStartPos = countingOutput.count
-            timeConverter = TimeConverter.of(header)
             header.write(output)
             return true
         }
@@ -68,17 +65,18 @@ class JfrExecutionEventFilter(
             return true
         }
 
-        override fun onEvent(event: Event, eventPayload: ByteArray): Boolean {
-            if (event.header.eventTypeId == checkpointEventType) {
-                lastCheckpointEventOffset = countingOutput.countSinceLastReset
-            }
-            if (event.header.eventTypeId == checkpointEventType || eventFilter.test(event)) {
-                output.write(event.header.bytes)
+        override fun onEvent(event: RecordedEvent, eventHeader: EventHeader, eventPayload: ByteArray): Boolean {
+            if (eventFilter.test(event)) {
+                output.write(eventHeader.bytes)
                 output.write(eventPayload)
-                lastAcceptedEvent = event
-            } else {
-                true
             }
+            return true
+        }
+
+        override fun onCheckpoint(eventHeader: EventHeader, eventPayload: ByteArray): Boolean {
+            lastCheckpointEventOffset = countingOutput.countSinceLastReset
+            output.write(eventHeader.bytes)
+            output.write(eventPayload)
             return true
         }
 

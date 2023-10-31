@@ -1,9 +1,10 @@
 package com.atlassian.performance.tools.report.jfr
 
 import com.atlassian.performance.tools.report.api.result.CompressedResult
+import jdk.jfr.consumer.RecordedEvent
+import jdk.jfr.consumer.RecordedThread
 import org.apache.logging.log4j.LogManager
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
 import org.junit.Test
 import org.openjdk.jmc.flightrecorder.testutils.parser.*
 import java.io.File
@@ -74,10 +75,10 @@ class JfrExecutionEventFilterTest {
                     return true
                 }
 
-                override fun onEvent(event: Event, eventPayload: ByteArray): Boolean {
-                    eventsCount.computeIfAbsent(event.header.eventTypeId) { 0 }
-                    eventsCount[event.header.eventTypeId] = eventsCount[event.header.eventTypeId]!! + 1
-                    eventTypes.add(event.header.eventTypeId)
+                override fun onEvent(event: RecordedEvent, header: EventHeader, eventPayload: ByteArray): Boolean {
+                    eventsCount.computeIfAbsent(header.eventTypeId) { 0 }
+                    eventsCount[header.eventTypeId] = eventsCount[header.eventTypeId]!! + 1
+                    eventTypes.add(header.eventTypeId)
                     eventSizes.add(eventPayload.size.toLong())
                     return true
                 }
@@ -111,25 +112,31 @@ class JfrExecutionEventFilterTest {
     }
 
     @Test
-    @Ignore("Enable when threadId becomes available")
     fun shouldFilterByThreadId() {
         // given
         val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
-        var counter = 0
-        val predicate = Predicate<Event> {
-            if (it.threadId == 802L) {
-                counter++
-                true
-            } else {
-                false
-            }
+        val expectedThreadCounter = mutableMapOf<Long?, Long>()
+        val predicateBefore = Predicate<RecordedEvent> {
+            val javaThreadId = it.javaThreadId()
+            expectedThreadCounter.compute(javaThreadId) { _, count -> (count ?: 0) + 1 }
+            javaThreadId == 670L
         }
         // when
         logger.debug("Filtering JFR ...")
-        val jrfFilter = JfrExecutionEventFilter(predicate)
-        jrfFilter.filter(input)
+        val jrfFilter = JfrExecutionEventFilter(predicateBefore)
+        val filteredFile = jrfFilter.filter(input)
         // then
-        assertThat(counter).isEqualTo(1023)
+        val actualThreadCounter = mutableMapOf<Long?, Long>()
+        StreamingChunkParser().parse(filteredFile.toPath(), object : ChunkParserListener {
+            override fun onEvent(event: RecordedEvent, header: EventHeader, eventPayload: ByteArray): Boolean {
+                val javaThreadId = event.javaThreadId()
+                actualThreadCounter.compute(javaThreadId) { _, count -> (count ?: 0) + 1 }
+                return true
+            }
+        })
+        assertThat(actualThreadCounter[670L]).isEqualTo(expectedThreadCounter[670L])
+        actualThreadCounter.remove(670L)
+        assertThat(actualThreadCounter).isEmpty()
     }
 
 }

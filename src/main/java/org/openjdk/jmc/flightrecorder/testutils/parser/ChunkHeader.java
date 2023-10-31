@@ -44,7 +44,13 @@ public final class ChunkHeader {
     public final short major;
     public final short minor;
     public final long size;
-    public final long constantPoolOffset;
+    /**
+     * Relative to the start of the chunk
+     */
+    public final long checkpointEventOffset;
+    /**
+     * Relative to the start of the chunk
+     */
     public final long metadataOffset;
     public final long startNanos;
     public final long durationNanos;
@@ -84,7 +90,7 @@ public final class ChunkHeader {
         output.writeShort(major);
         output.writeShort(minor);
         output.writeLong(size);
-        output.writeLong(constantPoolOffset);
+        output.writeLong(checkpointEventOffset);
         output.writeLong(metadataOffset);
         output.writeLong(startNanos);
         output.writeLong(durationNanos);
@@ -97,7 +103,7 @@ public final class ChunkHeader {
         this.major = builder.major;
         this.minor = builder.minor;
         this.size = builder.size;
-        this.constantPoolOffset = builder.cpOffset;
+        this.checkpointEventOffset = builder.cpOffset;
         this.metadataOffset = builder.metaOffset;
         this.startNanos = builder.startNanos;
         this.durationNanos = builder.duration;
@@ -108,7 +114,7 @@ public final class ChunkHeader {
 
     @Override
     public String toString() {
-        return "ChunkHeader{" + "major=" + major + ", minor=" + minor + ", size=" + size + ", cpOffset=" + constantPoolOffset
+        return "ChunkHeader{" + "major=" + major + ", minor=" + minor + ", size=" + size + ", cpOffset=" + checkpointEventOffset
                 + ", metaOffset=" + metadataOffset + ", startNanos=" + startNanos + ", duration=" + durationNanos
                 + ", startTicks=" + startTicks + ", frequency=" + frequency + ", compressed=" + compressed + '}';
     }
@@ -137,7 +143,7 @@ public final class ChunkHeader {
             this.major = header.major;
             this.minor = header.minor;
             this.size = header.size;
-            this.cpOffset = header.constantPoolOffset;
+            this.cpOffset = header.checkpointEventOffset;
             this.metaOffset = header.metadataOffset;
             this.startNanos = header.startNanos;
             this.duration = header.durationNanos;
@@ -226,7 +232,7 @@ public final class ChunkHeader {
         if (major != that.major) return false;
         if (minor != that.minor) return false;
         if (size != that.size) return false;
-        if (constantPoolOffset != that.constantPoolOffset) return false;
+        if (checkpointEventOffset != that.checkpointEventOffset) return false;
         if (metadataOffset != that.metadataOffset) return false;
         if (startNanos != that.startNanos) return false;
         if (durationNanos != that.durationNanos) return false;
@@ -240,7 +246,7 @@ public final class ChunkHeader {
         int result = major;
         result = 31 * result + (int) minor;
         result = 31 * result + (int) (size ^ (size >>> 32));
-        result = 31 * result + (int) (constantPoolOffset ^ (constantPoolOffset >>> 32));
+        result = 31 * result + (int) (checkpointEventOffset ^ (checkpointEventOffset >>> 32));
         result = 31 * result + (int) (metadataOffset ^ (metadataOffset >>> 32));
         result = 31 * result + (int) (startNanos ^ (startNanos >>> 32));
         result = 31 * result + (int) (durationNanos ^ (durationNanos >>> 32));

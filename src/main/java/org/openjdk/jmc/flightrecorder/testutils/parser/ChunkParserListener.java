@@ -33,7 +33,7 @@
  */
 package org.openjdk.jmc.flightrecorder.testutils.parser;
 
-import com.atlassian.performance.tools.report.jfr.Event;
+import jdk.jfr.consumer.RecordedEvent;
 
 import java.nio.file.Path;
 
@@ -70,13 +70,17 @@ public interface ChunkParserListener {
 	}
 
 	/**
-	 * Called for each parsed event
+	 * Called for each parsed event. Does not include metadata and checkpoint events.
 	 *
 	 * @param eventPayload
 	 *            payload without the event "header"
 	 * @return {@literal false} if the remainder of the chunk should be skipped
 	 */
-	default boolean onEvent(Event event, byte[] eventPayload) {
+	default boolean onEvent(RecordedEvent event, EventHeader eventHeader, byte[] eventPayload) {
+		return true;
+	}
+
+	default boolean onCheckpoint(EventHeader eventHeader, byte[] eventPayload) {
 		return true;
 	}
 
