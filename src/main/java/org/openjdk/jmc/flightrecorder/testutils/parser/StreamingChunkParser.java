@@ -37,8 +37,10 @@ import jdk.jfr.consumer.RecordedEvent;
 import jdk.jfr.consumer.RecordingFile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -88,40 +90,31 @@ public final class StreamingChunkParser {
                 listener.onChunkStart(chunkCounter, header);
                 long chunkEndPos = chunkStartPos + (int) header.size;
 
-
                 while (stream.position() < chunkEndPos) {
                     long eventStartPos = stream.position();
                     stream.startRecordingWrites();
-                    long longEventSize = stream.readVarint();
-                    int eventSize = (int) longEventSize;
+                    int eventSize = (int) stream.readVarint();
                     if (eventSize > 0) {
                         long eventType = stream.readVarint();
                         EventHeader eventHeader = new EventHeader(eventSize, eventType, stream.stopRecordingWrites());
+
+                        byte[] eventPayload = getBytes(stream, eventSize, eventStartPos);
+
                         if (eventType == 0) {
                             // metadata
                             log.debug("Metadata event payload at position {}", stream.position());
-                            stream.startRecordingWrites();
-                            MetadataEvent metadata = new MetadataEvent(stream, eventSize, eventType);
-                            byte[] metadataPayload = stream.stopRecordingWrites();
-                            listener.onMetadata(eventHeader, metadataPayload, metadata);
+                            MetadataEvent metadata = new MetadataEvent(new RecordingStream(new ByteArrayInputStream(eventPayload)), eventSize, eventType);
+                            listener.onMetadata(eventHeader, eventPayload, metadata);
+                        } else if (eventType == 1) {
+                            listener.onCheckpoint(eventHeader, eventPayload);
                         } else {
-                            long currentPos = stream.position();
-                            int payloadSize = (int) (eventSize - (currentPos - eventStartPos));
-                            byte[] eventPayload = new byte[payloadSize];
-                            stream.read(eventPayload, 0, payloadSize);
-
-                            if (eventType == 1) {
-                                listener.onCheckpoint(eventHeader, eventPayload);
-                            } else {
-                                RecordedEvent jdkEvent = jdkRecording.readEvent();
-                                listener.onEvent(jdkEvent, eventHeader, eventPayload);
-                            }
-                            // always skip any unconsumed event data to get the stream into consistent state
-                            stream.skip(eventSize - (stream.position() - eventStartPos));
+                            RecordedEvent jdkEvent = jdkRecording.readEvent();
+                            listener.onEvent(jdkEvent, eventHeader, eventPayload);
                         }
+                        // always skip any unconsumed event data to get the stream into consistent state
+                        stream.skip(eventSize - (stream.position() - eventStartPos));
                     } else {
-                        stream.stopRecordingWrites();
-                        log.debug("ZERO SIZE EVENT");
+                        throw new IllegalStateException("Unexpected event size: " + eventSize + " at position " + stream.position());
                     }
                 }
                 listener.onChunkEnd(chunkCounter, false);
@@ -130,5 +123,15 @@ public final class StreamingChunkParser {
         } finally {
             listener.onRecordingEnd();
         }
+
+    }
+
+    @NotNull
+    private byte[] getBytes(RecordingStream stream, int eventSize, long eventStartPos) throws IOException {
+        long currentPos = stream.position();
+        int payloadSize = (int) (eventSize - (currentPos - eventStartPos));
+        byte[] eventPayload = new byte[payloadSize];
+        stream.read(eventPayload, 0, payloadSize);
+        return eventPayload;
     }
 }
