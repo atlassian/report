@@ -27,7 +27,8 @@ class SlowBackendProfilerTest {
     @Test
     fun shouldFilterSlowBackendProfile() {
         // given
-        val node2Profile = unzip(javaClass, "$zippedResults/jira-node-2/profiler-result.zip") // TODO what about jira-node-1? we need to merge profiles from all nodes, but also thread ids will collide, we can map ActionMetric.virtualUser.toString by EdibleResult.nodeDistribution to match nodes
+        // TODO what about jira-node-1? we need to merge profiles from all nodes, but also thread ids will collide, we can map ActionMetric.virtualUser.toString by EdibleResult.nodeDistribution to match nodes
+        val node2Profile = unzip(javaClass, "$zippedResults/jira-node-2/profiler-result.zip")
             .resolve("profiler-result.jfr")
         val vuResults = unzip(javaClass, "$zippedResults/virtual-users.zip")
         val slowViewIssueNavigations = RawCohortResult.Factory().fullResult("dummy", vuResults)
@@ -42,7 +43,7 @@ class SlowBackendProfilerTest {
                     ?.map { toBackendTimeslot(metric, it.resource) }
                     ?: emptyList()
             }
-            .filter { it.duration > Duration.ofMillis(400) } // very aggressive filter just to see if the output is actually filtered, TODO can be relaxed when filtering by threadid is done
+            .filter { it.duration > Duration.ofMillis(100) }
         val filter = BackendTimeslotsFilter(slowViewIssueNavigations)
 
         // when
@@ -50,7 +51,7 @@ class SlowBackendProfilerTest {
 
         // then
         println("output = $output")
-        assertThat(slowViewIssueNavigations).hasSize(3)
+        assertThat(slowViewIssueNavigations).hasSize(67)
     }
 
     private class BackendTimeslotsFilter(
@@ -58,10 +59,7 @@ class SlowBackendProfilerTest {
     ) {
         fun keep(profilerEvent: RecordedEvent): Boolean {
             return timeslots.any { slot ->
-                if (slot.threadId == null) {
-                    throw Exception("No thread id in $slot, cannot filter out red herrings")
-                }
-                slot.contains(profilerEvent.startTime) // && slot.threadId == profilerEvent.threadId
+                slot.contains(profilerEvent.startTime) && slot.threadId == profilerEvent.javaThreadId()
             }
         }
     }
@@ -77,13 +75,14 @@ class SlowBackendProfilerTest {
             .serverTiming
             ?.find { it.name == "threadId" }
             ?.description
-            ?.toInt()
+            ?.toLong()
+            ?: throw Exception("No thread id in $metric, so we cannot map it to a backend timeslot")
     )
 
     class BackendTimeslot(
         val start: Instant,
         val end: Instant,
-        val threadId: Int? // TODO or throw instead of null
+        val threadId: Long
     ) {
         val duration: Duration = Duration.between(start, end)
 
