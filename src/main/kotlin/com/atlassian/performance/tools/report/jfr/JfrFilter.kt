@@ -21,8 +21,8 @@ class JfrFilter(
         logger.debug("Writing filtered recording to $filteredRecording ...")
         filteredRecording.outputStream().buffered().use { outputStream ->
             val writer = FilteringJfrWriter(filteredRecording, outputStream, eventFilter)
-            val parser = StreamingChunkParser()
-            parser.parse(recording, writer)
+            val parser = StreamingChunkParser(writer)
+            parser.parse(recording)
         }
         return filteredRecording
     }
