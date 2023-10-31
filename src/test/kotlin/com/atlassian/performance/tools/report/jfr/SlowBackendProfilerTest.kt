@@ -27,7 +27,8 @@ class SlowBackendProfilerTest {
     @Test
     fun shouldFilterSlowBackendProfile() {
         // given
-        // TODO what about jira-node-1? we need to merge profiles from all nodes, but also thread ids will collide, we can map ActionMetric.virtualUser.toString by EdibleResult.nodeDistribution to match nodes
+        val node1Profile = unzip(javaClass, "$zippedResults/jira-node-1/profiler-result.zip")
+            .resolve("profiler-result.jfr")
         val node2Profile = unzip(javaClass, "$zippedResults/jira-node-2/profiler-result.zip")
             .resolve("profiler-result.jfr")
         val vuResults = unzip(javaClass, "$zippedResults/virtual-users.zip")
@@ -44,13 +45,16 @@ class SlowBackendProfilerTest {
                     ?: emptyList()
             }
             .filter { it.duration > Duration.ofMillis(100) }
-        val filter = BackendTimeslotsFilter(slowViewIssueNavigations)
 
         // when
-        val output = JfrExecutionEventFilter(Predicate(filter::keep)).filter(node2Profile)
+        val slotFilter = BackendTimeslotsFilter(slowViewIssueNavigations)
+        val profileFilter =  JfrExecutionEventFilter(Predicate(slotFilter::keep))
+        val node1ProfileFiltered = profileFilter.filter(node1Profile)
+        val node2ProfileFiltered = profileFilter.filter(node2Profile)
 
         // then
-        println("output = $output")
+        println("node1ProfileFiltered = $node1ProfileFiltered")
+        println("node2ProfileFiltered = $node2ProfileFiltered")
         assertThat(slowViewIssueNavigations).hasSize(67)
     }
 
