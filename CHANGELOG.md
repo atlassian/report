@@ -24,9 +24,14 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://github.com/atlassian/report/compare/release-3.16.3...master
+[Unreleased]: https://github.com/atlassian/report/compare/release-4.0.0...master
+
+## [4.0.0] - 2023-10-31
 ### Added
 - Add JfrFilter to allow finding bottlenecks of slow requests in JFR profile. Resolve [JPERF-1409].
+ 
+### Removed
+- Drop support for java 1.8.
  
 [JPERF-1409]: https://ecosystem.atlassian.net/browse/JPERF-1409
 
