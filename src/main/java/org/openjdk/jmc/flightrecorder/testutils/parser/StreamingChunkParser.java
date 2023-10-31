@@ -33,8 +33,8 @@
  */
 package org.openjdk.jmc.flightrecorder.testutils.parser;
 
-import com.atlassian.performance.tools.report.jfr.Event;
-import com.atlassian.performance.tools.report.jfr.EventPayloadParser;
+import jdk.jfr.consumer.RecordedEvent;
+import jdk.jfr.consumer.RecordingFile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,19 +70,18 @@ public final class StreamingChunkParser {
      */
     public void parse(Path inputFile, ChunkParserListener listener) throws IOException {
         try (RecordingStream stream = new RecordingStream(new BufferedInputStream(Files.newInputStream(inputFile.toFile().toPath())))) {
-            parse(stream, listener);
+            parse(inputFile, stream, listener);
         }
     }
 
-    private void parse(RecordingStream stream, ChunkParserListener listener) throws IOException {
+    private void parse(Path inputFile, RecordingStream stream, ChunkParserListener listener) throws IOException {
         if (stream.available() == 0) {
             return;
         }
-        EventPayloadParser eventPayloadParser = new EventPayloadParser();
-
         try {
             listener.onRecordingStart();
             int chunkCounter = 1;
+            RecordingFile jdkRecording = new RecordingFile(inputFile);
             while (stream.available() > 0) {
                 long chunkStartPos = stream.position();
                 ChunkHeader header = ChunkHeader.read(stream);
@@ -93,6 +92,8 @@ public final class StreamingChunkParser {
                     continue;
                 }
                 long chunkEndPos = chunkStartPos + (int) header.size;
+
+
                 while (stream.position() < chunkEndPos) {
                     long eventStartPos = stream.position();
                     stream.startRecordingWrites();
@@ -117,14 +118,19 @@ public final class StreamingChunkParser {
                             int payloadSize = (int) (eventSize - (currentPos - eventStartPos));
                             byte[] eventPayload = new byte[payloadSize];
                             stream.read(eventPayload, 0, payloadSize);
-                            Event event = eventPayloadParser.parse(header, eventHeader, eventPayload);
-                            if (!listener.onEvent(event, eventPayload)) {
-                                log.debug("'onEvent({}, stream)' returned false. Skipping the rest of the chunk {}",
-                                        eventType, chunkCounter);
-                                // skip the rest of the chunk
-                                stream.skip(header.size - (stream.position() - chunkStartPos));
-                                listener.onChunkEnd(chunkCounter, true);
-                                continue;
+
+                            if (eventType == 1) {
+                                listener.onCheckpoint(eventHeader, eventPayload);
+                            } else {
+                                RecordedEvent jdkEvent = jdkRecording.readEvent();
+                                if (!listener.onEvent(jdkEvent, eventHeader, eventPayload)) {
+                                    log.debug("'onEvent({}, stream)' returned false. Skipping the rest of the chunk {}",
+                                            eventType, chunkCounter);
+                                    // skip the rest of the chunk
+                                    stream.skip(header.size - (stream.position() - chunkStartPos));
+                                    listener.onChunkEnd(chunkCounter, true);
+                                    continue;
+                                }
                             }
                             // always skip any unconsumed event data to get the stream into consistent state
                             stream.skip(eventSize - (stream.position() - eventStartPos));
