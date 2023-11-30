@@ -83,6 +83,7 @@ abstract class RawCohortResult private constructor() {
                 .actionMetrics(timeline.crop(parseActions(actionParser)))
                 .systemMetrics(systemParser.parse(results))
                 .nodeDistribution(nodeParser.parse(results))
+                .raw(this)
                 .build()
         }
 
@@ -92,6 +93,7 @@ abstract class RawCohortResult private constructor() {
                 .systemMetrics(systemParser.parse(results))
                 .nodeDistribution(nodeParser.parse(results))
                 .trimmingPerType(actionTypeToOutlierTrimming)
+                .raw(this)
                 .build()
         }
 
@@ -119,12 +121,14 @@ abstract class RawCohortResult private constructor() {
         override fun prepareForJudgement(timeline: Timeline): EdibleResult {
             return EdibleResult.Builder(cohort)
                 .failure(failure)
+                .raw(this)
                 .build()
         }
 
         override fun prepareForJudgement(timeline: Timeline, actionTypeToOutlierTrimming: Map<ActionType<*>, OutlierTrimming>): EdibleResult {
             return EdibleResult.Builder(cohort)
                 .failure(failure)
+                .raw(this)
                 .build()
         }
     }
@@ -140,12 +144,14 @@ abstract class RawCohortResult private constructor() {
         override fun prepareForJudgement(timeline: Timeline): EdibleResult {
             return EdibleResult.Builder(cohort)
                 .failure(failure)
+                .raw(this)
                 .build()
         }
 
         override fun prepareForJudgement(timeline: Timeline, actionTypeToOutlierTrimming: Map<ActionType<*>, OutlierTrimming>): EdibleResult {
             return EdibleResult.Builder(cohort)
                 .failure(failure)
+                .raw(this)
                 .build()
         }
     }
