@@ -26,6 +26,9 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-4.0.0...master
 
+### Added
+- Link to `EdibleResult.raw`, which can include useful artifacts for reports and analysis (e.g. JFR). Aid [JPERF-1409].
+
 ## [4.0.0] - 2023-10-31
 ### Added
 - Add JfrFilter to allow finding bottlenecks of slow requests in JFR profile. Resolve [JPERF-1409].

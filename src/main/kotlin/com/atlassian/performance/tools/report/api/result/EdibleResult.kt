@@ -21,7 +21,8 @@ class EdibleResult private constructor(
     val nodeDistribution: Map<String, Int>,
     val cohort: String,
     val outlierTrimming: Map<ActionType<*>, OutlierTrimming>,
-    val failure: Exception?
+    val failure: Exception?,
+    val raw: RawCohortResult?
 ) {
     init {
         if (failure != null) {
@@ -60,13 +61,14 @@ class EdibleResult private constructor(
         private var nodeDistribution: Map<String, Int> = emptyMap()
         private var trimmingPerType: Map<ActionType<*>, OutlierTrimming> = emptyMap()
         private var failure: Exception? = null
-
+        private var raw: RawCohortResult? = null
 
         fun actionMetrics(actionMetrics: List<ActionMetric>) = apply { this.actionMetrics = actionMetrics }
         fun systemMetrics(systemMetrics: List<SystemMetric>) = apply { this.systemMetrics = systemMetrics }
         fun nodeDistribution(nodeDistribution: Map<String, Int>) = apply { this.nodeDistribution = nodeDistribution }
         fun trimmingPerType(outlierTrimming: Map<ActionType<*>, OutlierTrimming>) = apply { this.trimmingPerType = outlierTrimming }
         fun failure(failure: Exception) = apply { this.failure = failure }
+        fun raw(raw: RawCohortResult) = apply { this.raw = raw }
 
         fun build(): EdibleResult = EdibleResult(
             cohort = cohort,
@@ -74,7 +76,8 @@ class EdibleResult private constructor(
             systemMetrics = systemMetrics,
             nodeDistribution = nodeDistribution,
             outlierTrimming = trimmingPerType,
-            failure = failure
+            failure = failure,
+            raw = raw
         )
     }
 }
