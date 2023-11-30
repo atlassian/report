@@ -22,6 +22,9 @@ class EdibleResult private constructor(
     val cohort: String,
     val outlierTrimming: Map<ActionType<*>, OutlierTrimming>,
     val failure: Exception?,
+    /**
+     * @since 4.1.0
+     */
     val raw: RawCohortResult?
 ) {
     init {
