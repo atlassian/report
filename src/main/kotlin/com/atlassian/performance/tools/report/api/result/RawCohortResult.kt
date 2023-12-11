@@ -28,6 +28,11 @@ abstract class RawCohortResult private constructor() {
     abstract val failure: Exception?
 
     /**
+     * Textual description of the cohort, e.g. "9.12.0 on DC 2 nodes - experiment, sample 3".
+     */
+    abstract val cohort: String
+
+    /**
      * Prepares post-processed performance results.
      */
     abstract fun prepareForJudgement(
@@ -68,7 +73,7 @@ abstract class RawCohortResult private constructor() {
     }
 
     private class FullRawCohortResult(
-        private val cohort: String,
+        override val cohort: String,
         override val results: Path,
         format: MetricJsonFormat
     ) : RawCohortResult() {
@@ -113,7 +118,7 @@ abstract class RawCohortResult private constructor() {
     }
 
     private class FailedRawCohortResult(
-        private val cohort: String,
+        override val cohort: String,
         override val results: Path,
         override val failure: Exception
     ) : RawCohortResult() {
@@ -134,7 +139,7 @@ abstract class RawCohortResult private constructor() {
     }
 
     private class LegacyRawCohortResult(
-        private val cohort: String,
+        override val cohort: String,
         override val failure: Exception
     ) : RawCohortResult() {
 

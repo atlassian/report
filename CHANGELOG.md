@@ -26,6 +26,9 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-4.1.0...master
 
+### Added
+- Expose `RawCohortResult.cohort`.
+
 ## [4.1.0] - 2023-11-30
 [4.1.0]: https://github.com/atlassian/report/compare/release-4.0.0...release-4.1.0
 
