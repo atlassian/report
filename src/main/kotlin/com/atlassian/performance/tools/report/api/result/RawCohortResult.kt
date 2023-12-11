@@ -29,6 +29,8 @@ abstract class RawCohortResult private constructor() {
 
     /**
      * Textual description of the cohort, e.g. "9.12.0 on DC 2 nodes - experiment, sample 3".
+     *
+     * @since 4.2.0
      */
     abstract val cohort: String
 
