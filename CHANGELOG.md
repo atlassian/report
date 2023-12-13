@@ -26,6 +26,9 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-4.2.0...master
 
+### Added
+- Add `MultiJfrFilter` to process input once and create multiple outputs. Aids [JPERF-1409].
+
 ## [4.2.0] - 2023-12-11
 [4.2.0]: https://github.com/atlassian/report/compare/release-4.1.0...release-4.2.0
 
