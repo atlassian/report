@@ -41,6 +41,7 @@ class RainbowTest {
                 it.assertThat(processing).isEqualTo(ofMillis(72))
                 it.assertThat(load).isEqualTo(ofMillis(1))
                 it.assertThat(excessResource).isEqualTo(ofMillis(184))
+                it.assertThat(excessJavascript).isEqualTo(ofMillis(184))
                 it.assertThat(total).isEqualTo(ofMillis(546).plusNanos(821000))
                 it.assertThat(unexplained).isLessThan(ofMillis(100))
             }
@@ -55,7 +56,8 @@ class RainbowTest {
     private fun inferRainbow(metric: ActionMetric): Rainbow {
         val nav = metric.drilldown!!.navigations.single()
         val resources = metric.drilldown!!.resources
-        val excessResource = resources.map { it.responseEnd }.max()!!
+        val lastResource = resources.map { it.responseEnd }.max() ?: nav.loadEventEnd
+        val excessResource = lastResource - nav.loadEventEnd
         return with(nav.resource) {
             Rainbow(
                 redirect = redirectEnd - redirectStart,
@@ -65,9 +67,10 @@ class RainbowTest {
                 tcp = connectEnd - connectStart,
                 request = responseStart - requestStart,
                 response = responseEnd - responseStart,
-                processing = nav.domComplete - responseEnd,
+                processing = if (nav.domComplete != ZERO) nav.domComplete - responseEnd else ZERO,
                 load = nav.loadEventEnd - nav.loadEventStart,
-                excessResource = if (excessResource > nav.loadEventEnd) excessResource - nav.loadEventEnd else ZERO,
+                excessResource = excessResource,
+                excessJavascript = metric.duration - lastResource,
                 total = metric.duration
             )
         }
@@ -88,6 +91,7 @@ class RainbowTest {
         val processing: Duration,
         val load: Duration,
         val excessResource: Duration,
+        val excessJavascript: Duration,
         val total: Duration
     ) {
 
@@ -101,6 +105,7 @@ class RainbowTest {
             .minus(response)
             .minus(processing)
             .minus(excessResource)
+            .minus(excessJavascript)
             .minus(load)
 
         init {
@@ -114,6 +119,7 @@ class RainbowTest {
             assert(processing.isNegative.not()) { "processing duration cannot be negative" }
             assert(load.isNegative.not()) { "load duration cannot be negative" }
             assert(excessResource.isNegative.not()) { "excessResource cannot be negative" }
+            assert(excessJavascript.isNegative.not()) { "excessJavascript cannot be negative" }
             assert(total.isNegative.not()) { "total duration cannot be negative" }
         }
     }
