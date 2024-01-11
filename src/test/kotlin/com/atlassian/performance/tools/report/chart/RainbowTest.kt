@@ -37,6 +37,7 @@ class RainbowTest {
             assertThat(request).isEqualTo(ofMillis(33))
             assertThat(response).isEqualTo(ofMillis(90))
             assertThat(processing).isEqualTo(ofMillis(72))
+            assertThat(load).isEqualTo(ofMillis(1))
         }
         metrics.forEach { metric ->
             val rainbow = inferRainbow(metric)
@@ -45,8 +46,8 @@ class RainbowTest {
     }
 
     private fun inferRainbow(metric: ActionMetric): Rainbow {
-        val navigation = metric.drilldown!!.navigations.single()
-        val resource = navigation.resource
+        val nav = metric.drilldown!!.navigations.single()
+        val resource = nav.resource
         return with(resource) {
             Rainbow(
                 redirect = redirectEnd - redirectStart,
@@ -56,7 +57,8 @@ class RainbowTest {
                 tcp = connectEnd - connectStart,
                 request = responseStart - requestStart,
                 response = responseEnd - responseStart,
-                processing = navigation.domComplete - responseEnd,
+                processing = nav.domComplete - responseEnd,
+                load = nav.loadEventEnd - nav.loadEventStart,
                 total = metric.duration
             )
         }
@@ -75,6 +77,7 @@ class RainbowTest {
         val request: Duration,
         val response: Duration,
         val processing: Duration,
+        val load: Duration,
         val total: Duration
     ) {
 
@@ -87,6 +90,7 @@ class RainbowTest {
             .minus(request)
             .minus(response)
             .minus(processing)
+            .minus(load)
 
         init {
             assert(redirect.isNegative.not()) { "redirect duration cannot be negative" }
@@ -97,6 +101,7 @@ class RainbowTest {
             assert(request.isNegative.not()) { "request duration cannot be negative" }
             assert(response.isNegative.not()) { "response duration cannot be negative" }
             assert(processing.isNegative.not()) { "processing duration cannot be negative" }
+            assert(load.isNegative.not()) { "load duration cannot be negative" }
             assert(total.isNegative.not()) { "total duration cannot be negative" }
         }
     }
