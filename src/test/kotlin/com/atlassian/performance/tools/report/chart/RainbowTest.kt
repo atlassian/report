@@ -40,6 +40,7 @@ class RainbowTest {
                 it.assertThat(response).isEqualTo(ofMillis(90))
                 it.assertThat(processing).isEqualTo(ofMillis(72))
                 it.assertThat(load).isEqualTo(ofMillis(1))
+                it.assertThat(excessResource).isEqualTo(ofMillis(184))
                 it.assertThat(total).isEqualTo(ofMillis(546).plusNanos(821000))
                 it.assertThat(unexplained).isLessThan(ofMillis(100))
             }
@@ -53,8 +54,9 @@ class RainbowTest {
 
     private fun inferRainbow(metric: ActionMetric): Rainbow {
         val nav = metric.drilldown!!.navigations.single()
-        val resource = nav.resource
-        return with(resource) {
+        val resources = metric.drilldown!!.resources
+        val excessResource = resources.map { it.responseEnd }.max()!!
+        return with(nav.resource) {
             Rainbow(
                 redirect = redirectEnd - redirectStart,
                 serviceWorkerInit = if (workerStart != ZERO) fetchStart - workerStart else ZERO,
@@ -65,6 +67,7 @@ class RainbowTest {
                 response = responseEnd - responseStart,
                 processing = nav.domComplete - responseEnd,
                 load = nav.loadEventEnd - nav.loadEventStart,
+                excessResource = if (excessResource > nav.loadEventEnd) excessResource - nav.loadEventEnd else ZERO,
                 total = metric.duration
             )
         }
@@ -84,6 +87,7 @@ class RainbowTest {
         val response: Duration,
         val processing: Duration,
         val load: Duration,
+        val excessResource: Duration,
         val total: Duration
     ) {
 
@@ -96,6 +100,7 @@ class RainbowTest {
             .minus(request)
             .minus(response)
             .minus(processing)
+            .minus(excessResource)
             .minus(load)
 
         init {
@@ -108,6 +113,7 @@ class RainbowTest {
             assert(response.isNegative.not()) { "response duration cannot be negative" }
             assert(processing.isNegative.not()) { "processing duration cannot be negative" }
             assert(load.isNegative.not()) { "load duration cannot be negative" }
+            assert(excessResource.isNegative.not()) { "excessResource cannot be negative" }
             assert(total.isNegative.not()) { "total duration cannot be negative" }
         }
     }
