@@ -63,7 +63,10 @@ class RainbowTest {
     private fun inferRainbow(metric: ActionMetric): Rainbow {
         val nav = metric.drilldown!!.navigations.single()
         return with(nav.resource) {
-            val train = TimeTrain(redirectStart)
+            val train = TimeTrain(minOf(nav.unloadEventStart, redirectStart))
+            val preUnloadAndRedirect = train.jumpOff(maxOf(nav.unloadEventStart, redirectStart))
+            val unloadAndRedirect = train.jumpOff(minOf(nav.unloadEventEnd, redirectEnd))
+            val postUnloadAndRedirect = TimeTrain(maxOf(nav.unloadEventEnd, redirectEnd))
             val redirect = train.jumpOff(redirectEnd)
             val preWorker = train.jumpOff(workerStart)
             val serviceWorkerInit = train.jumpOff(fetchStart)
@@ -116,9 +119,10 @@ class RainbowTest {
             /**
              * Some stations are parallel and can come in different order in runtime,
              * e.g. [PerformanceNavigationTiming.unloadEventEnd] might come before or after [PerformanceResourceTiming.redirectEnd].
+             * So you need to ensure one linear sequence of stations instead of dropping one.
              */
             if (nextStation < lastStation) {
-                return ZERO
+                throw Exception("Next station $nextStation came after $lastStation")
             }
             val segment = nextStation - lastStation
             lastStation = nextStation
