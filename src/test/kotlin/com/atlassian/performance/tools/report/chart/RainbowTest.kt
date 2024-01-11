@@ -3,6 +3,7 @@ package com.atlassian.performance.tools.report.chart
 import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.jiraactions.api.parser.ActionMetricsParser
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.SoftAssertions
 import org.junit.Test
 import java.time.Duration
 import java.time.Duration.ZERO
@@ -28,20 +29,25 @@ class RainbowTest {
         val interestingRainbow = inferRainbow(interestingMetric)
 
         // then
-        with(interestingRainbow) {
-            assertThat(redirect).isEqualTo(ofMillis(112))
-            assertThat(serviceWorkerInit).isEqualTo(ZERO)
-            assertThat(fetchAndCache).isEqualTo(ZERO)
-            assertThat(dns).isEqualTo(ZERO)
-            assertThat(tcp).isEqualTo(ZERO)
-            assertThat(request).isEqualTo(ofMillis(33))
-            assertThat(response).isEqualTo(ofMillis(90))
-            assertThat(processing).isEqualTo(ofMillis(72))
-            assertThat(load).isEqualTo(ofMillis(1))
+        SoftAssertions.assertSoftly {
+            with(interestingRainbow) {
+                it.assertThat(redirect).isEqualTo(ofMillis(112))
+                it.assertThat(serviceWorkerInit).isEqualTo(ZERO)
+                it.assertThat(fetchAndCache).isEqualTo(ZERO)
+                it.assertThat(dns).isEqualTo(ZERO)
+                it.assertThat(tcp).isEqualTo(ZERO)
+                it.assertThat(request).isEqualTo(ofMillis(33))
+                it.assertThat(response).isEqualTo(ofMillis(90))
+                it.assertThat(processing).isEqualTo(ofMillis(72))
+                it.assertThat(load).isEqualTo(ofMillis(1))
+                it.assertThat(total).isEqualTo(ofMillis(546).plusNanos(821000))
+                it.assertThat(unexplained).isLessThan(ofMillis(100))
+            }
+
         }
         metrics.forEach { metric ->
             val rainbow = inferRainbow(metric)
-            assertThat(rainbow.unexplained).isLessThan(ofMillis(800))
+            assertThat(rainbow.unexplained).isLessThan(ofMillis(100))
         }
     }
 
