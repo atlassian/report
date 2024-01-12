@@ -73,8 +73,11 @@ class RainbowTest {
             val processing = train.jumpOff(nav.domComplete)
             val preLoad = train.jumpOff(nav.loadEventStart)
             val load = train.jumpOff(nav.loadEventEnd)
-            val lastResource = metric.drilldown!!.resources.map { it.responseEnd }.max()
-            val excessResource = train.jumpOff(lastResource ?: ZERO)
+            val lastResource = metric.drilldown!!.resources
+                .map { it.responseEnd }
+                .filter { it < metric.duration }
+                .max() ?: ZERO
+            val excessResource = train.jumpOff(lastResource)
             val excessJavascript = train.jumpOff(metric.duration)
             Rainbow(
                 redirect = redirect,
