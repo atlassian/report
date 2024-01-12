@@ -49,6 +49,7 @@ class RainbowTest {
                 it.assertThat(unexplained).isBetween(ZERO, ofMillis(1))
             }
             assertThat(inferRainbow(metrics[5]).unexplained).isBetween(ZERO, ofMillis(1))
+            assertThat(inferRainbow(metrics[15]).unexplained).isBetween(ZERO, ofMillis(1))
         }
         metrics.forEach { metric ->
             val rainbow = inferRainbow(metric)
