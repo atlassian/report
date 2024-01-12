@@ -46,13 +46,13 @@ class RainbowTest {
                 it.assertThat(excessResource).isEqualTo(ofMillis(184))
                 it.assertThat(excessJavascript.truncatedTo(MILLIS)).isEqualTo(ofMillis(53))
                 it.assertThat(total).isEqualTo(ofMillis(546).plusNanos(821000))
-                it.assertThat(unexplained).isLessThan(ofMillis(100))
+                it.assertThat(unexplained).isLessThan(ofMillis(1))
             }
 
         }
         metrics.forEach { metric ->
             val rainbow = inferRainbow(metric)
-            assertThat(rainbow.unexplained).isLessThan(ofMillis(100))
+            assertThat(rainbow.unexplained).isLessThan(ofMillis(1))
         }
     }
 
