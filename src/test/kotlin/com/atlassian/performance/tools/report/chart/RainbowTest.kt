@@ -78,13 +78,17 @@ class RainbowTest {
             val excessJavascript = train.jumpOff(metric.duration)
             Rainbow(
                 redirect = redirect,
+                preWorker = preWorker,
                 serviceWorkerInit = serviceWorkerInit,
                 fetchAndCache = fetchAndCache,
                 dns = dns,
+                preConnect = preConnect,
                 tcp = tcp,
+                preRequest = preRequest,
                 request = request,
                 response = response,
                 processing = processing,
+                preLoad = preLoad,
                 load = load,
                 excessResource = excessResource,
                 excessJavascript = excessJavascript,
@@ -128,13 +132,17 @@ class RainbowTest {
      */
     class Rainbow(
         val redirect: Duration,
+        val preWorker: Duration,
         val serviceWorkerInit: Duration,
         val fetchAndCache: Duration,
         val dns: Duration,
+        val preConnect: Duration,
         val tcp: Duration,
+        val preRequest: Duration,
         val request: Duration,
         val response: Duration,
         val processing: Duration,
+        val preLoad: Duration,
         val load: Duration,
         val excessResource: Duration,
         val excessJavascript: Duration,
@@ -143,26 +151,34 @@ class RainbowTest {
 
         val unexplained: Duration = total
             .minus(redirect)
+            .minus(preWorker)
             .minus(serviceWorkerInit)
             .minus(fetchAndCache)
             .minus(dns)
+            .minus(preConnect)
             .minus(tcp)
+            .minus(preRequest)
             .minus(request)
             .minus(response)
             .minus(processing)
             .minus(excessResource)
             .minus(excessJavascript)
+            .minus(preLoad)
             .minus(load)
 
         init {
             assert(redirect.isNegative.not()) { "redirect duration cannot be negative" }
+            assert(preWorker.isNegative.not()) { "preWorker duration cannot be negative" }
             assert(serviceWorkerInit.isNegative.not()) { "serviceWorkerInit duration cannot be negative" }
             assert(fetchAndCache.isNegative.not()) { "fetchAndCache duration cannot be negative" }
             assert(dns.isNegative.not()) { "dns duration cannot be negative" }
+            assert(preConnect.isNegative.not()) { "preConnect duration cannot be negative" }
             assert(tcp.isNegative.not()) { "tcp duration cannot be negative" }
+            assert(preRequest.isNegative.not()) { "preRequest duration cannot be negative" }
             assert(request.isNegative.not()) { "request duration cannot be negative" }
             assert(response.isNegative.not()) { "response duration cannot be negative" }
             assert(processing.isNegative.not()) { "processing duration cannot be negative" }
+            assert(preLoad.isNegative.not()) { "preLoad duration cannot be negative" }
             assert(load.isNegative.not()) { "load duration cannot be negative" }
             assert(excessResource.isNegative.not()) { "excessResource cannot be negative" }
             assert(excessJavascript.isNegative.not()) { "excessJavascript cannot be negative" }
