@@ -5,7 +5,8 @@ import com.atlassian.performance.tools.jiraactions.api.parser.ActionMetricsParse
 import com.atlassian.performance.tools.jiraactions.api.w3c.PerformanceNavigationTiming
 import com.atlassian.performance.tools.jiraactions.api.w3c.PerformanceResourceTiming
 import com.atlassian.performance.tools.report.chart.waterfall.WaterfallChart
-import org.assertj.core.api.SoftAssertions
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.SoftAssertions.assertSoftly
 import org.junit.Test
 import java.io.File.createTempFile
 import java.time.Duration
@@ -16,11 +17,12 @@ import kotlin.streams.toList
 
 class RainbowTest {
 
+    private val metricsStream = javaClass.getResourceAsStream("action-metrics-with-elements-and-server.jpt")!!
+    private val metrics = ActionMetricsParser().stream(metricsStream).toList()
+
     @Test
     fun shouldCalculateRainbowWithNavigation() {
         // given
-        val metricsStream = javaClass.getResourceAsStream("action-metrics-with-elements-and-server.jpt")!!
-        val metrics = ActionMetricsParser().stream(metricsStream).toList()
         val interestingMetric = metrics.first {
             val drilldown = it.drilldown!!
             val nav = drilldown.navigations.firstOrNull() ?: return@first false
@@ -33,7 +35,8 @@ class RainbowTest {
         val interestingRainbow = inferRainbow(interestingMetric)
 
         // then
-        SoftAssertions.assertSoftly {
+        plotWaterfall(interestingMetric)
+        assertSoftly {
             with(interestingRainbow) {
                 it.assertThat(redirect).isEqualTo(ofMillis(11))
                 it.assertThat(serviceWorkerInit).isEqualTo(ZERO)
@@ -49,14 +52,53 @@ class RainbowTest {
                 it.assertThat(total).isEqualTo(ofMillis(1111).plusNanos(264000))
                 it.assertThat(unexplained).isBetween(ZERO, ofMillis(1))
             }
-            val unexplained = metrics
-                .map { metric -> metric to inferRainbow(metric) }
-                .filter { (_, rainbow) -> rainbow.unexplained < ZERO || rainbow.unexplained > ofMillis(1) }
-                .onEach { (metric, _) ->
-                    WaterfallChart().plot(metric, createTempFile("waterfall-${metric.label}-", ".html"))
-                }
-            it.assertThat(unexplained.size).isLessThan(103)
         }
+    }
+
+    /**
+     * Sometimes UX is measured long after loading the page in the browser,
+     * e.g. interact with buttons on an already-loaded page.
+     */
+    @Test
+    fun shouldCalculateRainbowForSinglePageApp() {
+        // given
+        val spaMetric = metrics.first { it.start > it.drilldown!!.timeOrigin }
+
+        // when
+        val rainbow = inferRainbow(spaMetric)
+
+        // then
+        plotWaterfall(spaMetric)
+        assertSoftly {
+            with(rainbow) {
+                it.assertThat(redirect).isEqualTo(ZERO)
+                it.assertThat(serviceWorkerInit).isEqualTo(ZERO)
+                it.assertThat(fetchAndCache).isEqualTo(ZERO)
+                it.assertThat(dns).isEqualTo(ZERO)
+                it.assertThat(tcp).isEqualTo(ZERO)
+                it.assertThat(request).isEqualTo(ZERO)
+                it.assertThat(response).isEqualTo(ZERO)
+                it.assertThat(processing).isEqualTo(ZERO)
+                it.assertThat(load).isEqualTo(ZERO)
+                it.assertThat(excessResource).isNotEqualTo(ZERO)
+                it.assertThat(total).isEqualTo(ofMillis(427).plusNanos(823000))
+                it.assertThat(unexplained).isBetween(ZERO, ofMillis(1))
+            }
+        }
+    }
+
+    @Test
+    fun shouldExplainAlmostEverything() {
+        // when
+        val rainbows = metrics.map { inferRainbow(it) }
+
+        // then
+        val unexplained = rainbows.filter { it.unexplained < ZERO || it.unexplained > ofMillis(1) }
+        assertThat(unexplained.size).isLessThan(103)
+    }
+
+    private fun plotWaterfall(metric: ActionMetric) {
+        WaterfallChart().plot(metric, createTempFile("waterfall-${metric.label}-", ".html"))
     }
 
     private fun inferRainbow(metric: ActionMetric): Rainbow {
