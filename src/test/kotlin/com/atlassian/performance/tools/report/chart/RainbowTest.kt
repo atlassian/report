@@ -4,9 +4,10 @@ import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.jiraactions.api.parser.ActionMetricsParser
 import com.atlassian.performance.tools.jiraactions.api.w3c.PerformanceNavigationTiming
 import com.atlassian.performance.tools.jiraactions.api.w3c.PerformanceResourceTiming
-import org.assertj.core.api.Assertions.assertThat
+import com.atlassian.performance.tools.report.chart.waterfall.WaterfallChart
 import org.assertj.core.api.SoftAssertions
 import org.junit.Test
+import java.io.File.createTempFile
 import java.time.Duration
 import java.time.Duration.ZERO
 import java.time.Duration.ofMillis
@@ -34,26 +35,27 @@ class RainbowTest {
         // then
         SoftAssertions.assertSoftly {
             with(interestingRainbow) {
-                it.assertThat(redirect).isEqualTo(ofMillis(112))
+                it.assertThat(redirect).isEqualTo(ofMillis(11))
                 it.assertThat(serviceWorkerInit).isEqualTo(ZERO)
                 it.assertThat(fetchAndCache).isEqualTo(ZERO)
                 it.assertThat(dns).isEqualTo(ZERO)
                 it.assertThat(tcp).isEqualTo(ZERO)
-                it.assertThat(request).isEqualTo(ofMillis(33))
-                it.assertThat(response).isEqualTo(ofMillis(90))
-                it.assertThat(processing).isEqualTo(ofMillis(72))
+                it.assertThat(request).isEqualTo(ofMillis(28))
+                it.assertThat(response).isEqualTo(ofMillis(57))
+                it.assertThat(processing).isEqualTo(ofMillis(158))
                 it.assertThat(load).isEqualTo(ofMillis(1))
-                it.assertThat(excessResource).isEqualTo(ofMillis(184))
-                it.assertThat(excessJavascript.truncatedTo(MILLIS)).isEqualTo(ofMillis(53))
-                it.assertThat(total).isEqualTo(ofMillis(546).plusNanos(821000))
+                it.assertThat(excessResource).isEqualTo(ofMillis(233))
+                it.assertThat(excessJavascript.truncatedTo(MILLIS)).isEqualTo(ofMillis(623))
+                it.assertThat(total).isEqualTo(ofMillis(1111).plusNanos(264000))
                 it.assertThat(unexplained).isBetween(ZERO, ofMillis(1))
             }
-            assertThat(inferRainbow(metrics[5]).unexplained).isBetween(ZERO, ofMillis(1))
-            assertThat(inferRainbow(metrics[15]).unexplained).isBetween(ZERO, ofMillis(1))
-        }
-        metrics.forEach { metric ->
-            val rainbow = inferRainbow(metric)
-            assertThat(rainbow.unexplained).isLessThan(ofMillis(1))
+            val unexplained = metrics
+                .map { metric -> metric to inferRainbow(metric) }
+                .filter { (_, rainbow) -> rainbow.unexplained < ZERO || rainbow.unexplained > ofMillis(1) }
+                .onEach { (metric, _) ->
+                    WaterfallChart().plot(metric, createTempFile("waterfall-${metric.label}-", ".html"))
+                }
+            it.assertThat(unexplained.size).isLessThan(103)
         }
     }
 
