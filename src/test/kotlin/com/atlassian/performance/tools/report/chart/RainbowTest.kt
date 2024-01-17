@@ -12,7 +12,7 @@ import java.io.File.createTempFile
 import java.time.Duration
 import java.time.Duration.ZERO
 import java.time.Duration.ofMillis
-import java.time.temporal.ChronoUnit.MILLIS
+import java.time.Instant
 import kotlin.streams.toList
 
 class RainbowTest {
@@ -38,6 +38,7 @@ class RainbowTest {
         plotWaterfall(interestingMetric)
         assertSoftly {
             with(interestingRainbow) {
+                it.assertThat(preNav).isEqualTo(ofMillis(573).plusNanos(940951)) // huge, right?
                 it.assertThat(redirect).isEqualTo(ofMillis(11))
                 it.assertThat(serviceWorkerInit).isEqualTo(ZERO)
                 it.assertThat(fetchAndCache).isEqualTo(ZERO)
@@ -48,9 +49,9 @@ class RainbowTest {
                 it.assertThat(processing).isEqualTo(ofMillis(158))
                 it.assertThat(load).isEqualTo(ofMillis(1))
                 it.assertThat(excessResource).isEqualTo(ofMillis(233))
-                it.assertThat(excessJavascript.truncatedTo(MILLIS)).isEqualTo(ofMillis(623))
+                it.assertThat(excessJavascript).isEqualTo(ofMillis(49).plusNanos(323049))
                 it.assertThat(total).isEqualTo(ofMillis(1111).plusNanos(264000))
-                it.assertThat(unexplained).isBetween(ZERO, ofMillis(1))
+                it.assertThat(unexplained).isEqualTo(ZERO)
             }
         }
     }
@@ -71,6 +72,7 @@ class RainbowTest {
         plotWaterfall(spaMetric)
         assertSoftly {
             with(rainbow) {
+                it.assertThat(preNav).isEqualTo(ZERO)
                 it.assertThat(redirect).isEqualTo(ZERO)
                 it.assertThat(serviceWorkerInit).isEqualTo(ZERO)
                 it.assertThat(fetchAndCache).isEqualTo(ZERO)
@@ -80,9 +82,10 @@ class RainbowTest {
                 it.assertThat(response).isEqualTo(ZERO)
                 it.assertThat(processing).isEqualTo(ZERO)
                 it.assertThat(load).isEqualTo(ZERO)
-                it.assertThat(excessResource).isNotEqualTo(ZERO)
+                it.assertThat(excessResource).isEqualTo(ofMillis(367).plusNanos(743097))
+                it.assertThat(excessJavascript).isEqualTo(ofMillis(60).plusNanos(79903))
                 it.assertThat(total).isEqualTo(ofMillis(427).plusNanos(823000))
-                it.assertThat(unexplained).isBetween(ZERO, ofMillis(1))
+                it.assertThat(unexplained).isEqualTo(ZERO)
             }
         }
     }
@@ -93,8 +96,8 @@ class RainbowTest {
         val rainbows = metrics.map { inferRainbow(it) }
 
         // then
-        val unexplained = rainbows.filter { it.unexplained < ZERO || it.unexplained > ofMillis(1) }
-        assertThat(unexplained.size).isLessThan(103)
+        val unexplained = rainbows.filter { it.unexplained != ZERO }
+        assertThat(unexplained.size).isLessThan(12)
     }
 
     private fun plotWaterfall(metric: ActionMetric) {
@@ -102,9 +105,12 @@ class RainbowTest {
     }
 
     private fun inferRainbow(metric: ActionMetric): Rainbow {
-        val nav = metric.drilldown!!.navigations.single()
+        val drilldown = metric.drilldown!!
+        val nav = drilldown.navigations.single()
+        val timeOrigin = drilldown.timeOrigin!!
         return with(nav.resource) {
-            val train = TimeTrain(redirectStart)
+            val train = TimeTrain(metric.start, timeOrigin)
+            val preNav = train.jumpOff(redirectStart)
             val redirect = train.jumpOff(redirectEnd)
             val preWorker = train.jumpOff(workerStart)
             val serviceWorkerInit = train.jumpOff(fetchStart)
@@ -118,13 +124,14 @@ class RainbowTest {
             val processing = train.jumpOff(nav.domComplete)
             val preLoad = train.jumpOff(nav.loadEventStart)
             val load = train.jumpOff(nav.loadEventEnd)
-            val lastResource = metric.drilldown!!.resources
-                .map { it.responseEnd }
-                .filter { it < metric.duration }
-                .max() ?: ZERO
+            val lastResource = drilldown.resources
+                .map { timeOrigin + it.responseEnd }
+                .filter { it < metric.end }
+                .max() ?: Instant.MIN
             val excessResource = train.jumpOff(lastResource)
-            val excessJavascript = train.jumpOff(metric.duration)
+            val excessJavascript = train.jumpOff(metric.end)
             Rainbow(
+                preNav = preNav,
                 redirect = redirect,
                 preWorker = preWorker,
                 serviceWorkerInit = serviceWorkerInit,
@@ -146,31 +153,34 @@ class RainbowTest {
     }
 
     class TimeTrain(
-        private var lastStation: Duration
+        firstStation: Instant,
+        private val timeOrigin: Instant
     ) {
+
+        private var prevStation: Instant = firstStation
+
         /**
-         * Jump off at the next stop
+         * Jump off at the next station
          *
-         * @return how much time elapsed since the last stop, a linear time segment
+         * @return how much time elapsed since the last station, a linear time segment
          */
-        fun jumpOff(nextStation: Duration): Duration {
+        fun jumpOff(nextStation: Instant): Duration {
             /**
              * Some stations are optional, e.g. [PerformanceResourceTiming.workerStart]
              * or might not have happened yet, e.g. before [PerformanceNavigationTiming.loadEventStart]
-             */
-            if (nextStation == ZERO) {
-                return ZERO
-            }
-            /**
              * Some stations are parallel and can come in different order in runtime,
-             * e.g. [PerformanceNavigationTiming.unloadEventEnd] might come before or after [PerformanceResourceTiming.redirectEnd].
+             * e.g. last [PerformanceResourceTiming] might come before or after [PerformanceNavigationTiming.loadEventEnd].
              */
-            if (nextStation < lastStation) {
+            if (nextStation < prevStation) {
                 return ZERO
             }
-            val segment = nextStation - lastStation
-            lastStation = nextStation
+            val segment = Duration.between(prevStation, nextStation)
+            prevStation = nextStation
             return segment
+        }
+
+        fun jumpOff(nextStation: Duration): Duration {
+            return jumpOff(timeOrigin + nextStation)
         }
     }
 
@@ -179,6 +189,7 @@ class RainbowTest {
      * it's temporarily a rainbow, because the old visualisation of similar data looked like one
      */
     class Rainbow(
+        val preNav: Duration,
         val redirect: Duration,
         val preWorker: Duration,
         val serviceWorkerInit: Duration,
@@ -198,6 +209,7 @@ class RainbowTest {
     ) {
 
         val unexplained: Duration = total
+            .minus(preNav)
             .minus(redirect)
             .minus(preWorker)
             .minus(serviceWorkerInit)
@@ -215,6 +227,7 @@ class RainbowTest {
             .minus(load)
 
         init {
+            assert(preNav.isNegative.not()) { "preNav duration cannot be negative" }
             assert(redirect.isNegative.not()) { "redirect duration cannot be negative" }
             assert(preWorker.isNegative.not()) { "preWorker duration cannot be negative" }
             assert(serviceWorkerInit.isNegative.not()) { "serviceWorkerInit duration cannot be negative" }
