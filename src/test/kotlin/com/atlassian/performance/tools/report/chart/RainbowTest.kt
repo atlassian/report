@@ -90,14 +90,45 @@ class RainbowTest {
         }
     }
 
+    /**
+     * Browser can display the element we need in the middle of many phases, including DCL event or load event.
+     */
     @Test
-    fun shouldExplainAlmostEverything() {
+    fun shouldExplainMidNav() {
+        // given
+        val midNavMetric = metrics.first { metric ->
+            val drilldown = metric.drilldown!!
+            val timeOrigin = drilldown.timeOrigin!!
+            val nav = drilldown.navigations.singleOrNull()?.resource?.entry ?: return@first false
+            val navStart = timeOrigin + nav.startTime
+            val navEnd = navStart + nav.duration
+            metric.end > navStart && metric.end < navEnd
+        }
+
         // when
-        val rainbows = metrics.map { inferRainbow(it) }
+        val rainbow = inferRainbow(midNavMetric)
 
         // then
-        val unexplained = rainbows.filter { it.unexplained != ZERO }
-        assertThat(unexplained.size).isLessThan(12)
+        plotWaterfall(midNavMetric)
+        assertSoftly {
+            with(rainbow) {
+                it.assertThat(processing).isEqualTo(ofMillis(214))
+                it.assertThat(excessResource).isEqualTo(ZERO)
+                it.assertThat(excessJavascript).isEqualTo(ZERO)
+                it.assertThat(total).isEqualTo(ofMillis(307).plusNanos(334000))
+                it.assertThat(unexplained).isEqualTo(ZERO)
+            }
+        }
+    }
+
+    @Test
+    fun shouldExplainEverything() {
+        // when
+        val rainbows = metrics.map { it to inferRainbow(it) }
+
+        // then
+        val unexplained = rainbows.filter { (_, rainbow) -> rainbow.unexplained != ZERO }
+        assertThat(unexplained).isEmpty()
     }
 
     private fun plotWaterfall(metric: ActionMetric) {
@@ -244,6 +275,29 @@ class RainbowTest {
             assert(excessResource.isNegative.not()) { "excessResource cannot be negative" }
             assert(excessJavascript.isNegative.not()) { "excessJavascript cannot be negative" }
             assert(total.isNegative.not()) { "total duration cannot be negative" }
+        }
+
+        override fun toString(): String {
+            return "Rainbow(" +
+                "preNav=$preNav, " +
+                "redirect=$redirect, " +
+                "preWorker=$preWorker, " +
+                "serviceWorkerInit=$serviceWorkerInit, " +
+                "fetchAndCache=$fetchAndCache, " +
+                "dns=$dns, " +
+                "preConnect=$preConnect, " +
+                "tcp=$tcp, " +
+                "preRequest=$preRequest, " +
+                "request=$request, " +
+                "response=$response, " +
+                "processing=$processing, " +
+                "preLoad=$preLoad, " +
+                "load=$load, " +
+                "excessResource=$excessResource, " +
+                "excessJavascript=$excessJavascript, " +
+                "total=$total, " +
+                "unexplained=$unexplained" +
+                ")"
         }
     }
 }
