@@ -24,10 +24,18 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://github.com/atlassian/report/compare/release-4.2.0...master
+[Unreleased]: https://github.com/atlassian/report/compare/release-4.3.0...master
 
 ### Added
-- Add `MultiJfrFilter` to process input once and create multiple outputs. Aids [JPERF-1409].
+- Add `ActionMetricExplainer` and `DurationDrilldown` for explaining `ActionMetric.duration`. Unblock [JPERF-1454].
+
+[JPERF-1454]: https://ecosystem.atlassian.net/browse/JPERF-1454
+
+## [4.3.0] - 2023-12-13
+[4.3.0]: https://github.com/atlassian/report/compare/release-4.2.0...release-4.3.0
+
+### Added
+- Add `MultiJfrFilter` to process input once and create multiple outputs. Aid [JPERF-1409].
 
 ## [4.2.0] - 2023-12-11
 [4.2.0]: https://github.com/atlassian/report/compare/release-4.1.0...release-4.2.0
