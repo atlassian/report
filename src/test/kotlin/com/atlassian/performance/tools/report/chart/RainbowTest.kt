@@ -112,7 +112,7 @@ class RainbowTest {
         plotWaterfall(midNavMetric)
         assertSoftly {
             with(rainbow) {
-                it.assertThat(processing).isEqualTo(ofMillis(214))
+                it.assertThat(processing).isEqualTo(ofMillis(205).plusNanos(809903))
                 it.assertThat(excessResource).isEqualTo(ZERO)
                 it.assertThat(excessJavascript).isEqualTo(ZERO)
                 it.assertThat(total).isEqualTo(ofMillis(307).plusNanos(334000))
@@ -140,7 +140,7 @@ class RainbowTest {
         val nav = drilldown.navigations.single()
         val timeOrigin = drilldown.timeOrigin!!
         return with(nav.resource) {
-            val train = TimeTrain(metric.start, timeOrigin)
+            val train = TimeTrain(metric.start, timeOrigin, metric.end)
             val preNav = train.jumpOff(redirectStart)
             val redirect = train.jumpOff(redirectEnd)
             val preWorker = train.jumpOff(workerStart)
@@ -185,7 +185,8 @@ class RainbowTest {
 
     class TimeTrain(
         firstStation: Instant,
-        private val timeOrigin: Instant
+        private val timeOrigin: Instant,
+        private val lastStation: Instant
     ) {
 
         private var prevStation: Instant = firstStation
@@ -205,8 +206,9 @@ class RainbowTest {
             if (nextStation < prevStation) {
                 return ZERO
             }
-            val segment = Duration.between(prevStation, nextStation)
-            prevStation = nextStation
+            val jumpOffStation = minOf(nextStation, lastStation)
+            val segment = Duration.between(prevStation, jumpOffStation)
+            prevStation = jumpOffStation
             return segment
         }
 
