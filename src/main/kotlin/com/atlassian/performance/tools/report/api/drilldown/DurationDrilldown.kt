@@ -5,6 +5,8 @@ import java.time.Duration
 
 /**
  * Represents [ActionMetric.duration] split into linear segments based on [ActionMetric.drilldown].
+ *
+ * @since 4.4.0
  */
 class DurationDrilldown private constructor(
     /**

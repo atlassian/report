@@ -24,7 +24,14 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://github.com/atlassian/report/compare/release-4.3.0...master
+[Unreleased]: https://github.com/atlassian/report/compare/release-4.4.0...master
+
+## [4.4.0] - 2024-01-18
+[4.4.0]: https://github.com/atlassian/report/compare/release-4.3.0...release-4.4.0
+
+## 4.3.1 - 2024-01-18
+
+It was a botched 4.4.0 release. Don't use new APIs from this version, switch to 4.4.0 instead.
 
 ### Added
 - Add `ActionMetricExplainer` and `DurationDrilldown` for explaining `ActionMetric.duration`. Unblock [JPERF-1454].
@@ -355,8 +362,7 @@ Test release, no important changes here.
 [JPERF-464]: https://ecosystem.atlassian.net/browse/JPERF-464
 [JPERF-455]: https://ecosystem.atlassian.net/browse/JPERF-455
 
-## [3.1.4] - 2019-04-30
-[3.1.4]: https://github.com/atlassian/report/compare/release-3.1.3...release-3.1.4
+## 3.1.4 - 2019-04-30
 
 It was a botched 3.2.0 release. Don't use new APIs from this version, switch to 3.2.0 instead.
 
@@ -416,14 +422,13 @@ It was a botched 3.2.0 release. Don't use new APIs from this version, switch to 
 [JPERF-316]: https://ecosystem.atlassian.net/browse/JPERF-316
 
 ## [2.6.0] - 2019-01-11
-[2.6.0]: https://github.com/atlassian/report/compare/release-2.5.0...release-2.6.0
+[2.6.0]: https://github.com/atlassian/report/compare/release-2.4.0...release-2.6.0
 
 ### Fixed
 - Remove `WaterfallHighlightReport` in order to restore compatibility with `jira-actions:[2.0.0,3.1.0)`.  
   This is not a breaking change, because the API from 2.5.0 was not stable.  
 
-## [2.5.0] - 2019-01-10
-[2.5.0]: https://github.com/atlassian/report/compare/release-2.4.0...release-2.5.0
+## 2.5.0 - 2019-01-10
 
 ### INCOMPATIBILITY BUG
 2.5.0 is botched.
