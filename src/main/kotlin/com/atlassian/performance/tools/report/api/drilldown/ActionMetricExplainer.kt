@@ -4,6 +4,9 @@ import com.atlassian.performance.tools.jiraactions.api.ActionMetric
 import com.atlassian.performance.tools.report.drilldown.TimeTrain
 import java.time.Instant
 
+/**
+ * @since 4.4.0
+ */
 object ActionMetricExplainer {
     fun explainDuration(metric: ActionMetric): DurationDrilldown {
         val drilldown = metric.drilldown!!
