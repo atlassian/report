@@ -34,11 +34,10 @@
 package org.openjdk.jmc.flightrecorder.testutils.parser;
 
 import jdk.jfr.consumer.RecordedEvent;
-
-import java.nio.file.Path;
+import tools.profiler.jfr.converter.CheckpointEvent;
 
 /**
- * A callback to be provided to {@linkplain StreamingChunkParser#parse(Path, ChunkParserListener)}
+ * A callback to be provided to {@linkplain StreamingChunkParser)}
  */
 public interface ChunkParserListener {
 	/** Called when the recording starts to be processed */
@@ -74,7 +73,7 @@ public interface ChunkParserListener {
 	default void onEvent(RecordedEvent event, EventHeader eventHeader, byte[] eventPayload) {
 	}
 
-	default void onCheckpoint(EventHeader eventHeader, byte[] eventPayload) {
+	default void onCheckpoint(EventHeader eventHeader, byte[] eventPayload, CheckpointEvent constantPool) {
 	}
 
 	/**

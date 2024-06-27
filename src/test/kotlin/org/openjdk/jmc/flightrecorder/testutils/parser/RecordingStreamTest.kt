@@ -11,7 +11,7 @@ class RecordingStreamTest {
     fun shouldParse6164InTwoBytes() {
         val input = ByteArrayInputStream(byteArrayOf(-108, 48))
 
-        val output = RecordingStream(input).readVarint()
+        val output = RecordingStream(input).readVarlong()
 
         assertThat(output).isEqualTo(6164)
     }
@@ -29,7 +29,7 @@ class RecordingStreamTest {
             )
         )
 
-        val output = RecordingStream(input).readVarint()
+        val output = RecordingStream(input).readVarlong()
 
         assertThat(output).isEqualTo(6164)
     }
@@ -38,7 +38,7 @@ class RecordingStreamTest {
     fun shouldParseStartTime() {
         val input = ByteArrayInputStream(byteArrayOf(-22, -90, -45, -116, -84, 16, 0))
 
-        val output = RecordingStream(input).readVarint()
+        val output = RecordingStream(input).readVarlong()
 
         assertThat(output).isEqualTo(561593504618L)
     }

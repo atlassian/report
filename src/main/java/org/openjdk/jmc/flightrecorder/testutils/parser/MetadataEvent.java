@@ -33,11 +33,17 @@
  */
 package org.openjdk.jmc.flightrecorder.testutils.parser;
 
+import tools.profiler.jfr.converter.Element;
+import tools.profiler.jfr.converter.JfrClass;
+import tools.profiler.jfr.converter.JfrField;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import static java.lang.Integer.parseInt;
 
 /**
  * JFR Chunk metadata
@@ -45,6 +51,8 @@ import java.util.Objects;
  * It contains the chunk specific type specifications
  */
 public final class MetadataEvent {
+
+    // TODO WTF! this is not even that MetadataEvent instances are not thread-safe, the whole class itself is not thread-safe
     private static final byte[] COMMON_BUFFER = new byte[4096]; // reusable byte buffer
 
     public final int size;
@@ -56,29 +64,33 @@ public final class MetadataEvent {
      */
     private int gmtOffset = 1;
 
-    private final Map<Long, String> eventTypeNameMapBacking = new HashMap<>(256);
+    public final Map<Integer, JfrClass> typesById = new HashMap<>(256);
+    public final Map<String, JfrClass> typesByName = new HashMap<>(256);
 
     MetadataEvent(RecordingStream stream, int eventSize, long eventType) throws IOException {
         size = eventSize;
         if (eventType != 0) {
             throw new IOException("Unexpected event type: " + eventType + " (should be 0). Stream at position: " + stream.position());
         }
-        startTime = stream.readVarint();
-        duration = stream.readVarint();
-        metadataId = stream.readVarint();
-        readElements(stream, readStringTable(stream));
+        startTime = stream.readVarlong();
+        duration = stream.readVarlong();
+        metadataId = stream.readVarlong();
+        readElement(stream, readStringTable(stream));
     }
 
-    private MetadataEvent(int size, long startTime, long duration, long metadataId, Map<Long, String> eventTypeNameMapBacking) {
+    private MetadataEvent(int size, long startTime, long duration, long metadataId) {
         this.size = size;
         this.startTime = startTime;
         this.duration = duration;
         this.metadataId = metadataId;
-        this.eventTypeNameMapBacking.putAll(eventTypeNameMapBacking);
     }
 
     public int getGmtOffset() {
         return gmtOffset;
+    }
+
+    public JfrClass type(int id) {
+        return typesById.get(id);
     }
 
     public static class Builder {
@@ -86,7 +98,6 @@ public final class MetadataEvent {
         private long startTime;
         private long duration;
         private long metadataId;
-        private Map<Long, String> eventTypeNameMapBacking = new HashMap<>(256);
 
         public Builder size(int size) {
             this.size = size;
@@ -108,18 +119,13 @@ public final class MetadataEvent {
             return this;
         }
 
-        public Builder eventTypeNameMapBacking(Map<Long, String> eventTypeNameMapBacking) {
-            this.eventTypeNameMapBacking.putAll(eventTypeNameMapBacking);
-            return this;
-        }
-
         public MetadataEvent build() {
-            return new MetadataEvent(size, startTime, duration, metadataId, eventTypeNameMapBacking);
+            return new MetadataEvent(size, startTime, duration, metadataId);
         }
     }
 
     private String[] readStringTable(RecordingStream stream) throws IOException {
-        int stringCnt = (int) stream.readVarint();
+        int stringCnt = stream.readVarint();
         String[] stringConstants = new String[stringCnt];
         for (int stringIdx = 0; stringIdx < stringCnt; stringIdx++) {
             stringConstants[stringIdx] = readUTF8(stream);
@@ -127,41 +133,41 @@ public final class MetadataEvent {
         return stringConstants;
     }
 
-    private void readElements(RecordingStream stream, String[] stringConstants) throws IOException {
-        // get the element name
-        int stringPtr = (int) stream.readVarint();
-        boolean isClassElement = "class".equals(stringConstants[stringPtr]);
+    private Element readElement(RecordingStream stream, String[] strings) throws IOException {
+        String name = strings[stream.readVarint()];
 
-        // process the attributes
-        int attrCount = (int) stream.readVarint();
-        String superType = null;
-        String name = null;
-        String id = null;
-        for (int i = 0; i < attrCount; i++) {
-            int keyPtr = (int) stream.readVarint();
-            int valPtr = (int) stream.readVarint();
-            // ignore anything but 'class' elements
-            if ("gmtOffset".equals(stringConstants[keyPtr])) {
-                gmtOffset = Integer.parseInt(stringConstants[valPtr]);
-            }
-            if (isClassElement) {
-                if ("superType".equals(stringConstants[keyPtr])) {
-                    superType = stringConstants[valPtr];
-                } else if ("name".equals(stringConstants[keyPtr])) {
-                    name = stringConstants[valPtr];
-                } else if ("id".equals(stringConstants[keyPtr])) {
-                    id = stringConstants[valPtr];
+        int attributeCount = stream.readVarint();
+        Map<String, String> attributes = new HashMap<>(attributeCount);
+        for (int i = 0; i < attributeCount; i++) {
+            attributes.put(strings[stream.readVarint()], strings[stream.readVarint()]);
+        }
+
+        if (attributes.containsKey("gmtOffset")) {
+            gmtOffset = parseInt(attributes.get("gmtOffset"));
+        }
+
+        Element e = createElement(name, attributes);
+        int childCount = stream.readVarint();
+        for (int i = 0; i < childCount; i++) {
+            e.addChild(readElement(stream, strings));
+        }
+        return e;
+    }
+
+    private Element createElement(String name, Map<String, String> attributes) {
+        switch (name) {
+            case "class": {
+                JfrClass type = new JfrClass(attributes);
+                if (!attributes.containsKey("superType")) {
+                    typesById.put(type.id, type);
                 }
+                typesByName.put(type.name, type);
+                return type;
             }
-        }
-        // only event types are currently collected
-        if (name != null && id != null && "jdk.jfr.Event".equals(superType)) {
-            eventTypeNameMapBacking.put(Long.parseLong(id), name);
-        }
-        // now inspect all the enclosed elements
-        int elemCount = (int) stream.readVarint();
-        for (int i = 0; i < elemCount; i++) {
-            readElements(stream, stringConstants);
+            case "field":
+                return new JfrField(attributes);
+            default:
+                return new Element();
         }
     }
 
@@ -172,15 +178,15 @@ public final class MetadataEvent {
         } else if (id == 1) {
             return "";
         } else if (id == 3) {
-            int size = (int) stream.readVarint();
+            int size = stream.readVarint();
             byte[] content = size <= COMMON_BUFFER.length ? COMMON_BUFFER : new byte[size];
             stream.read(content, 0, size);
             return new String(content, 0, size, StandardCharsets.UTF_8);
         } else if (id == 4) {
-            int size = (int) stream.readVarint();
+            int size = stream.readVarint();
             char[] chars = new char[size];
             for (int i = 0; i < size; i++) {
-                chars[i] = (char) stream.readVarint();
+                chars[i] = (char) stream.readVarlong();
             }
             return new String(chars);
         } else {
@@ -191,7 +197,7 @@ public final class MetadataEvent {
     @Override
     public String toString() {
         return "Metadata{" + "size=" + size + ", startTime=" + startTime + ", duration=" + duration + ", metadataId="
-                + metadataId + '}' + eventTypeNameMapBacking;
+                + metadataId + '}';
     }
 
     @Override
