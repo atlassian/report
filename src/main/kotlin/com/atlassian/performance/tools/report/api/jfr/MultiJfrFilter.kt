@@ -3,6 +3,7 @@ package com.atlassian.performance.tools.report.api.jfr
 import com.atlassian.performance.tools.report.jfr.FilteringJfrWriter
 import jdk.jfr.consumer.RecordedEvent
 import org.openjdk.jmc.flightrecorder.testutils.parser.*
+import tools.profiler.jfr.converter.CheckpointEvent
 import java.io.Closeable
 import java.nio.file.Path
 import java.util.function.Predicate
@@ -40,8 +41,8 @@ class MultiJfrFilter private constructor(
             listeners.forEach { it.onEvent(event, eventHeader, eventPayload) }
         }
 
-        override fun onCheckpoint(eventHeader: EventHeader, eventPayload: ByteArray) {
-            listeners.forEach { it.onCheckpoint(eventHeader, eventPayload) }
+        override fun onCheckpoint(eventHeader: EventHeader, eventPayload: ByteArray, checkpoint: CheckpointEvent) {
+            listeners.forEach { it.onCheckpoint(eventHeader, eventPayload, checkpoint) }
         }
 
         override fun onRecordingStart() {

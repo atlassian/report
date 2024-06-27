@@ -6,6 +6,7 @@ import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkHeader
 import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkParserListener
 import org.openjdk.jmc.flightrecorder.testutils.parser.EventHeader
 import org.openjdk.jmc.flightrecorder.testutils.parser.MetadataEvent
+import tools.profiler.jfr.converter.CheckpointEvent
 import java.io.DataOutputStream
 import java.io.File
 import java.io.OutputStream
@@ -53,7 +54,7 @@ class FilteringJfrWriter(
             }
         }
 
-        override fun onCheckpoint(eventHeader: EventHeader, eventPayload: ByteArray) {
+        override fun onCheckpoint(eventHeader: EventHeader, eventPayload: ByteArray, checkpointEvent: CheckpointEvent) {
             lastCheckpointEventOffset = countingOutput.offsetSinceLastReset
             output.write(eventHeader.bytes)
             output.write(eventPayload)

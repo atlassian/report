@@ -36,6 +36,7 @@ package org.openjdk.jmc.flightrecorder.testutils.parser;
 import jdk.jfr.consumer.RecordedEvent;
 import jdk.jfr.consumer.RecordingFile;
 import org.jetbrains.annotations.NotNull;
+import tools.profiler.jfr.converter.CheckpointEvent;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -53,6 +54,7 @@ import java.nio.file.Path;
  */
 public final class StreamingChunkParser {
     private final ChunkParserListener listener;
+    private MetadataEvent metadata;
 
     public StreamingChunkParser(ChunkParserListener listener) {
         this.listener = listener;
@@ -68,14 +70,12 @@ public final class StreamingChunkParser {
      * <li>listener.onChunkEnd()
      * <li>listener.onRecordingEnd()
      * </ol>
-     *
-     * @param listener the parser listener
-     * @throws IOException
      */
     public void parse(Path inputFile) throws IOException {
         try (RecordingStream stream = new RecordingStream(new BufferedInputStream(Files.newInputStream(inputFile.toFile().toPath())))) {
             parse(inputFile, stream);
         }
+        metadata = null;
     }
 
     private void parse(Path inputFile, RecordingStream stream) throws IOException {
@@ -95,7 +95,7 @@ public final class StreamingChunkParser {
                 while (stream.position() < chunkEndPos) {
                     long eventStartPos = stream.position();
                     stream.startRecordingWrites();
-                    int eventSize = (int) stream.readVarint();
+                    int eventSize = stream.readVarint();
                     if (eventSize > 0) {
                         parseEvent(stream, eventSize, eventStartPos, jdkRecording);
                     } else {
@@ -112,14 +112,15 @@ public final class StreamingChunkParser {
     }
 
     private void parseEvent(RecordingStream stream, int eventSize, long eventStartPos, RecordingFile jdkRecording) throws IOException {
-        long eventType = stream.readVarint();
+        long eventType = stream.readVarlong();
         EventHeader eventHeader = new EventHeader(eventSize, eventType, stream.stopRecordingWrites());
         byte[] eventPayload = getBytes(stream, eventSize, eventStartPos);
         if (eventType == 0) {
-            MetadataEvent metadata = new MetadataEvent(new RecordingStream(new ByteArrayInputStream(eventPayload)), eventSize, eventType);
+            metadata = new MetadataEvent(new RecordingStream(new ByteArrayInputStream(eventPayload)), eventSize, eventType);
             listener.onMetadata(eventHeader, eventPayload, metadata);
         } else if (eventType == 1) {
-            listener.onCheckpoint(eventHeader, eventPayload);
+            CheckpointEvent checkpoint = new CheckpointEvent(new RecordingStream(new ByteArrayInputStream(eventPayload)), eventSize, eventType, metadata);
+            listener.onCheckpoint(eventHeader, eventPayload, checkpoint);
         } else {
             RecordedEvent jdkEvent = jdkRecording.readEvent();
             listener.onEvent(jdkEvent, eventHeader, eventPayload);

@@ -34,6 +34,7 @@
 package org.openjdk.jmc.flightrecorder.testutils.parser;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public final class RecordingStream implements AutoCloseable {
     private final DataInputStream delegate;
@@ -48,7 +49,7 @@ public final class RecordingStream implements AutoCloseable {
         delegate = new DataInputStream(bis);
     }
 
-    long position() {
+    public long position() {
         return position;
     }
 
@@ -114,7 +115,7 @@ public final class RecordingStream implements AutoCloseable {
         return result;
     }
 
-    public long readVarint() throws IOException {
+    public long readVarlong() throws IOException {
         long value = 0;
         int readValue = 0;
         int i = 0;
@@ -135,11 +136,22 @@ public final class RecordingStream implements AutoCloseable {
         return value;
     }
 
+    public int readVarint() throws IOException {
+        return (int) readVarlong();
+    }
+
+    public byte[] readVarbytes() throws IOException {
+        int byteCount = readVarint();
+        byte[] bytes = new byte[byteCount];
+        read(bytes, 0, byteCount);
+        return bytes;
+    }
+
     public int available() throws IOException {
         return delegate.available();
     }
 
-    void skip(long bytes) throws IOException {
+    public void skip(long bytes) throws IOException {
         long toSkip = bytes;
         while (toSkip > 0) {
             toSkip -= delegate.skip(toSkip);
