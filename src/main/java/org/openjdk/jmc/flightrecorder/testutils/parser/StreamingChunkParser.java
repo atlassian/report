@@ -53,11 +53,21 @@ import java.nio.file.Path;
  * This class is not thread-safe and is intended to be used from a single thread only.
  */
 public final class StreamingChunkParser {
-    private final ChunkParserListener listener;
+    private final ChunkParserListener chunkListener;
+    private final CheckpointEvent.Listener checkpointListener;
     private MetadataEvent metadata;
 
-    public StreamingChunkParser(ChunkParserListener listener) {
-        this.listener = listener;
+    public StreamingChunkParser(ChunkParserListener chunkListener) {
+        this(chunkListener, symbolPayload -> {
+        });
+    }
+
+    public StreamingChunkParser(
+            ChunkParserListener chunkListener,
+            CheckpointEvent.Listener checkpointListener
+    ) {
+        this.chunkListener = chunkListener;
+        this.checkpointListener = checkpointListener;
     }
 
     /**
@@ -83,13 +93,13 @@ public final class StreamingChunkParser {
             return;
         }
         try (RecordingFile jdkRecording = new RecordingFile(inputFile)) {
-            listener.onRecordingStart();
+            chunkListener.onRecordingStart();
             int chunkCounter = 1;
             while (stream.available() > 0) {
 
                 long chunkStartPos = stream.position();
                 ChunkHeader header = ChunkHeader.read(stream);
-                listener.onChunkStart(chunkCounter, header);
+                chunkListener.onChunkStart(chunkCounter, header);
                 long chunkEndPos = chunkStartPos + (int) header.size;
 
                 while (stream.position() < chunkEndPos) {
@@ -102,11 +112,11 @@ public final class StreamingChunkParser {
                         throw new IllegalStateException("Unexpected event size: " + eventSize + " at position " + stream.position());
                     }
                 }
-                listener.onChunkEnd(chunkCounter, false);
+                chunkListener.onChunkEnd(chunkCounter, false);
                 chunkCounter++;
             }
         } finally {
-            listener.onRecordingEnd();
+            chunkListener.onRecordingEnd();
         }
 
     }
@@ -117,13 +127,13 @@ public final class StreamingChunkParser {
         byte[] eventPayload = getBytes(stream, eventSize, eventStartPos);
         if (eventType == 0) {
             metadata = new MetadataEvent(new RecordingStream(new ByteArrayInputStream(eventPayload)), eventSize, eventType);
-            listener.onMetadata(eventHeader, eventPayload, metadata);
+            chunkListener.onMetadata(eventHeader, eventPayload, metadata);
         } else if (eventType == 1) {
-            CheckpointEvent checkpoint = new CheckpointEvent(new RecordingStream(new ByteArrayInputStream(eventPayload)), eventSize, eventType, metadata);
-            listener.onCheckpoint(eventHeader, eventPayload, checkpoint);
+            CheckpointEvent checkpoint = new CheckpointEvent(eventPayload, eventType, metadata, checkpointListener);
+            chunkListener.onCheckpoint(eventHeader, eventPayload, checkpoint);
         } else {
             RecordedEvent jdkEvent = jdkRecording.readEvent();
-            listener.onEvent(jdkEvent, eventHeader, eventPayload);
+            chunkListener.onEvent(jdkEvent, eventHeader, eventPayload);
         }
         // always skip any unconsumed event data to get the stream into consistent state
         stream.skip(eventSize - (stream.position() - eventStartPos));

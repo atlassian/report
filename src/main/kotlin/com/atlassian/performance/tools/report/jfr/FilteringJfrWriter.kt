@@ -57,7 +57,7 @@ class FilteringJfrWriter(
         override fun onCheckpoint(eventHeader: EventHeader, eventPayload: ByteArray, checkpointEvent: CheckpointEvent) {
             lastCheckpointEventOffset = countingOutput.offsetSinceLastReset
             output.write(eventHeader.bytes)
-            output.write(eventPayload)
+            output.write(checkpointEvent.payload())
         }
 
         override fun onChunkEnd(chunkIndex: Int, skipped: Boolean) {

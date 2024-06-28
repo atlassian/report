@@ -34,13 +34,12 @@
 package org.openjdk.jmc.flightrecorder.testutils.parser;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 
 public final class RecordingStream implements AutoCloseable {
     private final DataInputStream delegate;
     private long position = 0;
     private final ByteArrayOutputStream toBytesLog = new ByteArrayOutputStream();
-    private DataOutputStream toBytesStream = new DataOutputStream(toBytesLog);
+    private final DataOutputStream toBytesStream = new DataOutputStream(toBytesLog);
     private boolean isRecordingWrites = false;
 
     public RecordingStream(InputStream is) {
@@ -57,7 +56,7 @@ public final class RecordingStream implements AutoCloseable {
         isRecordingWrites = true;
     }
 
-    public byte[] stopRecordingWrites() {
+    byte[] stopRecordingWrites() {
         isRecordingWrites = false;
         byte[] result = toBytesLog.toByteArray();
         toBytesLog.reset();
@@ -101,7 +100,7 @@ public final class RecordingStream implements AutoCloseable {
         position += 4;
         int result = delegate.readInt();
         if (isRecordingWrites) {
-            toBytesStream.writeInt(delegate.readInt());
+            toBytesStream.writeInt(result);
         }
         return result;
     }
@@ -120,10 +119,7 @@ public final class RecordingStream implements AutoCloseable {
         int readValue = 0;
         int i = 0;
         do {
-            readValue = delegate.read();
-            if (isRecordingWrites) {
-                toBytesStream.writeByte(readValue);
-            }
+            readValue = read();
             value |= (long) (readValue & 0x7F) << (7 * i);
             i++;
         } while ((readValue & 0x80) != 0
@@ -132,7 +128,6 @@ public final class RecordingStream implements AutoCloseable {
                 // However, eg. JMC parser will stop at 9 bytes, assuming that the compressed number is
                 // a Java unsigned long (therefore having only 63 bits and they all fit in 9 bytes).
                 && i < 9);
-        position += i;
         return value;
     }
 
@@ -152,11 +147,7 @@ public final class RecordingStream implements AutoCloseable {
     }
 
     public void skip(long bytes) throws IOException {
-        long toSkip = bytes;
-        while (toSkip > 0) {
-            toSkip -= delegate.skip(toSkip);
-        }
-        position += bytes;
+        position += delegate.skip(bytes);
     }
 
     @Override
