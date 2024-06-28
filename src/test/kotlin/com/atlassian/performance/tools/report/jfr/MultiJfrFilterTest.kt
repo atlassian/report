@@ -28,8 +28,7 @@ class MultiJfrFilterTest {
             val output =
                 sampleInput.resolveSibling("shouldBeFasterThanSingle-$index-" + sampleInput.fileName.toString())
             val filter = Predicate<RecordedEvent> {
-                val javaThreadId = it.javaThreadId()
-                javaThreadId == 670L
+                it.javaThreadId() == 670L
             }
             multiFilterBuilder.output(output, filter)
             singleJfrFilters.add(

@@ -63,8 +63,9 @@ class SlowBackendProfilerTest {
         private val timeslots: Iterable<BackendTimeslot>
     ) {
         fun keep(profilerEvent: RecordedEvent): Boolean {
+            val javaThreadId = profilerEvent.javaThreadId()
             return timeslots.any { slot ->
-                slot.contains(profilerEvent.startTime) && slot.threadId == profilerEvent.javaThreadId()
+                slot.contains(profilerEvent.startTime) && slot.threadId == javaThreadId
             }
         }
     }

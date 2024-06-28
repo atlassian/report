@@ -6,6 +6,7 @@ import org.openjdk.jmc.flightrecorder.testutils.parser.*
 import tools.profiler.jfr.converter.CheckpointEvent
 import java.io.Closeable
 import java.nio.file.Path
+import java.util.function.Consumer
 import java.util.function.Predicate
 
 /**
@@ -14,7 +15,8 @@ import java.util.function.Predicate
  */
 class MultiJfrFilter private constructor(
     private val input: Path,
-    private val outputs: List<FilteredOutput>
+    private val outputs: List<FilteredOutput>,
+    private val symbolModifier: Consumer<ByteArray>
 ) {
 
     private class CompositeJfrEventListener(
@@ -64,7 +66,7 @@ class MultiJfrFilter private constructor(
                 FilteringJfrWriter(it.path.toFile(), stream, it.filter)
             }
             val compositeListener = CompositeJfrEventListener(writers)
-            val parser = StreamingChunkParser(compositeListener)
+            val parser = StreamingChunkParser(compositeListener, symbolModifier::accept)
             parser.parse(input)
         } finally {
             streams.forEach { it.close() }
@@ -80,15 +82,18 @@ class MultiJfrFilter private constructor(
         private val input: Path
     ) {
         private val outputs = mutableListOf<FilteredOutput>()
+        private var symbolModifier: Consumer<ByteArray> = Consumer { }
 
         fun output(output: Path, filter: Predicate<RecordedEvent>): Builder {
             outputs.add(FilteredOutput(output, filter))
             return this
         }
 
+        fun symbolModifier(symbolModifier: Consumer<ByteArray>) = apply { this.symbolModifier = symbolModifier }
+
         fun build(): MultiJfrFilter {
             check(outputs.isNotEmpty()) { "At least one output must be specified" }
-            return MultiJfrFilter(input, outputs)
+            return MultiJfrFilter(input, outputs, symbolModifier)
         }
     }
 

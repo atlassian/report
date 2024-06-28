@@ -6,12 +6,14 @@ import org.apache.logging.log4j.LogManager
 import org.openjdk.jmc.flightrecorder.testutils.parser.StreamingChunkParser
 import java.io.File
 import java.nio.file.Path
+import java.util.function.Consumer
 import java.util.function.Function
 import java.util.function.Predicate
 
 class JfrFilter private constructor(
     private val eventFilter: Predicate<RecordedEvent>,
-    private val filteredRecording: Function<Path, Path>
+    private val filteredRecording: Function<Path, Path>,
+    private val symbolModifier: Consumer<ByteArray>
 ) {
     private val logger = LogManager.getLogger(this::class.java)
 
@@ -20,7 +22,7 @@ class JfrFilter private constructor(
         logger.debug("Writing filtered recording to $filteredRecording ...")
         filteredRecording.outputStream().buffered().use { outputStream ->
             val writer = FilteringJfrWriter(filteredRecording, outputStream, eventFilter)
-            val parser = StreamingChunkParser(writer)
+            val parser = StreamingChunkParser(writer, symbolModifier::accept)
             parser.parse(recording)
         }
         return filteredRecording
@@ -30,10 +32,15 @@ class JfrFilter private constructor(
         private var eventFilter: Predicate<RecordedEvent> = Predicate { true }
         private var filteredRecording: Function<Path, Path> =
             Function { it.resolveSibling("filtered-" + it.fileName.toString()) }
+        private var symbolModifier: Consumer<ByteArray> = Consumer { }
 
         fun eventFilter(eventFilter: Predicate<RecordedEvent>): Builder {
             this.eventFilter = eventFilter
             return this
+        }
+
+        fun symbolModifier(symbolModifier: Consumer<ByteArray>) = apply {
+            this.symbolModifier = symbolModifier
         }
 
         fun filteredRecording(filteredRecording: Function<Path, Path>): Builder {
@@ -42,7 +49,7 @@ class JfrFilter private constructor(
         }
 
         fun build(): JfrFilter {
-            return JfrFilter(eventFilter, filteredRecording)
+            return JfrFilter(eventFilter, filteredRecording, symbolModifier)
         }
     }
 

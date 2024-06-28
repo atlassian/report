@@ -9,7 +9,9 @@ import org.openjdk.jmc.flightrecorder.testutils.parser.MetadataEvent;
 import org.openjdk.jmc.flightrecorder.testutils.parser.RecordingStream;
 import org.openjdk.jmc.flightrecorder.testutils.parser.StreamingChunkParser;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -23,10 +25,13 @@ import java.util.Map;
  */
 public final class CheckpointEvent {
 
+    private final Listener listener;
+
     private static final int CHUNK_HEADER_SIZE = 68;
 
     private final RecordingStream stream;
     private final MetadataEvent metadata;
+    private final ByteBuffer payload;
 
     public final int size;
     public final long startTime;
@@ -36,16 +41,18 @@ public final class CheckpointEvent {
     public final int poolCount;
 
     public final Map<Long, String> strings = new HashMap<>();
-    public final Map<Long, byte[]> symbols = new HashMap<>();
+    public final Map<Long, String> symbols = new HashMap<>();
     public final Map<String, Map<Integer, String>> enums = new HashMap<>();
 
-    public CheckpointEvent(RecordingStream stream, int eventSize, long eventType, MetadataEvent metadata) throws IOException {
-        this.stream = stream;
-        this.metadata = metadata;
-        size = eventSize;
+    public CheckpointEvent(byte[] eventPayload, long eventType, MetadataEvent metadata, Listener listener) throws IOException {
         if (eventType != 1) {
-            throw new IOException("Unexpected event type: " + eventType + " (should be 1). Stream at position: " + stream.position());
+            throw new IOException("Unexpected event type: " + eventType + " (should be 1)");
         }
+        this.payload = ByteBuffer.wrap(eventPayload.clone());
+        this.stream = new RecordingStream(new ByteArrayInputStream(eventPayload));
+        this.metadata = metadata;
+        this.listener = listener;
+        size = eventPayload.length;
         startTime = stream.readVarlong();
         duration = stream.readVarlong();
         delta = stream.readVarlong();
@@ -56,6 +63,10 @@ public final class CheckpointEvent {
             JfrClass type = metadata.type(typeId);
             readConstants(type);
         }
+    }
+
+    public byte[] payload() {
+        return payload.array(); // no defensive copy for now I guess
     }
 
     private void readConstants(JfrClass type) throws IOException {
@@ -91,7 +102,7 @@ public final class CheckpointEvent {
     }
 
 
-//    private void readThreads(int fieldCount) {
+    //    private void readThreads(int fieldCount) {
 //        int count = threads.preallocate(getVarint());
 //        for (int i = 0; i < count; i++) {
 //            long id = getVarlong();
@@ -194,9 +205,19 @@ public final class CheckpointEvent {
             if (encoding != 3) { // TODO maybe just reuse [readVarstring]
                 throw new IllegalArgumentException("Invalid symbol encoding " + encoding);
             }
-            byte[] symbol = stream.readVarbytes();
-            symbols.put(id, symbol);
+            byte[] symbolPayload = stream.readVarbytes();
+            updateSymbol(symbolPayload);
+            symbols.put(id, new String(symbolPayload));
         }
+    }
+
+    private void updateSymbol(byte[] symbolPayload) {
+        listener.onSymbol(symbolPayload);
+        int symbolEndPosition = (int) stream.position();
+        // rewind before the payload, but after the varint in [readVarbytes]
+        int symbolPosition = symbolEndPosition - symbolPayload.length;
+        payload.position(symbolPosition);
+        payload.put(symbolPayload);
     }
 
     private void readEnumValues(String typeName) throws IOException {
@@ -243,6 +264,12 @@ public final class CheckpointEvent {
         while (count-- > 0) {
             stream.readVarlong();
         }
+    }
+
+    @FunctionalInterface
+    public interface Listener {
+
+        void onSymbol(byte[] symbolPayload);
     }
 
 }
