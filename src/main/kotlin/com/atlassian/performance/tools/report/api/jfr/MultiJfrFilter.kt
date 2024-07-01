@@ -16,7 +16,7 @@ import java.util.function.Predicate
 class MultiJfrFilter private constructor(
     private val input: Path,
     private val outputs: List<FilteredOutput>,
-    private val symbolModifier: Consumer<ByteArray>
+    private val symbolModifier: Consumer<MutableJvmSymbol>
 ) {
 
     private class CompositeJfrEventListener(
@@ -82,14 +82,14 @@ class MultiJfrFilter private constructor(
         private val input: Path
     ) {
         private val outputs = mutableListOf<FilteredOutput>()
-        private var symbolModifier: Consumer<ByteArray> = Consumer { }
+        private var symbolModifier: Consumer<MutableJvmSymbol> = Consumer { }
 
         fun output(output: Path, filter: Predicate<RecordedEvent>): Builder {
             outputs.add(FilteredOutput(output, filter))
             return this
         }
 
-        fun symbolModifier(symbolModifier: Consumer<ByteArray>) = apply { this.symbolModifier = symbolModifier }
+        fun symbolModifier(symbolModifier: Consumer<MutableJvmSymbol>) = apply { this.symbolModifier = symbolModifier }
 
         fun build(): MultiJfrFilter {
             check(outputs.isNotEmpty()) { "At least one output must be specified" }

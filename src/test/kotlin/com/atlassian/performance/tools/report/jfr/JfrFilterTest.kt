@@ -1,6 +1,7 @@
 package com.atlassian.performance.tools.report.jfr
 
 import com.atlassian.performance.tools.report.api.jfr.JfrFilter
+import com.atlassian.performance.tools.report.api.jfr.MutableJvmSymbol
 import com.atlassian.performance.tools.report.api.result.CompressedResult
 import jdk.jfr.consumer.RecordedEvent
 import org.apache.logging.log4j.LogManager
@@ -97,9 +98,9 @@ class JfrFilterTest {
             }
 
         }
-        val checkpointListener = CheckpointEvent.Listener { symbolPayload ->
+        val checkpointListener = CheckpointEvent.Listener { symbol ->
             symbolCount.incrementAndGet()
-            uniqueSymbols += String(symbolPayload)
+            uniqueSymbols += symbol.toString()
         }
         StreamingChunkParser(chunkListener, checkpointListener).parse(this)
         return result
@@ -180,11 +181,11 @@ class JfrFilterTest {
      * - `org/springframework/core/$Proxy724`
      * - `jdk/proxy176/$Proxy724`
      */
-    private fun normalizeDynamicProxy(symbolPayload: ByteArray) {
-        val payload = String(symbolPayload)
-        if (payload.contains(Regex("\\\$Proxy[0-9]")) || payload.contains(Regex("proxy[0-9]"))) {
-            val newSymbol = "PROXY".padEnd(symbolPayload.size, '_')
-            ByteBuffer.wrap(symbolPayload).put(newSymbol.toByteArray())
+    private fun normalizeDynamicProxy(symbol: MutableJvmSymbol) {
+        val symbolString = symbol.toString()
+        if (symbolString.contains(Regex("\\\$Proxy[0-9]")) || symbolString.contains(Regex("proxy[0-9]"))) {
+            val newSymbol = "PROXY".padEnd(symbol.payload.size, '_')
+            ByteBuffer.wrap(symbol.payload).put(newSymbol.toByteArray())
         }
     }
 

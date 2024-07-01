@@ -5,6 +5,7 @@
 
 package tools.profiler.jfr.converter;
 
+import com.atlassian.performance.tools.report.api.jfr.MutableJvmSymbol;
 import org.openjdk.jmc.flightrecorder.testutils.parser.MetadataEvent;
 import org.openjdk.jmc.flightrecorder.testutils.parser.RecordingStream;
 import org.openjdk.jmc.flightrecorder.testutils.parser.StreamingChunkParser;
@@ -27,8 +28,6 @@ public final class CheckpointEvent {
 
     private final Listener listener;
 
-    private static final int CHUNK_HEADER_SIZE = 68;
-
     private final RecordingStream stream;
     private final MetadataEvent metadata;
     private final ByteBuffer payload;
@@ -41,7 +40,6 @@ public final class CheckpointEvent {
     public final int poolCount;
 
     public final Map<Long, String> strings = new HashMap<>();
-    public final Map<Long, String> symbols = new HashMap<>();
     public final Map<String, Map<Integer, String>> enums = new HashMap<>();
 
     public CheckpointEvent(byte[] eventPayload, long eventType, MetadataEvent metadata, Listener listener) throws IOException {
@@ -71,24 +69,12 @@ public final class CheckpointEvent {
 
     private void readConstants(JfrClass type) throws IOException {
         switch (type.name) {
-//            case "jdk.types.ChunkHeader":
-//                stream.skip(CHUNK_HEADER_SIZE + 3);
-//                break;
-//            case "java.lang.Thread":
-//                readThreads(type.fields.size());
-//                break;
-//            case "java.lang.Class":
-//                readClasses(type.fields.size());
-//                break;
             case "java.lang.String":
                 readStrings();
                 break;
             case "jdk.types.Symbol":
                 readSymbols();
                 break;
-//            case "jdk.types.Method":
-//                readMethods();
-//                break;
             case "jdk.types.StackTrace":
                 readStackTraces();
                 break;
@@ -101,68 +87,23 @@ public final class CheckpointEvent {
         }
     }
 
-
-    //    private void readThreads(int fieldCount) {
-//        int count = threads.preallocate(getVarint());
-//        for (int i = 0; i < count; i++) {
-//            long id = getVarlong();
-//            String osName = getString();
-//            int osThreadId = getVarint();
-//            String javaName = getString();
-//            long javaThreadId = getVarlong();
-//            readFields(fieldCount - 4);
-//            threads.put(id, javaName != null ? javaName : osName);
-//        }
-//    }
-//
-//    private void readClasses(int fieldCount) {
-//        int count = classes.preallocate(getVarint());
-//        for (int i = 0; i < count; i++) {
-//            long id = getVarlong();
-//            long loader = getVarlong();
-//            long name = getVarlong();
-//            long pkg = getVarlong();
-//            int modifiers = getVarint();
-//            readFields(fieldCount - 4);
-//            classes.put(id, new ClassRef(name));
-//        }
-//    }
-//
-//    private void readMethods() {
-//        int count = methods.preallocate(getVarint());
-//        for (int i = 0; i < count; i++) {
-//            long id = getVarlong();
-//            long cls = getVarlong();
-//            long name = getVarlong();
-//            long sig = getVarlong();
-//            int modifiers = getVarint();
-//            int hidden = getVarint();
-//            methods.put(id, new MethodRef(cls, name, sig));
-//        }
-//    }
-//
     private void readStackTraces() throws IOException {
         int count = stream.readVarint();
         for (int i = 0; i < count; i++) {
-            long id = stream.readVarlong();
-            int truncated = stream.readVarint();
-            Object stackTrace = readStackTrace();
+            stream.readVarlong();
+            stream.readVarint();
+            readStackTrace();
         }
     }
 
-    private Object readStackTrace() throws IOException {
+    private void readStackTrace() throws IOException {
         int depth = stream.readVarint();
-        long[] methods = new long[depth];
-        byte[] types = new byte[depth];
-        int[] locations = new int[depth];
         for (int i = 0; i < depth; i++) {
-            methods[i] = stream.readVarlong();
-            int line = stream.readVarint();
-            int bci = stream.readVarint();
-            locations[i] = line << 16 | (bci & 0xffff);
-            types[i] = stream.read();
+            stream.readVarlong();
+            stream.readVarint();
+            stream.readVarint();
+            stream.read();
         }
-        return new Object(); // methods, types, locations
     }
 
     private void readStrings() throws IOException {
@@ -200,24 +141,23 @@ public final class CheckpointEvent {
     private void readSymbols() throws IOException {
         int count = stream.readVarint();
         for (int i = 0; i < count; i++) {
-            long id = stream.readVarlong();
+            stream.readVarlong();
             byte encoding = stream.read();
-            if (encoding != 3) { // TODO maybe just reuse [readVarstring]
+            if (encoding != 3) {
                 throw new IllegalArgumentException("Invalid symbol encoding " + encoding);
             }
-            byte[] symbolPayload = stream.readVarbytes();
+            MutableJvmSymbol symbolPayload = new MutableJvmSymbol(stream.readVarbytes());
             updateSymbol(symbolPayload);
-            symbols.put(id, new String(symbolPayload));
         }
     }
 
-    private void updateSymbol(byte[] symbolPayload) {
-        listener.onSymbol(symbolPayload);
+    private void updateSymbol(MutableJvmSymbol symbol) {
+        listener.onSymbol(symbol);
         int symbolEndPosition = (int) stream.position();
         // rewind before the payload, but after the varint in [readVarbytes]
-        int symbolPosition = symbolEndPosition - symbolPayload.length;
+        int symbolPosition = symbolEndPosition - symbol.getPayload().length;
         payload.position(symbolPosition);
-        payload.put(symbolPayload);
+        payload.put(symbol.getPayload());
     }
 
     private void readEnumValues(String typeName) throws IOException {
@@ -260,16 +200,10 @@ public final class CheckpointEvent {
         }
     }
 
-    private void readFields(int count) throws IOException {
-        while (count-- > 0) {
-            stream.readVarlong();
-        }
-    }
-
     @FunctionalInterface
     public interface Listener {
 
-        void onSymbol(byte[] symbolPayload);
+        void onSymbol(MutableJvmSymbol symbolPayload);
     }
 
 }

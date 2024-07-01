@@ -13,7 +13,7 @@ import java.util.function.Predicate
 class JfrFilter private constructor(
     private val eventFilter: Predicate<RecordedEvent>,
     private val filteredRecording: Function<Path, Path>,
-    private val symbolModifier: Consumer<ByteArray>
+    private val symbolModifier: Consumer<MutableJvmSymbol>
 ) {
     private val logger = LogManager.getLogger(this::class.java)
 
@@ -32,14 +32,14 @@ class JfrFilter private constructor(
         private var eventFilter: Predicate<RecordedEvent> = Predicate { true }
         private var filteredRecording: Function<Path, Path> =
             Function { it.resolveSibling("filtered-" + it.fileName.toString()) }
-        private var symbolModifier: Consumer<ByteArray> = Consumer { }
+        private var symbolModifier: Consumer<MutableJvmSymbol> = Consumer { }
 
         fun eventFilter(eventFilter: Predicate<RecordedEvent>): Builder {
             this.eventFilter = eventFilter
             return this
         }
 
-        fun symbolModifier(symbolModifier: Consumer<ByteArray>) = apply {
+        fun symbolModifier(symbolModifier: Consumer<MutableJvmSymbol>) = apply {
             this.symbolModifier = symbolModifier
         }
 
