@@ -5,7 +5,9 @@ import com.atlassian.performance.tools.report.api.result.CompressedResult
 import jdk.jfr.consumer.RecordedEvent
 import org.apache.logging.log4j.LogManager
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import org.openjdk.jmc.flightrecorder.testutils.parser.*
 import tools.profiler.jfr.converter.CheckpointEvent
 import java.io.File
@@ -17,6 +19,10 @@ import java.util.function.Predicate
 import kotlin.collections.set
 
 class JfrFilterTest {
+    @Rule
+    @JvmField
+    var tempFolder = TemporaryFolder()
+
     private val logger = LogManager.getLogger(this::class.java)
     private val zippedInput = File(javaClass.getResource("/profiler-result.zip")!!.toURI())
 
@@ -111,7 +117,7 @@ class JfrFilterTest {
     @Test
     fun shouldRewriteJfr() {
         // given
-        val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
+        val input = CompressedResult.unzip(zippedInput, tempFolder).resolve("profiler-result.jfr")
         logger.debug("Reading expected JFR $input ...")
         val expectedSummary = expectedSummary(input)
         // when
@@ -126,7 +132,10 @@ class JfrFilterTest {
     @Test
     fun shouldRewriteJfrSymbols() {
         // given
-        val input = CompressedResult.unzip(File(javaClass.getResource("/contains-proxy-in-package-name.zip")!!.toURI()))
+        val input = CompressedResult.unzip(
+            File(javaClass.getResource("/contains-proxy-in-package-name.zip")!!.toURI()),
+            tempFolder
+        )
             .resolve("contains-proxy-in-package-name.jfr")
 
         val before = input.summary().first()
@@ -182,7 +191,7 @@ class JfrFilterTest {
     @Test
     fun shouldFilterByThreadId() {
         // given
-        val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
+        val input = CompressedResult.unzip(zippedInput, tempFolder).resolve("profiler-result.jfr")
         val expectedThreadCounter = mutableMapOf<Long?, Long>()
         val predicateBefore = Predicate<RecordedEvent> {
             val javaThreadId = it.javaThreadId()

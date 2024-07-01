@@ -7,17 +7,22 @@ import com.atlassian.performance.tools.jiraactions.api.SEARCH_WITH_JQL
 import com.atlassian.performance.tools.report.api.ColdCachesTimeline
 import com.atlassian.performance.tools.report.api.TestExecutionTimeline
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import java.nio.file.Paths
 import java.time.Duration.ofMillis
 import java.time.Duration.ofMinutes
 import java.time.Instant
 
 class RawCohortResultTest {
+    @Rule
+    @JvmField
+    var tempFolder = TemporaryFolder()
 
     @Test
     fun shouldCropColdCache() {
-        val result = LocalRealResult(Paths.get("JIRA-JPT-9107")).loadRaw()
+        val result = LocalRealResult(Paths.get("JIRA-JPT-9107")).loadRaw(tempFolder)
 
         val metrics = result.prepareForJudgement(
             ColdCachesTimeline()
@@ -38,7 +43,7 @@ class RawCohortResultTest {
 
     @Test
     fun shouldCropStragglers() {
-        val result = LocalRealResult(Paths.get("JIRA-JPTS1-23")).loadRaw()
+        val result = LocalRealResult(Paths.get("JIRA-JPTS1-23")).loadRaw(tempFolder)
 
         val metrics = result.prepareForJudgement(
             TestExecutionTimeline(ofMinutes(20))

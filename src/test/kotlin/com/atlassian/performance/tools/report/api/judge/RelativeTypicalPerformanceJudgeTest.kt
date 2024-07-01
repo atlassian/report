@@ -80,8 +80,8 @@ class RelativeTypicalPerformanceJudgeTest {
     fun shouldJudgeNoise() {
         // given
         val toleranceRatios = mapOf<ActionType<*>, Float>(VIEW_ISSUE to 0.02f)
-        val baselineStats = LocalRealResult(Paths.get("JIRA-JPT760-JOB1-8/alpha")).loadEdible().stats
-        val experimentStats = LocalRealResult(Paths.get("JIRA-JPT760-JOB1-8/beta")).loadEdible().stats
+        val baselineStats = LocalRealResult(Paths.get("JIRA-JPT760-JOB1-8/alpha")).loadEdible(workspace).stats
+        val experimentStats = LocalRealResult(Paths.get("JIRA-JPT760-JOB1-8/beta")).loadEdible(workspace).stats
         val impacts = mutableListOf<LatencyImpact>()
         val judge = RelativeTypicalPerformanceJudge.Builder()
             .handleLatencyImpact(Consumer { impacts.add(it) })

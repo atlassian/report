@@ -6,12 +6,17 @@ import com.atlassian.performance.tools.jiraactions.api.BROWSE_BOARDS
 import com.atlassian.performance.tools.report.api.result.LocalRealResult
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import java.nio.file.Paths
 import java.time.Duration
 import java.time.Instant
 
 class StandardTimelineTest {
+    @Rule
+    @JvmField
+    var tempFolder = TemporaryFolder()
 
     @Test
     fun shouldCropColdCache() {
@@ -33,7 +38,7 @@ class StandardTimelineTest {
 
     private fun loadMetrics(): List<ActionMetric> {
         return LocalRealResult(Paths.get("JIRA-JPT-9107"))
-            .loadRaw()
+            .loadRaw(tempFolder)
             .prepareForJudgement(FullTimeline()).actionMetrics
     }
 

@@ -1,15 +1,16 @@
 package com.atlassian.performance.tools.report.api.result
 
 import com.atlassian.performance.tools.io.api.ensureDirectory
+import org.junit.rules.TemporaryFolder
 import java.io.File
-import java.nio.file.Files
 import java.nio.file.Path
+import java.util.*
 import java.util.zip.ZipFile
 
 class CompressedResult(
     private val relativeResourcePath: Path
 ) {
-    fun extractDirectory(): Path {
+    fun extractDirectory(tempFolder: TemporaryFolder): Path {
         val file = File(
             this::class
                 .java
@@ -17,7 +18,7 @@ class CompressedResult(
                 .toURI()
         )
         return if (file.name.endsWith(".zip")) {
-            unzip(file)
+            unzip(file, tempFolder)
         } else {
             file.toPath()
         }
@@ -25,16 +26,18 @@ class CompressedResult(
 
     companion object {
 
-        fun unzip(clazz: Class<*>, resource: String) = clazz
+        fun unzip(clazz: Class<*>, resource: String, tempFolder: TemporaryFolder) = clazz
             .getResource(resource)!!
             .toURI()
             .let { File(it) }
-            .let { unzip(it) }
+            .let { unzip(it, tempFolder) }
 
         fun unzip(
-            file: File
+            file: File,
+            tempFolder: TemporaryFolder
         ): Path {
-            val unpacked = Files.createTempDirectory(file.name)
+            val unpacked = tempFolder.newFolder(UUID.randomUUID().toString() + file.name)
+            unpacked.mkdirs()
             val zip = ZipFile(file)
             zip.stream().forEach { entry ->
                 val unpackedEntry = unpacked.resolve(entry.name)
@@ -42,13 +45,13 @@ class CompressedResult(
                     unpackedEntry.ensureDirectory()
                 } else {
                     zip.getInputStream(entry).use { packedStream ->
-                        unpackedEntry.toFile().outputStream().use { unpackedStream ->
+                        unpackedEntry.outputStream().use { unpackedStream ->
                             packedStream.copyTo(unpackedStream)
                         }
                     }
                 }
             }
-            return unpacked
+            return unpacked.toPath()
         }
     }
 }

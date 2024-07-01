@@ -3,11 +3,16 @@ package com.atlassian.performance.tools.report.chart
 import com.atlassian.performance.tools.jiraactions.api.*
 import com.atlassian.performance.tools.report.api.result.LocalRealResult
 import org.assertj.core.api.Assertions
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import java.io.File
 import java.nio.file.Paths
 
 class MeanLatencyChartTest {
+    @Rule
+    @JvmField
+    var tempFolder = TemporaryFolder()
 
     private val actionTypes = listOf(
             VIEW_BOARD,
@@ -32,8 +37,8 @@ class MeanLatencyChartTest {
         val output = Paths.get("build/actual-latency-chart.html")
         val labels = actionTypes.map { it.label }
         val results = listOf(
-                LocalRealResult(Paths.get("JIRA-JPT760-JOB1-8/alpha")).loadEdible(),
-                LocalRealResult(Paths.get("JIRA-JPT760-JOB1-8/beta")).loadEdible()
+                LocalRealResult(Paths.get("JIRA-JPT760-JOB1-8/alpha")).loadEdible(tempFolder),
+                LocalRealResult(Paths.get("JIRA-JPT760-JOB1-8/beta")).loadEdible(tempFolder)
         )
         val stats = results.map { it.stats }
 

@@ -3,15 +3,20 @@ package com.atlassian.performance.tools.report.api.action
 import com.atlassian.performance.tools.report.api.result.LocalRealResult
 import com.atlassian.performance.tools.workspace.api.TestWorkspace
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import java.nio.file.Files.createTempDirectory
 import java.nio.file.Paths
 
 class JqlReportTest {
+    @Rule
+    @JvmField
+    var tempFolder = TemporaryFolder()
 
     @Test
     fun shouldReportJqlsFromVariousActionTypes() {
-        val results = LocalRealResult(Paths.get("JPT-JPTINT192-CHECK-2")).loadEdible()
+        val results = LocalRealResult(Paths.get("JPT-JPTINT192-CHECK-2")).loadEdible(tempFolder)
         val workspace = TestWorkspace(createTempDirectory(javaClass.simpleName))
 
         JqlReport.Builder()
