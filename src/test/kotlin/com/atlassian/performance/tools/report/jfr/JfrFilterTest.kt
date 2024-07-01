@@ -9,12 +9,12 @@ import org.junit.Test
 import org.openjdk.jmc.flightrecorder.testutils.parser.*
 import tools.profiler.jfr.converter.CheckpointEvent
 import java.io.File
-import java.io.StringWriter
 import java.nio.ByteBuffer
 import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Consumer
 import java.util.function.Predicate
+import kotlin.collections.set
 
 class JfrFilterTest {
     private val logger = LogManager.getLogger(this::class.java)
@@ -26,10 +26,11 @@ class JfrFilterTest {
         val metadataEvents: List<MetadataEvent>,
         val eventTypes: List<Long>,
         val eventSizes: List<Long>,
-        val symbolCount: Int
+        val symbolCount: Int,
+        val uniqueSymbols: Set<String>
     ) {
         override fun toString(): String {
-            return "Chunk(eventsCount=$eventsCount, header=$header, metadataEvent=$metadataEvents, symbolCount=$symbolCount)"
+            return "Chunk(eventsCount=$eventsCount, header=$header, metadataEvent=$metadataEvents, symbolCount=$symbolCount, uniqueSymbolCount=${uniqueSymbols.size})"
         }
     }
 
@@ -42,6 +43,7 @@ class JfrFilterTest {
         val eventSizes = mutableListOf<Long>()
         val result = mutableListOf<Chunk>()
         val symbolCount = AtomicInteger(0)
+        val uniqueSymbols = HashSet<String>()
         val chunkListener = object : ChunkParserListener {
 
             override fun onChunkStart(chunkIndex: Int, header: ChunkHeader) {
@@ -60,7 +62,8 @@ class JfrFilterTest {
                         metadataEvents = ArrayList(metadataEvents),
                         eventTypes = ArrayList(eventTypes),
                         eventSizes = ArrayList(eventSizes),
-                        symbolCount = symbolCount.get()
+                        symbolCount = symbolCount.get(),
+                        uniqueSymbols = HashSet(uniqueSymbols)
                     )
                 )
                 eventsCount.clear()
@@ -68,6 +71,7 @@ class JfrFilterTest {
                 eventTypes.clear()
                 eventSizes.clear()
                 symbolCount.set(0)
+                uniqueSymbols.clear()
             }
 
             override fun onMetadata(
@@ -87,7 +91,10 @@ class JfrFilterTest {
             }
 
         }
-        val checkpointListener = CheckpointEvent.Listener { symbolCount.incrementAndGet() }
+        val checkpointListener = CheckpointEvent.Listener { symbolPayload ->
+            symbolCount.incrementAndGet()
+            uniqueSymbols += String(symbolPayload)
+        }
         StreamingChunkParser(chunkListener, checkpointListener).parse(this)
         return result
     }
@@ -120,7 +127,6 @@ class JfrFilterTest {
     fun shouldRewriteJfrSymbols() {
         // given
         val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
-        val expectedSummary = expectedSummary(input)
 
         // when
         val output = JfrFilter.Builder()
@@ -130,18 +136,40 @@ class JfrFilterTest {
 
         // then
         logger.debug("Reading actual JFR $output ...")
-        val actualSummary = output.toPath().summary()
-        assertThat(actualSummary).isEqualTo(expectedSummary) // TODO assert on the actual normalization
+        val actual = output.toPath().summary().first()
+        assertThat(actual.uniqueSymbols)
+            .`as`("dynamic proxies should be gone").doesNotContain(
+                "com/sun/proxy/\$Proxy796",
+                "com/amazonaws/http/conn/\$Proxy822",
+                "org/springframework/core/\$Proxy724"
+            )
+            .`as`("normalized replacements should be present").contains(
+                "PROXY__________________",
+                "PROXY____________________________",
+                "PROXY_____________________________"
+            )
+            .`as`("the rest should remain untouched").contains(
+                "io/micrometer/core/instrument/internal/DefaultLongTaskTimer",
+                "AddNode::Ideal",
+                "JavaThread::is_lock_owned",
+                "compileSoy",
+                "webwork/action/factory/JspActionFactoryProxy",
+                "()Lsun/misc/ProxyGenerator\$MethodInfo;",
+                "(Lsun/misc/ProxyGenerator\$ProxyMethod;Ljava/io/DataOutputStream;)V"
+            )
+        assertThat(actual.symbolCount).isEqualTo(31380)
+        assertThat(actual.uniqueSymbols).hasSize(30954)
     }
 
     /**
      * Normalize symbols like:
-     * - `jdk.proxy3.$Proxy587.doInTransaction(HostContextAccessor$HostTransactionCallback)`
-     * - `jdk.proxy3.$Proxy478.doesQueryFitFilterForm(ApplicationUser, Query)`
+     * - `com/sun/proxy/$Proxy796`
+     * - `com/amazonaws/http/conn/$Proxy822`
+     * - `org/springframework/core/$Proxy724`
      */
     private fun normalizeDynamicProxy(symbolPayload: ByteArray) {
-        if (String(symbolPayload).contains("Proxy")) { //TODO only for $Proxy, watch out for regex in [contains]
-            val newSymbol = "PROXY".padEnd(symbolPayload.size, '_') // TODO preserve the method signature (after the last dot)
+        if (String(symbolPayload).contains(Regex("\\\$Proxy[0-9]"))) {
+            val newSymbol = "PROXY".padEnd(symbolPayload.size, '_')
             ByteBuffer.wrap(symbolPayload).put(newSymbol.toByteArray())
         }
     }
