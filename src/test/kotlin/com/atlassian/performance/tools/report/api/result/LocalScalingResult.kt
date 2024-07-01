@@ -1,6 +1,7 @@
 package com.atlassian.performance.tools.report.api.result
 
 import com.atlassian.performance.tools.report.api.FullTimeline
+import org.junit.rules.TemporaryFolder
 import java.io.File
 import java.io.FileFilter
 import java.nio.file.Path
@@ -8,8 +9,8 @@ import java.nio.file.Path
 internal class LocalScalingResult(
     private val path: Path
 ) {
-    fun loadCohorts(): List<DataScalingCohortActionResult> {
-        return loadAll()
+    fun loadCohorts(tempFolder:TemporaryFolder): List<DataScalingCohortActionResult> {
+        return loadAll(tempFolder)
             .flatMap { edibleResult ->
                 val cohort = edibleResult.cohort
 
@@ -25,8 +26,8 @@ internal class LocalScalingResult(
             }
     }
 
-    fun loadAll(): List<EdibleResult> = CompressedResult(path)
-        .extractDirectory()
+    fun loadAll(tempFolder:TemporaryFolder): List<EdibleResult> = CompressedResult(path)
+        .extractDirectory(tempFolder)
         .toFile()
         .listDirectories()
         .map { loadEdible(it) }

@@ -3,7 +3,9 @@ package com.atlassian.performance.tools.report.jfr
 import com.atlassian.performance.tools.report.api.result.CompressedResult
 import jdk.jfr.consumer.RecordedEvent
 import org.assertj.core.api.SoftAssertions
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import org.openjdk.jmc.flightrecorder.testutils.parser.ChunkParserListener
 import org.openjdk.jmc.flightrecorder.testutils.parser.EventHeader
 import org.openjdk.jmc.flightrecorder.testutils.parser.StreamingChunkParser
@@ -13,10 +15,14 @@ import java.time.Instant
 class StreamingChunkParserTest {
     private val zippedInput = File(javaClass.getResource("/profiler-result.zip")!!.toURI())
 
+    @Rule
+    @JvmField
+    var tempFolder = TemporaryFolder()
+
     @Test
     fun shouldParseTimestamps() {
         // given
-        val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
+        val input = CompressedResult.unzip(zippedInput, tempFolder).resolve("profiler-result.jfr")
         var firstEvent: RecordedEvent? = null
         var lastEvent: RecordedEvent? = null
         val parser = StreamingChunkParser(object : ChunkParserListener {
@@ -39,7 +45,7 @@ class StreamingChunkParserTest {
     @Test
     fun shouldParseThreadIds() {
         // given
-        val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
+        val input = CompressedResult.unzip(zippedInput, tempFolder).resolve("profiler-result.jfr")
         var foundThreads = 0
         var foundExecutionSamples = 0
         val threadIdCount = mutableMapOf<Long, Int>()

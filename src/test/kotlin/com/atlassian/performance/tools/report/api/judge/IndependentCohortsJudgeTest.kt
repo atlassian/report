@@ -13,18 +13,23 @@ import com.atlassian.performance.tools.virtualusers.api.VirtualUserLoad
 import com.atlassian.performance.tools.workspace.api.TestWorkspace
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Assert.assertEquals
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import java.nio.file.Files
 import java.nio.file.Paths
 
 class IndependentCohortsJudgeTest {
+    @Rule
+    @JvmField
+    var tempFolder = TemporaryFolder()
 
     @Test
     fun shouldJudgeWithoutActionCriteria() {
         val results = listOf(
             Paths.get("JIRA-JPT760-JOB1-8/alpha"),
             Paths.get("JIRA-JPT760-JOB1-8/beta")
-        ).map { LocalRealResult(it).loadEdible() }
+        ).map { LocalRealResult(it).loadEdible(tempFolder) }
         val junitReports = Files.createTempDirectory("junit-reports")
 
         val verdict = IndependentCohortsJudge().judge(
@@ -49,7 +54,7 @@ class IndependentCohortsJudgeTest {
             Paths.get("JIRA-JPT760-JOB1-8/alpha"),
             Paths.get("JIRA-JPT760-JOB1-8/beta")
         ).map { resultPath ->
-            LocalRealResult(resultPath).loadEdible()
+            LocalRealResult(resultPath).loadEdible(tempFolder)
         }.plus(
             RawCohortResult.Factory().failedResult(
                 cohort = "a-failed-cohort",
@@ -82,7 +87,7 @@ class IndependentCohortsJudgeTest {
         val results = listOf(
             Paths.get("JIRA-JPT760-JOB1-8/alpha"),
             Paths.get("JIRA-JPT760-JOB1-8/beta")
-        ).map { LocalRealResult(it).loadEdible() }
+        ).map { LocalRealResult(it).loadEdible(tempFolder) }
         val criteria = Criteria(minimumSampleSize = 0)
         val actionCriteria = mapOf<ActionType<*>, Criteria>(
             VIEW_ISSUE to criteria,

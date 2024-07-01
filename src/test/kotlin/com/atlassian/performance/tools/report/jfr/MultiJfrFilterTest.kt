@@ -6,7 +6,9 @@ import com.atlassian.performance.tools.report.api.result.CompressedResult
 import jdk.jfr.consumer.RecordedEvent
 import org.apache.logging.log4j.LogManager
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import java.io.File
 import java.nio.file.Path
 import java.util.function.Function
@@ -14,13 +16,17 @@ import java.util.function.Predicate
 import kotlin.system.measureTimeMillis
 
 class MultiJfrFilterTest {
+    @Rule
+    @JvmField
+
+    var tempFolder = TemporaryFolder()
     private val logger = LogManager.getLogger(this::class.java)
 
     @Test
     fun shouldBeFasterThanSingle() {
         // given
         val zippedInput = File(javaClass.getResource("/profiler-result.zip")!!.toURI())
-        val sampleInput = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
+        val sampleInput = CompressedResult.unzip(zippedInput, tempFolder).resolve("profiler-result.jfr")
 
         val multiFilterBuilder = MultiJfrFilter.Builder(sampleInput)
         val singleJfrFilters = mutableListOf<JfrFilter>()

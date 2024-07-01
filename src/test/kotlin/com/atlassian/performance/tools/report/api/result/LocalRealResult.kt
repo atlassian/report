@@ -4,6 +4,7 @@ import com.atlassian.performance.tools.jiraactions.api.parser.MergingActionMetri
 import com.atlassian.performance.tools.report.api.FullTimeline
 import com.atlassian.performance.tools.report.api.parser.MergingNodeCountParser
 import com.atlassian.performance.tools.report.api.parser.SystemMetricsParser
+import org.junit.rules.TemporaryFolder
 import java.io.File
 import java.nio.file.Path
 
@@ -16,7 +17,7 @@ class LocalRealResult(
         results = File(
             this::class
                 .java
-                .getResource("real-results/$relativeResourcePath")
+                .getResource("real-results/$relativeResourcePath")!!
                 .toURI()
         ).toPath(),
         actionParser = MergingActionMetricsParser(),
@@ -24,10 +25,10 @@ class LocalRealResult(
         nodeParser = MergingNodeCountParser()
     )
 
-    fun loadRaw(): RawCohortResult = RawCohortResult.Factory().fullResult(
+    fun loadRaw(tempFolder: TemporaryFolder): RawCohortResult = RawCohortResult.Factory().fullResult(
         cohort = relativeResourcePath.joinToString(separator = "/") { it.toString() },
-        results = CompressedResult(relativeResourcePath).extractDirectory()
+        results = CompressedResult(relativeResourcePath).extractDirectory(tempFolder)
     )
 
-    fun loadEdible(): EdibleResult = loadRaw().prepareForJudgement(FullTimeline())
+    fun loadEdible(tempFolder: TemporaryFolder): EdibleResult = loadRaw(tempFolder).prepareForJudgement(FullTimeline())
 }

@@ -8,12 +8,19 @@ import com.atlassian.performance.tools.report.api.result.CompressedResult.Compan
 import com.atlassian.performance.tools.report.api.result.RawCohortResult
 import jdk.jfr.consumer.RecordedEvent
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import java.time.Duration
 import java.time.Instant
 import java.util.function.Predicate
 
+
 class SlowBackendProfilerTest {
+    @Rule
+    @JvmField
+    var tempFolder = TemporaryFolder()
+
     private val zippedResults = "/real-results" +
         "/aws-cache" +
         "/RegressionCheckIT-post-jql-split-1" +
@@ -28,11 +35,11 @@ class SlowBackendProfilerTest {
     @Test
     fun shouldFilterSlowBackendProfile() {
         // given
-        val node1Profile = unzip(javaClass, "$zippedResults/jira-node-1/profiler-result.zip")
+        val node1Profile = unzip(javaClass, "$zippedResults/jira-node-1/profiler-result.zip", tempFolder)
             .resolve("profiler-result.jfr")
-        val node2Profile = unzip(javaClass, "$zippedResults/jira-node-2/profiler-result.zip")
+        val node2Profile = unzip(javaClass, "$zippedResults/jira-node-2/profiler-result.zip", tempFolder)
             .resolve("profiler-result.jfr")
-        val vuResults = unzip(javaClass, "$zippedResults/virtual-users.zip")
+        val vuResults = unzip(javaClass, "$zippedResults/virtual-users.zip", tempFolder)
         val slowViewIssueNavigations = RawCohortResult.Factory().fullResult("dummy", vuResults)
             .prepareForJudgement(FullTimeline())
             .actionMetrics
@@ -49,7 +56,7 @@ class SlowBackendProfilerTest {
 
         // when
         val slotFilter = BackendTimeslotsFilter(slowViewIssueNavigations)
-        val profileFilter =  JfrFilter.Builder().eventFilter(Predicate(slotFilter::keep)).build()
+        val profileFilter = JfrFilter.Builder().eventFilter(Predicate(slotFilter::keep)).build()
         val node1ProfileFiltered = profileFilter.filter(node1Profile)
         val node2ProfileFiltered = profileFilter.filter(node2Profile)
 

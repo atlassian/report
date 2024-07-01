@@ -5,11 +5,17 @@ import com.atlassian.performance.tools.report.api.result.LocalRealResult
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.hasItem
 import org.junit.Assert.assertThat
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import java.nio.file.Files
 import java.nio.file.Paths
 
 class EditedIssuesReportTest {
+
+    @Rule
+    @JvmField
+    var tempFolder = TemporaryFolder()
 
     @Test
     fun shouldReport() {
@@ -20,7 +26,7 @@ class EditedIssuesReportTest {
         ).map { cohort ->
             Paths.get("JIRA-JPT760-JOB1-8").resolve(cohort)
         }.map { path ->
-            LocalRealResult(path).loadEdible()
+            LocalRealResult(path).loadEdible(tempFolder)
         }
 
         EditedIssuesReport().report(
