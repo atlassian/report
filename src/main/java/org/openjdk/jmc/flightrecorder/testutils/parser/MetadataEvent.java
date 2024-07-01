@@ -52,9 +52,6 @@ import static java.lang.Integer.parseInt;
  */
 public final class MetadataEvent {
 
-    // TODO WTF! this is not even that MetadataEvent instances are not thread-safe, the whole class itself is not thread-safe
-    private static final byte[] COMMON_BUFFER = new byte[4096]; // reusable byte buffer
-
     public final int size;
     public final long startTime;
     public final long duration;
@@ -179,7 +176,7 @@ public final class MetadataEvent {
             return "";
         } else if (id == 3) {
             int size = stream.readVarint();
-            byte[] content = size <= COMMON_BUFFER.length ? COMMON_BUFFER : new byte[size];
+            byte[] content = new byte[size];
             stream.read(content, 0, size);
             return new String(content, 0, size, StandardCharsets.UTF_8);
         } else if (id == 4) {
