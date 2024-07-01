@@ -46,7 +46,7 @@ public final class CheckpointEvent {
         if (eventType != 1) {
             throw new IOException("Unexpected event type: " + eventType + " (should be 1)");
         }
-        this.payload = ByteBuffer.wrap(eventPayload.clone());
+        this.payload = ByteBuffer.wrap(eventPayload);
         this.stream = new RecordingStream(new ByteArrayInputStream(eventPayload));
         this.metadata = metadata;
         this.listener = listener;
