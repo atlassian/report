@@ -1,5 +1,6 @@
 package com.atlassian.performance.tools.report.jfr
 
+import com.atlassian.performance.tools.report.api.jfr.DynamicProxyNormalization
 import com.atlassian.performance.tools.report.api.jfr.JfrFilter
 import com.atlassian.performance.tools.report.api.jfr.MutableJvmSymbol
 import com.atlassian.performance.tools.report.api.result.CompressedResult
@@ -148,7 +149,7 @@ class JfrFilterTest {
         assertThat(before.uniqueSymbols).containsAll(proxies)
         // when
         val output = JfrFilter.Builder()
-            .symbolModifier(Consumer(this::normalizeDynamicProxy))
+            .symbolModifier(DynamicProxyNormalization())
             .build()
             .filter(input)
 

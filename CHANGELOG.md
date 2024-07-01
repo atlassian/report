@@ -30,6 +30,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 - Add `MutableJvmSymbol`, `JfrFilter.Builder.symbolModifier` and `MultiJfrFilter.Builder.symbolModifier`.
   They allow for mutating JVM symbols in JFR files, e.g. to normalize dynamic proxy names or lambda names.
   This way, the same JVM code can be profiled multiple times and resulting JFRs can be merged or diffed.
+- Add `DynamicProxyNormalization`.
 
 ## [4.4.0] - 2024-01-18
 [4.4.0]: https://github.com/atlassian/report/compare/release-4.3.0...release-4.4.0
