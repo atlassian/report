@@ -39,6 +39,9 @@ class JfrFilter private constructor(
             return this
         }
 
+        /**
+         * @since 4.5.0
+         */
         fun symbolModifier(symbolModifier: Consumer<MutableJvmSymbol>) = apply {
             this.symbolModifier = symbolModifier
         }

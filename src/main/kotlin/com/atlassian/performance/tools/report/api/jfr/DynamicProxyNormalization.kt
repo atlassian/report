@@ -3,6 +3,9 @@ package com.atlassian.performance.tools.report.api.jfr
 import java.nio.ByteBuffer
 import java.util.function.Consumer
 
+/**
+ * @since 4.5.0
+ */
 class DynamicProxyNormalization : Consumer<MutableJvmSymbol> {
 
     private val proxyClassName = Regex("\\\$Proxy[0-9]")
@@ -16,5 +19,3 @@ class DynamicProxyNormalization : Consumer<MutableJvmSymbol> {
         }
     }
 }
-
-

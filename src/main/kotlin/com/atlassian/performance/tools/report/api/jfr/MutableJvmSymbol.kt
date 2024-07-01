@@ -9,6 +9,7 @@ package com.atlassian.performance.tools.report.api.jfr
  * - native function names, e.g. `AddNode::Ideal`
  *
  * To optimize JFR filtering, the byte array is not defensively copied.
+ * @since 4.5.0
  */
 class MutableJvmSymbol(
     /**
