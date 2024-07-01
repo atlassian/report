@@ -64,17 +64,13 @@ public final class RecordingStream implements AutoCloseable {
     }
 
     public void read(byte[] buffer, int offset, int length) throws IOException {
-        while (length > 0) {
-            int read = delegate.read(buffer, offset, length);
-            if (read == -1) {
-                throw new IOException("Unexpected EOF");
-            }
-            if (isRecordingWrites) {
-                toBytesStream.write(buffer, offset, read);
-            }
-            offset += read;
-            length -= read;
-            position += read;
+        int read = delegate.read(buffer, offset, length);
+        if (read == -1) {
+            throw new IOException("Unexpected EOF");
+        }
+        position += read;
+        if (isRecordingWrites) {
+            toBytesStream.write(buffer, offset, read);
         }
     }
 
