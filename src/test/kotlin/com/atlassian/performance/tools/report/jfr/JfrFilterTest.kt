@@ -126,8 +126,16 @@ class JfrFilterTest {
     @Test
     fun shouldRewriteJfrSymbols() {
         // given
-        val input = CompressedResult.unzip(zippedInput).resolve("profiler-result.jfr")
+        val input = CompressedResult.unzip(File(javaClass.getResource("/contains-proxy-in-package-name.zip")!!.toURI()))
+            .resolve("contains-proxy-in-package-name.jfr")
 
+        val before = input.summary().first()
+        val proxies = listOf(
+            "jdk/proxy3",
+            "jdk/proxy3/\$Proxy95",
+            "org/springframework/core/\$Proxy764"
+        )
+        assertThat(before.uniqueSymbols).containsAll(proxies)
         // when
         val output = JfrFilter.Builder()
             .symbolModifier(Consumer(this::normalizeDynamicProxy))
@@ -138,27 +146,22 @@ class JfrFilterTest {
         logger.debug("Reading actual JFR $output ...")
         val actual = output.toPath().summary().first()
         assertThat(actual.uniqueSymbols)
-            .`as`("dynamic proxies should be gone").doesNotContain(
-                "com/sun/proxy/\$Proxy796",
-                "com/amazonaws/http/conn/\$Proxy822",
-                "org/springframework/core/\$Proxy724"
-            )
+            .`as`("dynamic proxies should be gone").doesNotContainAnyElementsOf(proxies)
             .`as`("normalized replacements should be present").contains(
-                "PROXY__________________",
-                "PROXY____________________________",
+                "PROXY_____",
+                "PROXY______________",
                 "PROXY_____________________________"
             )
             .`as`("the rest should remain untouched").contains(
-                "io/micrometer/core/instrument/internal/DefaultLongTaskTimer",
+                "renderParagraph",
+                "org/apache/tomcat/util/modeler",
+                "(Lcom/atlassian/jira/onboarding/postsetup/PostSetupAnnouncement;)Lcom/atlassian/jira/onboarding/postsetup/PostSetupAnnouncementStatus;",
                 "AddNode::Ideal",
-                "JavaThread::is_lock_owned",
-                "compileSoy",
-                "webwork/action/factory/JspActionFactoryProxy",
-                "()Lsun/misc/ProxyGenerator\$MethodInfo;",
-                "(Lsun/misc/ProxyGenerator\$ProxyMethod;Ljava/io/DataOutputStream;)V"
+                "getDefined",
+                "after"
             )
-        assertThat(actual.symbolCount).isEqualTo(31380)
-        assertThat(actual.uniqueSymbols).hasSize(30954)
+        assertThat(actual.symbolCount).isEqualTo(28497)
+        assertThat(actual.uniqueSymbols).hasSize(27728)
     }
 
     /**
@@ -166,9 +169,11 @@ class JfrFilterTest {
      * - `com/sun/proxy/$Proxy796`
      * - `com/amazonaws/http/conn/$Proxy822`
      * - `org/springframework/core/$Proxy724`
+     * - `jdk/proxy176/$Proxy724`
      */
     private fun normalizeDynamicProxy(symbolPayload: ByteArray) {
-        if (String(symbolPayload).contains(Regex("\\\$Proxy[0-9]"))) {
+        val payload = String(symbolPayload)
+        if (payload.contains(Regex("\\\$Proxy[0-9]")) || payload.contains(Regex("proxy[0-9]"))) {
             val newSymbol = "PROXY".padEnd(symbolPayload.size, '_')
             ByteBuffer.wrap(symbolPayload).put(newSymbol.toByteArray())
         }
