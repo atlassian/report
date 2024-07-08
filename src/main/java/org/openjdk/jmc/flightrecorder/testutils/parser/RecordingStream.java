@@ -39,8 +39,6 @@ public final class RecordingStream implements AutoCloseable {
     private final DataInputStream delegate;
     private long position = 0;
     private final ByteArrayOutputStream toBytesLog = new ByteArrayOutputStream();
-    private final DataOutputStream toBytesStream = new DataOutputStream(toBytesLog);
-    private boolean isRecordingWrites = false;
 
     public RecordingStream(InputStream is) {
         BufferedInputStream bis = (is instanceof BufferedInputStream) ? (BufferedInputStream) is
@@ -52,61 +50,35 @@ public final class RecordingStream implements AutoCloseable {
         return position;
     }
 
-    void startRecordingWrites() {
-        isRecordingWrites = true;
-    }
-
-    byte[] stopRecordingWrites() {
-        isRecordingWrites = false;
-        byte[] result = toBytesLog.toByteArray();
-        toBytesLog.reset();
-        return result;
-    }
-
     public void read(byte[] buffer, int offset, int length) throws IOException {
         int read = delegate.read(buffer, offset, length);
         if (read == -1) {
             throw new IOException("Unexpected EOF");
         }
         position += read;
-        if (isRecordingWrites) {
-            toBytesStream.write(buffer, offset, read);
-        }
     }
 
     public byte read() throws IOException {
         position += 1;
         byte result = delegate.readByte();
-        if (isRecordingWrites) {
-            toBytesStream.writeByte(result);
-        }
         return result;
     }
 
     short readShort() throws IOException {
         position += 2;
         short result = delegate.readShort();
-        if (isRecordingWrites) {
-            toBytesStream.writeShort(result);
-        }
         return result;
     }
 
     public int readInt() throws IOException {
         position += 4;
         int result = delegate.readInt();
-        if (isRecordingWrites) {
-            toBytesStream.writeInt(result);
-        }
         return result;
     }
 
     long readLong() throws IOException {
         position += 8;
         long result = delegate.readLong();
-        if (isRecordingWrites) {
-            toBytesStream.writeLong(result);
-        }
         return result;
     }
 

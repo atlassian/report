@@ -2,7 +2,6 @@ package com.atlassian.performance.tools.report.jfr
 
 import com.atlassian.performance.tools.report.api.jfr.DynamicProxyNormalization
 import com.atlassian.performance.tools.report.api.jfr.JfrFilter
-import com.atlassian.performance.tools.report.api.jfr.MutableJvmSymbol
 import com.atlassian.performance.tools.report.api.result.CompressedResult
 import jdk.jfr.consumer.RecordedEvent
 import org.apache.logging.log4j.LogManager
@@ -13,10 +12,8 @@ import org.junit.rules.TemporaryFolder
 import org.openjdk.jmc.flightrecorder.testutils.parser.*
 import tools.profiler.jfr.converter.CheckpointEvent
 import java.io.File
-import java.nio.ByteBuffer
 import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicInteger
-import java.util.function.Consumer
 import java.util.function.Predicate
 import kotlin.collections.set
 
@@ -158,11 +155,6 @@ class JfrFilterTest {
         val actual = output.toPath().summary().first()
         assertThat(actual.uniqueSymbols)
             .`as`("dynamic proxies should be gone").doesNotContainAnyElementsOf(proxies)
-            .`as`("normalized replacements should be present").contains(
-                "PROXY_____",
-                "PROXY______________",
-                "PROXY_____________________________"
-            )
             .`as`("the rest should remain untouched").contains(
                 "renderParagraph",
                 "org/apache/tomcat/util/modeler",
@@ -171,23 +163,11 @@ class JfrFilterTest {
                 "getDefined",
                 "after"
             )
+        val proxyOcurences = actual.uniqueSymbols.count { it == "PROXY" }
+        assertThat(proxyOcurences).`as`("PROXY should be present minimum 3 times")
+            .isGreaterThanOrEqualTo(3)
         assertThat(actual.symbolCount).isEqualTo(28497)
         assertThat(actual.uniqueSymbols).hasSize(27728)
-    }
-
-    /**
-     * Normalize symbols like:
-     * - `com/sun/proxy/$Proxy796`
-     * - `com/amazonaws/http/conn/$Proxy822`
-     * - `org/springframework/core/$Proxy724`
-     * - `jdk/proxy176/$Proxy724`
-     */
-    private fun normalizeDynamicProxy(symbol: MutableJvmSymbol) {
-        val symbolString = symbol.toString()
-        if (symbolString.contains(Regex("\\\$Proxy[0-9]")) || symbolString.contains(Regex("proxy[0-9]"))) {
-            val newSymbol = "PROXY".padEnd(symbol.payload.size, '_')
-            ByteBuffer.wrap(symbol.payload).put(newSymbol.toByteArray())
-        }
     }
 
     @Test

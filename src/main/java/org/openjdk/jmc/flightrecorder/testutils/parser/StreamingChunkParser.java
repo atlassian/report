@@ -104,7 +104,6 @@ public final class StreamingChunkParser {
 
                 while (stream.position() < chunkEndPos) {
                     long eventStartPos = stream.position();
-                    stream.startRecordingWrites();
                     int eventSize = stream.readVarint();
                     if (eventSize > 0) {
                         parseEvent(stream, eventSize, eventStartPos, jdkRecording);
@@ -123,7 +122,7 @@ public final class StreamingChunkParser {
 
     private void parseEvent(RecordingStream stream, int eventSize, long eventStartPos, RecordingFile jdkRecording) throws IOException {
         long eventType = stream.readVarlong();
-        EventHeader eventHeader = new EventHeader(eventSize, eventType, stream.stopRecordingWrites());
+        EventHeader eventHeader = new EventHeader(eventSize, eventType);
         byte[] eventPayload = getBytes(stream, eventSize, eventStartPos);
         if (eventType == 0) {
             metadata = new MetadataEvent(new RecordingStream(new ByteArrayInputStream(eventPayload)), eventSize, eventType);

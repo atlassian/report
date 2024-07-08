@@ -43,20 +43,20 @@ class FilteringJfrWriter(
         ) {
             lastMetadataEventOffset = countingOutput.offsetSinceLastReset
 
-            output.write(eventHeader.bytes)
+            eventHeader.write(output)
             output.write(metadataPayload)
         }
 
         override fun onEvent(event: RecordedEvent, eventHeader: EventHeader, eventPayload: ByteArray) {
             if (eventFilter.test(event)) {
-                output.write(eventHeader.bytes)
+                eventHeader.write(output)
                 output.write(eventPayload)
             }
         }
 
         override fun onCheckpoint(eventHeader: EventHeader, eventPayload: ByteArray, checkpointEvent: CheckpointEvent) {
             lastCheckpointEventOffset = countingOutput.offsetSinceLastReset
-            output.write(eventHeader.bytes)
+            eventHeader.write(output)
             output.write(checkpointEvent.payload())
         }
 
