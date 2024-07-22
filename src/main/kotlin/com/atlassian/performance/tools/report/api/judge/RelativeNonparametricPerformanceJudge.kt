@@ -2,7 +2,7 @@ package com.atlassian.performance.tools.report.api.judge
 
 import com.atlassian.performance.tools.jiraactions.api.ActionType
 import com.atlassian.performance.tools.report.ActionMetricsReader
-import com.atlassian.performance.tools.report.api.ShiftedDistributionRegressionTest
+import com.atlassian.performance.tools.report.api.distribution.DistributionComparator
 import com.atlassian.performance.tools.report.api.junit.FailedAssertionJUnitReport
 import com.atlassian.performance.tools.report.api.junit.JUnitReport
 import com.atlassian.performance.tools.report.api.junit.SuccessfulJUnitReport
@@ -70,14 +70,16 @@ class RelativeNonparametricPerformanceJudge private constructor(
                 report = FailedAssertionJUnitReport(reportName, "No action $label results for $experimentCohort"),
                 action = action
             )
-        val test = ShiftedDistributionRegressionTest(baseline, experiment, mwAlpha = significance, ksAlpha = 0.0)
-        // shifts are negated, because ShiftedDistributionRegressionTest is relative to experiment, instead of baseline
+        val comparison = DistributionComparator.Builder(baseline, experiment)
+            .tolerance(toleranceRatio.toDouble())
+            .build()
+            .compare()
         val impact = LatencyImpact.Builder(
             action,
-            -test.percentageShift,
-            reader.convertToDuration(-test.locationShift)
+            comparison.experimentRelativeChange,
+            reader.convertToDuration(comparison.experimentShift)
         )
-            .relevant(test.overcomesTolerance(toleranceRatio.toDouble()))
+            .relevant(comparison.hasImpact())
             .build()
         impactHandlers.forEach { it.accept(impact) }
         return if (impact.regression) {

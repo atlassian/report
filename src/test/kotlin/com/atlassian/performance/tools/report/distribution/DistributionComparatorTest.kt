@@ -1,23 +1,20 @@
-package com.atlassian.performance.tools.report
+package com.atlassian.performance.tools.report.distribution
 
-import com.atlassian.performance.tools.report.api.ShiftedDistributionRegressionTest
+import com.atlassian.performance.tools.report.api.distribution.DistributionComparator
 import com.atlassian.performance.tools.report.api.result.FakeResults
 import com.atlassian.performance.tools.report.chart.Chart
 import com.atlassian.performance.tools.report.chart.ChartLine
-import com.atlassian.performance.tools.report.distribution.DistributionComparison
-import com.atlassian.performance.tools.report.distribution.QuantileFunction
 import com.atlassian.performance.tools.workspace.api.git.GitRepo
 import org.apache.commons.math3.distribution.NormalDistribution
 import org.apache.commons.math3.distribution.NormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY
 import org.apache.commons.math3.random.MersenneTwister
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.SoftAssertions.assertSoftly
-import org.assertj.core.data.Offset
+import org.assertj.core.api.SoftAssertions.*
 import org.junit.Ignore
 import org.junit.Test
 import java.nio.file.Files
 
-class ShiftedDistributionRegressionTestTest {
+class DistributionComparatorTest {
 
     /**
      * https://en.wikipedia.org/wiki/Robust_statistics
@@ -29,21 +26,19 @@ class ShiftedDistributionRegressionTestTest {
         val baseline = NormalDistribution(random, 400.0, 30.0, DEFAULT_INVERSE_ABSOLUTE_ACCURACY).sample(500)
         val outlier = 1_000_000_000_000.0
         val experiment = baseline + outlier
-        val test = ShiftedDistributionRegressionTest(baseline, experiment)
 
         // when
-        val absoluteShift = -test.locationShift
-        val relativeShift = -test.percentageShift
-        val regressed = test.isExperimentRegressed(0.00)
-        val sameDistro = test.equalDistributionsAfterShift
+        val comparison = DistributionComparator.Builder(baseline, experiment)
+            .tolerance(0.0)
+            .build().compare()
 
         // then
         plotQuantiles(baseline, experiment)
         assertSoftly {
-            it.assertThat(absoluteShift).`as`("absolute shift").isEqualTo(2.096466300542943E-4)
-            it.assertThat(relativeShift).`as`("relative shift").isEqualTo(5.267954779139178E-7)
-            it.assertThat(regressed).`as`("regressed").isFalse()
-            it.assertThat(sameDistro).`as`("same distro").isTrue()
+            it.assertThat(comparison.experimentShift).`as`("absolute change").isEqualTo(2.096466300542943E-4)
+            it.assertThat(comparison.experimentRelativeChange).`as`("relative change").isEqualTo(5.05322869548408E-7)
+            it.assertThat(comparison.isExperimentImproved).`as`("improved").isFalse
+            it.assertThat(comparison.isExperimentRegressed).`as`("regressed").isFalse
         }
     }
 
@@ -56,21 +51,17 @@ class ShiftedDistributionRegressionTestTest {
         val baseline = fastMode.sample(500) + slowMode.sample(90)
         val slowdown = 800.0
         val experiment = baseline.map { it + slowdown }.toDoubleArray()
-        val test = ShiftedDistributionRegressionTest(baseline, experiment)
 
         // when
-        val absoluteShift = -test.locationShift
-        val relativeShift = -test.percentageShift
-        val regressed = test.isExperimentRegressed(0.00)
-        val sameDistro = test.equalDistributionsAfterShift
+        val comparison = DistributionComparator.Builder(baseline, experiment).build().compare()
 
         // then
         plotQuantiles(baseline, experiment)
         assertSoftly {
-            it.assertThat(absoluteShift).`as`("absolute shift").isEqualTo(800.0)
-            it.assertThat(relativeShift).`as`("relative shift").isEqualTo(1.970670929558996)
-            it.assertThat(regressed).`as`("regressed").isTrue()
-            it.assertThat(sameDistro).`as`("same distro").isTrue()
+            it.assertThat(comparison.experimentShift).`as`("absolute change").isEqualTo(800.0)
+            it.assertThat(comparison.experimentRelativeChange).`as`("relative change").isEqualTo(1.9951194021713592)
+            it.assertThat(comparison.isExperimentImproved).`as`("regressed").isFalse
+            it.assertThat(comparison.isExperimentRegressed).`as`("regressed").isTrue
         }
     }
 
@@ -92,29 +83,25 @@ class ShiftedDistributionRegressionTestTest {
                 }
             }
             .toDoubleArray()
-        val test = ShiftedDistributionRegressionTest(baseline, experiment)
 
         // when
-        val absoluteShift = -test.locationShift
-        val relativeShift = -test.percentageShift
-        val regressed = test.isExperimentRegressed(0.00)
-        val sameDistro = test.equalDistributionsAfterShift
+        val comparison = DistributionComparator.Builder(baseline, experiment).build().compare()
 
         // then
         plotQuantiles(baseline, experiment)
         assertSoftly {
-            it.assertThat(absoluteShift).`as`("absolute shift").isEqualTo(66.57177057231809)
-            it.assertThat(relativeShift).`as`("relative shift").isEqualTo(0.16398881624517286)
-            it.assertThat(regressed).`as`("regressed").isTrue()
-            it.assertThat(sameDistro).`as`("same distro").isFalse()
+            it.assertThat(comparison.experimentShift).`as`("absolute change").isEqualTo(66.57177057231809)
+            it.assertThat(comparison.experimentRelativeChange).`as`("relative change").isEqualTo(0.16145163153504116)
+            it.assertThat(comparison.isExperimentImproved).`as`("improved").isFalse
+            it.assertThat(comparison.isExperimentRegressed).`as`("regressed").isTrue
         }
     }
 
     /**
      * In a 51% slightly faster vs 49% much slower case, it should be a regression
      */
-    @Ignore("https://ecosystem.atlassian.net/browse/JPERF-1297")
     @Test
+    @Ignore
     fun shouldCareAboutHeightOfTheDifferences() {
         // given
         val random = MersenneTwister(123)
@@ -133,26 +120,21 @@ class ShiftedDistributionRegressionTestTest {
                 }
             }
             .toDoubleArray()
-        val test = ShiftedDistributionRegressionTest(baseline, experiment)
 
         // when
-        val absoluteShift = -test.locationShift
-        val relativeShift = -test.percentageShift
-        val regressed = test.isExperimentRegressed(0.00)
-        val sameDistro = test.equalDistributionsAfterShift
+        val comparison = DistributionComparator.Builder(baseline, experiment).build().compare()
 
         // then
         plotQuantiles(baseline, experiment)
         assertSoftly {
-            it.assertThat(absoluteShift).`as`("absolute shift").isCloseTo(slowdown, Offset.offset(500.0))
-            it.assertThat(relativeShift).`as`("relative shift").isCloseTo(0.75, Offset.offset(0.01))
-            it.assertThat(regressed).`as`("regressed").isTrue()
-            it.assertThat(sameDistro).`as`("same distro").isFalse()
+            it.assertThat(comparison.experimentShift).`as`("absolute change").isPositive
+            it.assertThat(comparison.experimentRelativeChange).`as`("relative change").isPositive
+            it.assertThat(comparison.isExperimentImproved).`as`("improvement").isFalse
+            it.assertThat(comparison.isExperimentRegressed).`as`("regressed").isTrue
         }
     }
 
     @Test
-    @Ignore("percentageShift calculation is fixed in in DistributionComparator where Hodges-Lehmann estimator with pseudo-median is used")
     fun shouldDetectImprovementWhenEveryPercentileBetter() {
         // given
         val baseline =
@@ -162,15 +144,12 @@ class ShiftedDistributionRegressionTestTest {
             this.javaClass.getResource("/real-results/view issue 9.17.0 vs 10.0.0/experiment.csv").readText().lines()
                 .map { it.toDouble() }.toDoubleArray()
         // when
-        val test = ShiftedDistributionRegressionTest(baseline, experiment)
+        val comparison = DistributionComparator.Builder(baseline, experiment).build().compare()
         // then
         plotQuantiles(baseline, experiment)
-        assertSoftly {
-            it.assertThat(test.isExperimentRegressed(0.01)).`as`("isExperimentRegressed").isFalse()
-            it.assertThat(test.percentageShift).`as`("").`as`("percentageShift").isEqualTo(0.03941908713692943)
-            it.assertThat(test.locationShift).`as`("").`as`("locationShift").isEqualTo(20.0)
-            it.assertThat(test.overcomesTolerance(0.01)).`as`("overcomesTolerance").isTrue()
-        }
+        assertThat(comparison.isExperimentImproved).isTrue()
+        assertThat(comparison.isExperimentRegressed).isFalse()
+        assertThat(comparison.experimentRelativeChange).isEqualTo(-0.03941908713692943)
     }
 
 
@@ -184,7 +163,7 @@ class ShiftedDistributionRegressionTestTest {
                 chartLine(experiment, "experiment")
             )
         )
-        val htmlFile = Files.createTempFile("kebab", ".html")
+        val htmlFile = Files.createTempFile("distribution-quantiles", ".html")
             .also { println("Distribution comparison at $it") }
         DistributionComparison(GitRepo.findFromCurrentDirectory()).render(chart, htmlFile)
     }
@@ -198,12 +177,17 @@ class ShiftedDistributionRegressionTestTest {
 
     @Test
     fun shouldSeeNoShiftAcrossTheSameResult() {
+        // given
         val result = FakeResults.fastResult
             .actionMetrics.map { it.duration.toMillis() }
             .map { it.toDouble() }.toDoubleArray()
 
-        val percentageShift = ShiftedDistributionRegressionTest(result, result).percentageShift
+        // when
+        val comparison = DistributionComparator.Builder(result, result).build().compare()
 
-        assertThat(percentageShift).isEqualTo(0.0)
+        // then
+        assertThat(comparison.experimentShift).isEqualTo(0.0)
+        assertThat(comparison.experimentRelativeChange).isEqualTo(0.0)
+        assertThat(comparison.hasImpact()).isFalse()
     }
 }

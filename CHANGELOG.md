@@ -26,6 +26,16 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/report/compare/release-4.5.0...master
 
+### Added
+- Add `DistributionComparator` which uses a proper Hodges-Lehmann implementation using pseudo-median instead of median
+
+### Fixed
+- Fix calculating distribution ratio in `RelativeNonparametricPerformanceJudge` by `DistributionComparator`
+
+### Deprecated
+- Deprecate `ShiftedDistributionRegressionTest` in favor of `DistributionComparator`
+
+
 ## [4.5.0] - 2024-07-01
 [4.5.0]: https://github.com/atlassian/report/compare/release-4.4.0...release-4.5.0
 
