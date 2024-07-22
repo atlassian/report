@@ -8,16 +8,15 @@ class DistributionComparator private constructor(
     private val baseline: DoubleArray,
     private val experiment: DoubleArray,
     /**
-     * A percentage by which experiment can be slower/faster than baseline and not considered as a regression/improvement
+     * A ratio by which experiment can be slower/faster than baseline and not considered as a regression/improvement
      */
     private val tolerance: Double,
     private val significance: Double
 ) {
 
 
-
     /**
-     * Performs a one-tailed Mann–Whitney U test to check whether experiment is not slower than the baseline
+     * Performs a one-tailed Mann–Whitney U test to check whether experiment is slower than the baseline
      *
      * @return true if the experiment is slower than the baseline by more than tolerance, false otherwise
      */
@@ -28,8 +27,7 @@ class DistributionComparator private constructor(
 
     private fun isExperimentImproved(baselineMedian: Double): Boolean {
         val mu = -tolerance * baselineMedian
-        val wilcoxon = WilcoxonRankSum(experiment, baseline, mu)
-        return wilcoxon.pValue1SidedLess < significance
+        return WilcoxonRankSum(experiment, baseline, mu).pValue1SidedLess < significance
     }
 
     /**
@@ -81,10 +79,9 @@ class DistributionComparator private constructor(
         val experimentRatio = ratio()
         val isExperimentImproved = isExperimentImproved(baselineMedian)
         val isExperimentRegressed = isExperimentRegressed(baselineMedian)
-        val experimentRelativeChange = experimentRatio - 1
         return DistributionComparison(
-            experimentRelativeChange = experimentRelativeChange,
-            experimentAbsoluteChange = experimentShift,
+            experimentRelativeChange = experimentRatio - 1,
+            experimentShift = experimentShift,
             isExperimentRegressed = isExperimentRegressed,
             isExperimentImproved = isExperimentImproved
         )

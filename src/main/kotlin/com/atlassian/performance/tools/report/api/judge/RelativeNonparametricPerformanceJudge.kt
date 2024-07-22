@@ -77,7 +77,7 @@ class RelativeNonparametricPerformanceJudge private constructor(
         val impact = LatencyImpact.Builder(
             action,
             comparison.experimentRelativeChange,
-            reader.convertToDuration(comparison.experimentAbsoluteChange)
+            reader.convertToDuration(comparison.experimentShift)
         )
             .relevant(comparison.hasImpact())
             .build()

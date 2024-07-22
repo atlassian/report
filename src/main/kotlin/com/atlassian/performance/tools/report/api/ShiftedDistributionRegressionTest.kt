@@ -13,7 +13,6 @@ import org.apache.commons.math3.stat.descriptive.rank.Median
  * @experiment experiment durations
  * @param mwAlpha Mann-Whitney significance level
  * @param ksAlpha Kolmogorov-Smirnov significance level
- * @deprecated Use [DistributionComparator] instead
  */
 @Deprecated("Use DistributionComparator instead")
 class ShiftedDistributionRegressionTest(

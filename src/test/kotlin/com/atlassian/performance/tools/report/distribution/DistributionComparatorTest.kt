@@ -35,7 +35,7 @@ class DistributionComparatorTest {
         // then
         plotQuantiles(baseline, experiment)
         assertSoftly {
-            it.assertThat(comparison.experimentAbsoluteChange).`as`("absolute change").isEqualTo(2.096466300542943E-4)
+            it.assertThat(comparison.experimentShift).`as`("absolute change").isEqualTo(2.096466300542943E-4)
             it.assertThat(comparison.experimentRelativeChange).`as`("relative change").isEqualTo(5.05322869548408E-7)
             it.assertThat(comparison.isExperimentImproved).`as`("improved").isFalse
             it.assertThat(comparison.isExperimentRegressed).`as`("regressed").isFalse
@@ -58,7 +58,7 @@ class DistributionComparatorTest {
         // then
         plotQuantiles(baseline, experiment)
         assertSoftly {
-            it.assertThat(comparison.experimentAbsoluteChange).`as`("absolute change").isEqualTo(800.0)
+            it.assertThat(comparison.experimentShift).`as`("absolute change").isEqualTo(800.0)
             it.assertThat(comparison.experimentRelativeChange).`as`("relative change").isEqualTo(1.9951194021713592)
             it.assertThat(comparison.isExperimentImproved).`as`("regressed").isFalse
             it.assertThat(comparison.isExperimentRegressed).`as`("regressed").isTrue
@@ -90,7 +90,7 @@ class DistributionComparatorTest {
         // then
         plotQuantiles(baseline, experiment)
         assertSoftly {
-            it.assertThat(comparison.experimentAbsoluteChange).`as`("absolute change").isEqualTo(66.57177057231809)
+            it.assertThat(comparison.experimentShift).`as`("absolute change").isEqualTo(66.57177057231809)
             it.assertThat(comparison.experimentRelativeChange).`as`("relative change").isEqualTo(0.16145163153504116)
             it.assertThat(comparison.isExperimentImproved).`as`("improved").isFalse
             it.assertThat(comparison.isExperimentRegressed).`as`("regressed").isTrue
@@ -127,7 +127,7 @@ class DistributionComparatorTest {
         // then
         plotQuantiles(baseline, experiment)
         assertSoftly {
-            it.assertThat(comparison.experimentAbsoluteChange).`as`("absolute change").isPositive
+            it.assertThat(comparison.experimentShift).`as`("absolute change").isPositive
             it.assertThat(comparison.experimentRelativeChange).`as`("relative change").isPositive
             it.assertThat(comparison.isExperimentImproved).`as`("improvement").isFalse
             it.assertThat(comparison.isExperimentRegressed).`as`("regressed").isTrue
@@ -186,7 +186,7 @@ class DistributionComparatorTest {
         val comparison = DistributionComparator.Builder(result, result).build().compare()
 
         // then
-        assertThat(comparison.experimentAbsoluteChange).isEqualTo(0.0)
+        assertThat(comparison.experimentShift).isEqualTo(0.0)
         assertThat(comparison.experimentRelativeChange).isEqualTo(0.0)
         assertThat(comparison.hasImpact()).isFalse()
     }

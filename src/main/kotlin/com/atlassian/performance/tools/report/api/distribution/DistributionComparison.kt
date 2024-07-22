@@ -2,7 +2,7 @@ package com.atlassian.performance.tools.report.api.distribution
 
 class DistributionComparison(
     val experimentRelativeChange: Double,
-    val experimentAbsoluteChange: Double,
+    val experimentShift: Double,
     val isExperimentRegressed: Boolean,
     val isExperimentImproved: Boolean
 ) {
