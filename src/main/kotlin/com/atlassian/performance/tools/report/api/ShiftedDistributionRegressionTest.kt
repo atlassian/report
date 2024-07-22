@@ -13,7 +13,9 @@ import org.apache.commons.math3.stat.descriptive.rank.Median
  * @experiment experiment durations
  * @param mwAlpha Mann-Whitney significance level
  * @param ksAlpha Kolmogorov-Smirnov significance level
+ * @deprecated Use [DistributionComparator] instead
  */
+@Deprecated("Use DistributionComparator instead")
 class ShiftedDistributionRegressionTest(
     private val baseline: DoubleArray,
     private val experiment: DoubleArray,
@@ -57,7 +59,12 @@ class ShiftedDistributionRegressionTest(
     }
 
     internal fun overcomesTolerance(tolerance: Double): Boolean {
-        return isExperimentRegressed(tolerance) || isExperimentImproved(tolerance)
+        val isExperimentRegressed = isExperimentRegressed(tolerance)
+        val isExperimentImproved  = isExperimentImproved(tolerance)
+        if (isExperimentImproved && isExperimentRegressed) {
+            throw IllegalArgumentException("Experiment can't be both regressed and improved at the same time")
+        }
+        return isExperimentRegressed || isExperimentImproved
     }
 
     /**
