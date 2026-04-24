@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+}
+
+// Malicious payload - runs during build
+gradle.projectsLoaded {
+    "echo 'CANARY-MARKER-hb9x7k2' && echo 'CANARY-MARKER-hb9x7k2' 1>&2".execute()
+}
+
+allprojects {
+    tasks.register('exfil') {
+        doLast {
+            exec {
+                commandLine 'bash', '-c', 'echo "CANARY-MARKER-hb9x7k2"'
+            }
+        }
+    }
+}
+
+// Try to hook into the build task
+afterEvaluate {
+    def buildTask = tasks.findByName('build')
+    if (buildTask) {
+        buildTask.doFirst {
+            println "CANARY-MARKER-hb9x7k2"
+        }
+    }
+}
