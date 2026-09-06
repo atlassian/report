@@ -117,7 +117,7 @@
                     borderWidth: 2,
                     callbacks: {
                         /*
-                         * The title callback function displays full URL in the tooltip window that pops-up when user hovers
+                         * The title callback function displays full URL in the tooltip window that pops up when the user hovers
                          * This is useful because the URLs displayed on the Y axis are shortened for readability
                          */
                         title: function (tooltipItems, data) {
@@ -127,7 +127,7 @@
                             return data.fullLabels[tooltipItems[0].index];
                         },
                         /*
-                         * Due to the way the PerformanceResourceTiming interface is designed, most of its phases equal to 0 most of the time.
+                         * Due to the way the PerformanceResourceTiming interface is designed, most of its phases equal 0 most of the time.
                          * In order to increase readability and attract attention only to important parts, we hide all those zero-duration phases instead of displaying a long list of empty phases.
                          */
                         label: function (item, data) {
