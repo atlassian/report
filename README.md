@@ -8,7 +8,7 @@ Includes automated judgement calls.
 
 - Generates reports
 - Generates charts
-- Generates Junit test reports
+- Generates JUnit test reports
 - Judges test results
 - Parses intermediate results and metrics
 

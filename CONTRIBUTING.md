@@ -11,7 +11,7 @@ All the changes are welcome. Please help us to improve code, examples and docume
     
 ## Developer’s environment
 
-You can build and run it on MacOS, Windows or Linux. You'll need JDK 8-11 to build and test the project.
+You can build and run it on macOS, Windows or Linux. You'll need JDK 8-11 to build and test the project.
 
 ## Submitting changes
  
